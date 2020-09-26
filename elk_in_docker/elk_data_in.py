@@ -21,4 +21,5 @@ data_elements = [
 
 for data_element in data_elements: 
     res = es.index(index=index_name, body=data_element)
-    print(res)
+    assert res['_shards']['successful']==1
+print(f"inserted {len(data_elements)} records")
