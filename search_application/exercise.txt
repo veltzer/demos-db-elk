@@ -1,0 +1,20 @@
+Medium level design
+
+We want to write a notes/search application.
+
+What is a note?
+- A note is two items:
+	"title" of the note (limited by 40 characters).
+	"text" of the note (limited by 1000 character).
+	Try to keep the limits flexible.
+
+Features:
+- User can add/remove/edit notes.
+- User can search notes. A search will search both title and text.
+- If a search matches more than X notes then paginate the results.
+
+Limits on number of notes?
+- no need to set limit now.
+
+What about users?
+Only one user for now.

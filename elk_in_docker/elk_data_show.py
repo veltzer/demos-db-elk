@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from elasticsearch import Elasticsearch
+from elasticsearch7 import Elasticsearch
 import json
 import sys
 
@@ -12,7 +12,7 @@ doc = {
         'match_all' : {}
     }
 }
-res=es.search(index='wpt', body=doc, scroll='1m')
+res=es.search(index='my-index', body=doc, scroll='1m')
 number_of_results = res['hits']['total']['value']
 print(f"number_of_results {number_of_results}")
 hits = res['hits']['hits']

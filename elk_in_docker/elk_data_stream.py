@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 
-from elasticsearch import Elasticsearch
+from elasticsearch7 import Elasticsearch
 import random
 import time
 es=Elasticsearch([{'host':'localhost','port':9200}])
-index_name="wpt"
+index_name="my-index"
 
 day = 1
 while True:
@@ -16,5 +16,5 @@ while True:
     assert res['_shards']['successful']==1
     day += 1
     print("added another record...")
-    time.sleep(3)
+    time.sleep(1)
 print(f"inserted {len(data_elements)} records")
