@@ -8,6 +8,19 @@ What is a note?
 	"text" of the note (limited by 1000 character).
 	Try to keep the limits flexible.
 
+The web app
+- main page:
+	- button to add a note, modify a note, remove a note, search
+	- show number of notes in the es.
+- search page:
+	- textbox for entering the search
+	- button to do the search
+	- this page will to the results page
+- results page:
+	- show number of results (total), which results are display on this page
+	("showing 20-30 results out of 43")
+	- results will show both the title and the description.
+
 Features:
 - User can add/remove/edit notes.
 - User can search notes. A search will search both title and text.
