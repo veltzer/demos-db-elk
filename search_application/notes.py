@@ -5,7 +5,6 @@ from constants import app_name, listening_address, listening_port, index, host, 
 from elasticsearch7 import Elasticsearch
 from flask import request
 import json
-import pyvardump
 
 app = Flask(app_name)
 
@@ -72,11 +71,9 @@ def results():
     html+="<br></br>"
     html+"<ul>"
     for hit in hits:
-        # pyvardump.dump_print(hit)
         f_text=hit['_source']['text']
         f_title=hit['_source']['title']
         html+="<li>{f_title}: {f_text}</li>".format(f_text=f_text, f_title=f_title)
-        # html+=json.dumps(hit['_source'], indent=4, sort_keys=True)
         html+="<br></br>"
     html+"</ul>"
     html += "</body></html>"
