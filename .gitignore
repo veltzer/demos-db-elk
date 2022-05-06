@@ -1,3 +1,4 @@
 /.venv/
+/.pydmt/
 __pycache__
 *.stamp
