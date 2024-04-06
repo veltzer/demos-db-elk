@@ -4,7 +4,7 @@ agate-excel==0.2.5
 agate-sql==0.5.8
 alabaster==0.7.12
 ansible==7.7.0
-ansible-core==2.14.9
+ansible-core==2.15.9
 apache-libcloud==3.4.1
 appdirs==1.4.4
 apt-xapian-index==0.49
