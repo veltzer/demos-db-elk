@@ -213,7 +213,7 @@ pgcli==3.5.0
 pgspecial==2.0.1
 pickleshare==0.7.5
 pikepdf==8.3.2
-Pillow==10.0.0
+Pillow==10.3.0
 pkginfo==1.8.2
 platformdirs==3.10.0
 pluggy==1.2.0
