@@ -80,7 +80,7 @@ dill==0.3.7
 distlib==0.3.7
 distro==1.8.0
 distro-info==1.5+ubuntu0.23.10.1
-dnspython==2.4.1
+dnspython==2.6.1
 docker==5.0.3
 docker-compose==1.29.2
 dockerpty==0.4.1
