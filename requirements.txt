@@ -117,7 +117,7 @@ html5lib==1.1
 httplib2==0.20.4
 humanfriendly==10.0
 hyperlink==21.0.0
-idna==3.3
+idna==3.7
 imagesize==1.4.1
 img2pdf==0.4.4
 importlib-metadata==4.12.0
