@@ -1,15 +1,11 @@
-from typing import List
+""" python deps for this project """
 
-
-config_requires: List[str] = []
-dev_requires: List[str] = [
+install_requires: list[str] = [
     "elasticsearch",
 ]
-install_requires: List[str] = []
-build_requires: List[str] = [
+build_requires: list[str] = [
     "pymakehelper",
     "pydmt",
     "pyclassifiers",
 ]
-test_requires: List[str] = []
-requires = config_requires + install_requires + build_requires + test_requires
+requires = install_requires + build_requires

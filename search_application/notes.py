@@ -67,13 +67,13 @@ def results():
     res=es.search(index=index, body=doc)
     number_of_results = res['hits']['total']['value']
     hits = res['hits']['hits']
-    html += "there are {number_of_results} results...".format(number_of_results=number_of_results)
+    html += f"there are {number_of_results} results..."
     html+="<br></br>"
     html+"<ul>"
     for hit in hits:
         f_text=hit['_source']['text']
         f_title=hit['_source']['title']
-        html+="<li>{f_title}: {f_text}</li>".format(f_text=f_text, f_title=f_title)
+        html+=f"<li>{f_title}: {f_text}</li>"
         html+="<br></br>"
     html+"</ul>"
     html += "</body></html>"
