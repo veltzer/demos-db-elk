@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python
 
 from flask import Flask
 from constants import app_name, listening_address, listening_port, index, host, port, pagination_size

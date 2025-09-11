@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python
 
 from elasticsearch7 import Elasticsearch
 import json
