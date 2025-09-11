@@ -1,2 +1,2 @@
-#!/bin/sh
-docker pull sebp/elk
+#!/bin/bash -eu
+docker pull "sebp/elk"

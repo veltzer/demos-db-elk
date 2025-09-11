@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -eu
 curl -X PUT "localhost:9200/wpt?pretty" -H 'Content-Type: application/json' -d'
 {
 	"settings": {
