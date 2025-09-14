@@ -43,8 +43,8 @@ sudo gpg --dearmor -o /usr/share/keyrings/elasticsearch-keyring.gpg
 
 # Add the repository
 echo "deb [signed-by=/usr/share/keyrings/elasticsearch-keyring.gpg] \
-https://artifacts.elastic.co/packages/8.x/apt stable main" | \
-sudo tee /etc/apt/sources.list.d/elastic-8.x.list
+https://artifacts.elastic.co/packages/9.x/apt stable main" | \
+sudo tee /etc/apt/sources.list.d/elastic-9.x.list
 
 # Update package list
 sudo apt update
@@ -128,7 +128,7 @@ sudo rm -rf /etc/elasticsearch
 sudo rm -rf /etc/kibana
 
 # Remove repository
-sudo rm /etc/apt/sources.list.d/elastic-8.x.list
+sudo rm /etc/apt/sources.list.d/elastic-9.x.list
 sudo rm /usr/share/keyrings/elasticsearch-keyring.gpg
 sudo apt update
 ```
@@ -164,7 +164,7 @@ version: '3.8'
 
 services:
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:8.15.0
+    image: docker.elastic.co/elasticsearch/elasticsearch:9.1.3
     container_name: elasticsearch
     environment:
       - node.name=elasticsearch
@@ -193,7 +193,7 @@ services:
       retries: 5
 
   kibana:
-    image: docker.elastic.co/kibana/kibana:8.15.0
+    image: docker.elastic.co/kibana/kibana:9.1.3
     container_name: kibana
     environment:
       - SERVERNAME=kibana
@@ -273,8 +273,8 @@ docker compose down
 docker compose down -v
 
 # Remove images (optional)
-docker rmi docker.elastic.co/elasticsearch/elasticsearch:8.15.0
-docker rmi docker.elastic.co/kibana/kibana:8.15.0
+docker rmi docker.elastic.co/elasticsearch/elasticsearch:9.1.3
+docker rmi docker.elastic.co/kibana/kibana:9.1.3
 
 # Remove project directory
 cd ~ && rm -rf ~/elastic-docker
@@ -303,16 +303,16 @@ cd /opt/elastic
 ### Step 3.3: Download and Extract Elasticsearch
 ```bash
 # Download Elasticsearch
-sudo wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-8.15.0-linux-x86_64.tar.gz
+sudo wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-9.1.3-linux-x86_64.tar.gz
 
 # Extract archive
-sudo tar -xzf elasticsearch-8.15.0-linux-x86_64.tar.gz
+sudo tar -xzf elasticsearch-9.1.3-linux-x86_64.tar.gz
 
 # Create symbolic link for easier access
-sudo ln -s elasticsearch-8.15.0 elasticsearch
+sudo ln -s elasticsearch-9.1.3 elasticsearch
 
 # Set ownership
-sudo chown -R $USER:$USER /opt/elastic/elasticsearch-8.15.0
+sudo chown -R $USER:$USER /opt/elastic/elasticsearch-9.1.3
 ```
 
 ### Step 3.4: Configure Elasticsearch
@@ -345,16 +345,16 @@ nano /opt/elastic/elasticsearch/config/jvm.options
 cd /opt/elastic
 
 # Download Kibana
-sudo wget https://artifacts.elastic.co/downloads/kibana/kibana-8.15.0-linux-x86_64.tar.gz
+sudo wget https://artifacts.elastic.co/downloads/kibana/kibana-9.1.3-linux-x86_64.tar.gz
 
 # Extract archive
-sudo tar -xzf kibana-8.15.0-linux-x86_64.tar.gz
+sudo tar -xzf kibana-9.1.3-linux-x86_64.tar.gz
 
 # Create symbolic link
-sudo ln -s kibana-8.15.0 kibana
+sudo ln -s kibana-9.1.3 kibana
 
 # Set ownership
-sudo chown -R $USER:$USER /opt/elastic/kibana-8.15.0
+sudo chown -R $USER:$USER /opt/elastic/kibana-9.1.3
 ```
 
 ### Step 3.7: Configure Kibana
