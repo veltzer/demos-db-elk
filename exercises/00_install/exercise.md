@@ -160,8 +160,6 @@ mkdir -p ~/elastic-docker && cd ~/elastic-docker
 ### Step 2.3: Create docker-compose.yml
 ```bash
 cat > docker-compose.yml << 'EOF'
-version: '3.8'
-
 services:
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:9.1.3
@@ -171,43 +169,34 @@ services:
       - cluster.name=docker-cluster
       - discovery.type=single-node
       - bootstrap.memory_lock=true
-      - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
-      - xpack.security.enabled=true
-      - xpack.security.enrollment.enabled=true
-      - ELASTIC_PASSWORD=changeme123
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      # Disable security features
+      - xpack.security.enabled=false
+      - xpack.security.enrollment.enabled=false
+      - xpack.security.http.ssl.enabled=false
+      - xpack.security.transport.ssl.enabled=false
     ulimits:
       memlock:
         soft: -1
         hard: -1
     volumes:
-      - esdata:/usr/share/elasticsearch/data
-    ports:
-      - "9200:9200"
-      - "9300:9300"
-    networks:
-      - elastic
+      - elasticsearch-data:/usr/share/elasticsearch/data
+    network_mode: host
 
   kibana:
     image: docker.elastic.co/kibana/kibana:9.1.3
     container_name: kibana
     environment:
-      - SERVERNAME=kibana
-      - ELASTICSEARCH_HOSTS=https://elasticsearch:9200
-      - ELASTICSEARCH_USERNAME=kibana_system
-      - ELASTICSEARCH_PASSWORD=changeme123
-      - ELASTICSEARCH_SSL_VERIFICATIONMODE=none
-    ports:
-      - "5601:5601"
-    networks:
-      - elastic
+      - ELASTICSEARCH_HOSTS=http://localhost:9200
+      - ELASTICSEARCH_URL=http://localhost:9200
+      # Disable security for Kibana as well
+      - xpack.security.enabled=false
+      - xpack.encryptedSavedObjects.encryptionKey=fhjskloppd678ehkdfdlliverpoolfcr
+    network_mode: host
 
 volumes:
-  esdata:
+  elasticsearch-data:
     driver: local
-
-networks:
-  elastic:
-    driver: bridge
 EOF
 ```
 
