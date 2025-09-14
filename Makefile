@@ -16,7 +16,7 @@ all:
 .PHONY: clean_hard
 clean_hard:
 	$(info doing [$@])
-	git clean -qffxd
+	$(q)git clean -qffxd
 
 ##########
 # alldep #
