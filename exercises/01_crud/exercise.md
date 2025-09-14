@@ -411,6 +411,25 @@ curl -X DELETE "localhost:9200/products" \
 
 ---
 
+## Notes about python and virtual env
+
+- To get virtualenv support:
+	`$ sudo apt install python3-virtualenv`
+
+- To create a virtualenv:
+	`$ virtualenv .venv`
+
+- To enter the virtual env:
+	`$ source .venv/bin/activate`
+
+- To exit the virtual env:
+	`$ deactivate`
+
+- To install al package in the virtual env:
+	`$ pip install [pkg_name]`
+
+---
+
 ## Method 3: Python with requests Library
 
 ### 3.1 Setup and Configuration
