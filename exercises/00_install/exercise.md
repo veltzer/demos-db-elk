@@ -186,11 +186,6 @@ services:
       - "9300:9300"
     networks:
       - elastic
-    healthcheck:
-      test: ["CMD-SHELL", "curl -s -k https://localhost:9200 -u elastic:changeme123 | grep -q 'cluster_name'"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
 
   kibana:
     image: docker.elastic.co/kibana/kibana:9.1.3
@@ -205,14 +200,6 @@ services:
       - "5601:5601"
     networks:
       - elastic
-    depends_on:
-      elasticsearch:
-        condition: service_healthy
-    healthcheck:
-      test: ["CMD-SHELL", "curl -s http://localhost:5601/api/status | grep -q 'available'"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
 
 volumes:
   esdata:
