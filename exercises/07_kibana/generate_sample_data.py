@@ -131,9 +131,13 @@ def main():
     # Sort by timestamp
     data.sort(key=lambda x: x['timestamp'])
     
-    # Write to file
+    # Write to file in Elasticsearch bulk format
     with open(args.output, 'w') as f:
         for record in data:
+            # Write the index action
+            index_action = {'index': {'_index': 'sample-data'}}
+            f.write(json.dumps(index_action) + '\n')
+            # Write the document
             f.write(json.dumps(record) + '\n')
     
     print(f"Generated {len(data)} records and saved to {args.output}")
