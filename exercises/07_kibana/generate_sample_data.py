@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import os
 import json
 import random
 from datetime import datetime, timedelta
@@ -142,7 +143,7 @@ def main():
     
     print(f"Generated {len(data)} records and saved to {args.output}")
     print(f"To import into Elasticsearch:")
-    print(f"curl -X POST 'localhost:9200/sample-data/_bulk' -H 'Content-Type: application/json' --data-binary @{args.output}")
+    os.system(f"curl -X POST 'localhost:9200/sample-data/_bulk' -H 'Content-Type: application/json' --data-binary @{args.output}")
 
 if __name__ == '__main__':
     main()
