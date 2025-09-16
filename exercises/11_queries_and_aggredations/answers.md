@@ -3,6 +3,7 @@
 ## Step 2: Basic Queries
 
 **2. Find orders by specific customer (Alice):**
+
 ```bash
 curl -X GET "localhost:9200/orders/_search?pretty" -H 'Content-Type: application/json' -d'
 {
@@ -15,6 +16,7 @@ curl -X GET "localhost:9200/orders/_search?pretty" -H 'Content-Type: application
 ```
 
 **3. Find orders for Electronics products:**
+
 ```bash
 curl -X GET "localhost:9200/orders/_search?pretty" -H 'Content-Type: application/json' -d'
 {
@@ -27,6 +29,7 @@ curl -X GET "localhost:9200/orders/_search?pretty" -H 'Content-Type: application
 ```
 
 **4. Find orders with price greater than $50:**
+
 ```bash
 curl -X GET "localhost:9200/orders/_search?pretty" -H 'Content-Type: application/json' -d'
 {
@@ -41,6 +44,7 @@ curl -X GET "localhost:9200/orders/_search?pretty" -H 'Content-Type: application
 ```
 
 **5. Find pending orders:**
+
 ```bash
 curl -X GET "localhost:9200/orders/_search?pretty" -H 'Content-Type: application/json' -d'
 {
@@ -67,6 +71,7 @@ curl -X GET "localhost:9200/orders/_search?pretty" -H 'Content-Type: application
 ## Step 3: Basic Aggregations
 
 **2. Count orders by customer:**
+
 ```bash
 curl -X GET "localhost:9200/orders/_search?pretty" -H 'Content-Type: application/json' -d'
 {
@@ -82,6 +87,7 @@ curl -X GET "localhost:9200/orders/_search?pretty" -H 'Content-Type: application
 ```
 
 **3. Calculate average order price:**
+
 ```bash
 curl -X GET "localhost:9200/orders/_search?pretty" -H 'Content-Type: application/json' -d'
 {
@@ -97,6 +103,7 @@ curl -X GET "localhost:9200/orders/_search?pretty" -H 'Content-Type: application
 ```
 
 **4. Get total sales (sum of all prices):**
+
 ```bash
 curl -X GET "localhost:9200/orders/_search?pretty" -H 'Content-Type: application/json' -d'
 {
@@ -112,6 +119,7 @@ curl -X GET "localhost:9200/orders/_search?pretty" -H 'Content-Type: application
 ```
 
 **5. Get price statistics (min, max, avg, sum):**
+
 ```bash
 curl -X GET "localhost:9200/orders/_search?pretty" -H 'Content-Type: application/json' -d'
 {
@@ -127,6 +135,7 @@ curl -X GET "localhost:9200/orders/_search?pretty" -H 'Content-Type: application
 ```
 
 **6. Count orders by status:**
+
 ```bash
 curl -X GET "localhost:9200/orders/_search?pretty" -H 'Content-Type: application/json' -d'
 {
@@ -144,6 +153,7 @@ curl -X GET "localhost:9200/orders/_search?pretty" -H 'Content-Type: application
 ## Step 4: Combined Queries and Aggregations
 
 **1. Find Electronics orders AND get their average price:**
+
 ```bash
 curl -X GET "localhost:9200/orders/_search?pretty" -H 'Content-Type: application/json' -d'
 {
@@ -163,6 +173,7 @@ curl -X GET "localhost:9200/orders/_search?pretty" -H 'Content-Type: application
 ```
 
 **2. Get Alice orders AND count them by category:**
+
 ```bash
 curl -X GET "localhost:9200/orders/_search?pretty" -H 'Content-Type: application/json' -d'
 {
@@ -184,6 +195,7 @@ curl -X GET "localhost:9200/orders/_search?pretty" -H 'Content-Type: application
 ## Step 5: Advanced Aggregations
 
 **1. Average price per category:**
+
 ```bash
 curl -X GET "localhost:9200/orders/_search?pretty" -H 'Content-Type: application/json' -d'
 {
@@ -206,6 +218,7 @@ curl -X GET "localhost:9200/orders/_search?pretty" -H 'Content-Type: application
 ```
 
 **2. Total sales per customer:**
+
 ```bash
 curl -X GET "localhost:9200/orders/_search?pretty" -H 'Content-Type: application/json' -d'
 {
@@ -228,6 +241,7 @@ curl -X GET "localhost:9200/orders/_search?pretty" -H 'Content-Type: application
 ```
 
 **3. Price ranges (buckets):**
+
 ```bash
 curl -X GET "localhost:9200/orders/_search?pretty" -H 'Content-Type: application/json' -d'
 {
@@ -250,6 +264,7 @@ curl -X GET "localhost:9200/orders/_search?pretty" -H 'Content-Type: application
 ## Basic Exercise Answers
 
 **1. Orders over $100:**
+
 ```bash
 curl -X GET "localhost:9200/orders/_search?pretty" -H 'Content-Type: application/json' -d'
 {
@@ -262,6 +277,7 @@ curl -X GET "localhost:9200/orders/_search?pretty" -H 'Content-Type: application
 ```
 
 **2. Delivered orders by Bob:**
+
 ```bash
 curl -X GET "localhost:9200/orders/_search?pretty" -H 'Content-Type: application/json' -d'
 {
@@ -277,6 +293,7 @@ curl -X GET "localhost:9200/orders/_search?pretty" -H 'Content-Type: application
 ```
 
 **3. Most expensive order:**
+
 ```bash
 curl -X GET "localhost:9200/orders/_search?pretty" -H 'Content-Type: application/json' -d'
 {
@@ -293,6 +310,7 @@ curl -X GET "localhost:9200/orders/_search?pretty" -H 'Content-Type: application
 Run the "Total sales per customer" aggregation from Step 5 above and look at the results. Alice spent the most with $1625.97 total.
 
 **5. Average price of pending orders:**
+
 ```bash
 curl -X GET "localhost:9200/orders/_search?pretty" -H 'Content-Type: application/json' -d'
 {
@@ -308,6 +326,7 @@ curl -X GET "localhost:9200/orders/_search?pretty" -H 'Content-Type: application
 ```
 
 **6. Challenge - Electronics orders under $200 with total sales:**
+
 ```bash
 curl -X GET "localhost:9200/orders/_search?pretty" -H 'Content-Type: application/json' -d'
 {
@@ -332,6 +351,7 @@ curl -X GET "localhost:9200/orders/_search?pretty" -H 'Content-Type: application
 ## Open-Ended Challenge Answers
 
 **1. Which category generates the most revenue?**
+
 ```bash
 curl -X GET "localhost:9200/orders/_search?pretty" -H 'Content-Type: application/json' -d'
 {
@@ -352,6 +372,7 @@ curl -X GET "localhost:9200/orders/_search?pretty" -H 'Content-Type: application
 ```
 
 **2. What's the average order value per customer?**
+
 ```bash
 curl -X GET "localhost:9200/orders/_search?pretty" -H 'Content-Type: application/json' -d'
 {
@@ -372,6 +393,7 @@ curl -X GET "localhost:9200/orders/_search?pretty" -H 'Content-Type: application
 ```
 
 **3. How many items (total quantity) have been ordered across all orders?**
+
 ```bash
 curl -X GET "localhost:9200/orders/_search?pretty" -H 'Content-Type: application/json' -d'
 {
@@ -385,6 +407,7 @@ curl -X GET "localhost:9200/orders/_search?pretty" -H 'Content-Type: application
 ```
 
 **4. What percentage of orders are in each status?**
+
 ```bash
 curl -X GET "localhost:9200/orders/_search?pretty" -H 'Content-Type: application/json' -d'
 {
@@ -401,6 +424,7 @@ curl -X GET "localhost:9200/orders/_search?pretty" -H 'Content-Type: application
 *Note: To get percentages, you'd need to calculate them from the doc_count values returned by this aggregation.*
 
 **5. Which price range ($0-25, $25-100, $100+) has the most orders?**
+
 ```bash
 curl -X GET "localhost:9200/orders/_search?pretty" -H 'Content-Type: application/json' -d'
 {
@@ -425,6 +449,7 @@ curl -X GET "localhost:9200/orders/_search?pretty" -H 'Content-Type: application
 ## Additional Sample Aggregations
 
 **1. Total quantity of items sold:**
+
 ```bash
 curl -X GET "localhost:9200/orders/_search?pretty" -H 'Content-Type: application/json' -d'
 {
@@ -440,6 +465,7 @@ curl -X GET "localhost:9200/orders/_search?pretty" -H 'Content-Type: application
 ```
 
 **2. Top 3 customers by total spending:**
+
 ```bash
 curl -X GET "localhost:9200/orders/_search?pretty" -H 'Content-Type: application/json' -d'
 {
@@ -466,6 +492,7 @@ curl -X GET "localhost:9200/orders/_search?pretty" -H 'Content-Type: application
 ```
 
 **3. Date histogram - orders per day:**
+
 ```bash
 curl -X GET "localhost:9200/orders/_search?pretty" -H 'Content-Type: application/json' -d'
 {
@@ -482,6 +509,7 @@ curl -X GET "localhost:9200/orders/_search?pretty" -H 'Content-Type: application
 ```
 
 **4. Extended price statistics with percentiles:**
+
 ```bash
 curl -X GET "localhost:9200/orders/_search?pretty" -H 'Content-Type: application/json' -d'
 {
