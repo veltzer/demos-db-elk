@@ -1,4 +1,4 @@
-# Elasticsearch: Parent-Child Relationship Exercise
+# Parent-Child Relationship Exercise
 
 ## Understanding Parent-Child Relationships
 

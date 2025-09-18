@@ -142,7 +142,7 @@ def main():
             f.write(json.dumps(record) + '\n')
     
     print(f"Generated {len(data)} records and saved to {args.output}")
-    print(f"To import into Elasticsearch:")
+    print(f"To import into Elasticsearch use:")
     os.system(f"curl -X POST 'localhost:9200/sample-data/_bulk' -H 'Content-Type: application/json' --data-binary @{args.output}")
 
 if __name__ == '__main__':

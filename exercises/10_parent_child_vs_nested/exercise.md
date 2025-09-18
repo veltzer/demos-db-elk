@@ -1,4 +1,4 @@
-# Elasticsearch: Nested vs Parent-Child Comparison Exercise
+# Nested vs Parent-Child Comparison Exercise
 
 ## Understanding the Trade-offs
 

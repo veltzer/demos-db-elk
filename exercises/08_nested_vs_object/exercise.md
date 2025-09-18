@@ -1,4 +1,4 @@
-# Elasticsearch: Nested Fields vs Objects
+# Nested Fields vs Objects
 
 ## Understanding the Difference
 

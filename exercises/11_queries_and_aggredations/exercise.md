@@ -1,4 +1,4 @@
-# Elasticsearch: Queries and Aggregations Exercise
+# Queries and Aggregations Exercise
 
 ## Understanding Queries vs Aggregations
 
