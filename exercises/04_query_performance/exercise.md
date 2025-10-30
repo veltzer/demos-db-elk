@@ -32,10 +32,12 @@ This creates two indices:
 ### Exercise 2.1: Basic Query Timing
 
 ```python
+#!/usr/bin/env python
+
 import time
 from elasticsearch import Elasticsearch
 
-es = Elasticsearch(['http://localhost:9200'])
+es = Elasticsearch("http://localhost:9200")
 
 def measure_query_time(index_name, query_body, runs=5):
     """Measure query execution time over multiple runs"""
@@ -49,21 +51,21 @@ def measure_query_time(index_name, query_body, runs=5):
         elapsed_ms = (end - start) * 1000
         times.append(elapsed_ms)
         
-        # Also get Elasticsearch's internal took time
-        es_took = result.get('took', 0)
+        # Also get Elasticsearchs internal took time
+        es_took = result.get("took", 0)
         
         if i == 0:  # Print first result details
-            print(f"  Hits: {result['hits']['total']['value']}")
+            print(f"  Hits: {result["hits"]["total"]["value"]}")
         
     avg_time = sum(times) / len(times)
     min_time = min(times)
     max_time = max(times)
     
     return {
-        'avg_ms': avg_time,
-        'min_ms': min_time,
-        'max_ms': max_time,
-        'times': times
+        "avg_ms": avg_time,
+        "min_ms": min_time,
+        "max_ms": max_time,
+        "times": times
     }
 
 # Test 1: Search on indexed field
@@ -79,18 +81,18 @@ query_indexed = {
 }
 
 print("Index: users_indexed")
-result = measure_query_time('users_indexed', query_indexed)
-print(f"  Average: {result['avg_ms']:.2f}ms")
-print(f"  Min: {result['min_ms']:.2f}ms, Max: {result['max_ms']:.2f}ms")
+result = measure_query_time("users_indexed", query_indexed)
+print(f"  Average: {result[\"avg_ms\"]:.2f}ms")
+print(f"  Min: {result[\"min_ms\"]:.2f}ms, Max: {result[\"max_ms\"]:.2f}ms")
 ```
 
 ### Exercise 2.2: Compare Indexed vs Non-Indexed Fields
 
 ```python
-def compare_field_performance(field_name, search_value, query_type='term'):
+def compare_field_performance(field_name, search_value, query_type="term"):
     """Compare query performance between indexed and non-indexed versions"""
     
-    if query_type == 'term':
+    if query_type == "term":
         query = {
             "query": {
                 "term": {
@@ -98,7 +100,7 @@ def compare_field_performance(field_name, search_value, query_type='term'):
                 }
             }
         }
-    elif query_type == 'range':
+    elif query_type == "range":
         query = {
             "query": {
                 "range": {
@@ -106,7 +108,7 @@ def compare_field_performance(field_name, search_value, query_type='term'):
                 }
             }
         }
-    elif query_type == 'match':
+    elif query_type == "match":
         query = {
             "query": {
                 "match": {
@@ -122,8 +124,8 @@ def compare_field_performance(field_name, search_value, query_type='term'):
     # Test on indexed version
     try:
         print("users_indexed (field IS indexed):")
-        indexed_result = measure_query_time('users_indexed', query, runs=10)
-        print(f"  Average: {indexed_result['avg_ms']:.2f}ms")
+        indexed_result = measure_query_time("users_indexed", query, runs=10)
+        print(f"  Average: {indexed_result[\"avg_ms\"]:.2f}ms")
     except Exception as e:
         print(f"  Error: {e}")
         indexed_result = None
@@ -131,8 +133,8 @@ def compare_field_performance(field_name, search_value, query_type='term'):
     # Test on non-indexed version
     try:
         print("\nusers_non_indexed (field NOT indexed):")
-        non_indexed_result = measure_query_time('users_non_indexed', query, runs=10)
-        print(f"  Average: {non_indexed_result['avg_ms']:.2f}ms")
+        non_indexed_result = measure_query_time(\"users_non_indexed\", query, runs=10)
+        print(f"  Average: {non_indexed_result[\"avg_ms\"]:.2f}ms")
     except Exception as e:
         print(f"  Error: Cannot search on non-indexed field!")
         print(f"  {str(e)[:100]}...")
@@ -264,7 +266,7 @@ agg_query_non_indexed_field = {
     }
 }
 
-print("\nAggregation on non-indexed field (email) in users_non_indexed:")
+print("Aggregation on non-indexed field (email) in users_non_indexed:")
 try:
     result = measure_aggregation_performance('users_non_indexed', agg_query_non_indexed_field)
     print(f"  ES took: {result['es_took_ms']}ms")
@@ -340,6 +342,8 @@ print(f"  Throughput: {result['docs_per_second']:.0f} docs/second")
 ### Exercise 3.1: Concurrent Query Performance
 
 ```python
+#!/usr/bin/env python
+
 import concurrent.futures
 import statistics
 
