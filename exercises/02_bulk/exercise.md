@@ -51,7 +51,7 @@ python generate_data.py --products 50000 --customers 10000 --orders 100000
 
 ```bash
 # Compare indexed vs non-indexed performance
-python bulk_insert.py --data-file ./data/products.ndjson
+python bulk_insert.py --data-file ./data/bulk_products.json
 
 # Test only indexed configuration
 python bulk_insert.py --test-type indexed
@@ -154,7 +154,7 @@ If you get connection errors:
 systemctl status elasticsearch
 
 # Test connection
-curl -X GET "localhost:9200" -u elastic:changeme
+curl -X GET "http://localhost:9200"
 ```
 
 ### Memory Issues
