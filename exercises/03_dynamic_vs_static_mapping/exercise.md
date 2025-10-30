@@ -301,6 +301,18 @@ print(f"Active users count: {agg_result["aggregations"]["active_count"]["value"]
 ### Exercise 4.1: Multi-fields
 
 ```python
+#!/usr/bin/env python
+
+from elasticsearch import Elasticsearch
+from datetime import datetime
+
+# Connect to Elasticsearch
+es = Elasticsearch(["http://localhost:9200"])
+
+# Delete index if it exists
+if es.indices.exists(index="dynamic_test"):
+    es.indices.delete(index="dynamic_test")
+
 # Search using the main text field
 es.search(
     index="static_test",
@@ -331,6 +343,18 @@ es.search(
 ### Exercise 4.2: Disable Dynamic Mapping
 
 ```python
+#!/usr/bin/env python
+
+from elasticsearch import Elasticsearch
+from datetime import datetime
+
+# Connect to Elasticsearch
+es = Elasticsearch(["http://localhost:9200"])
+
+# Delete index if it exists
+if es.indices.exists(index="dynamic_test"):
+    es.indices.delete(index="dynamic_test")
+
 # Create index with dynamic mapping disabled
 strict_mapping = {
     "mappings": {
