@@ -11,7 +11,7 @@ if es.indices.exists(index="dynamic_test"):
     es.indices.delete(index="dynamic_test")
 
 # Search using the main text field
-es.search(
+print(es.search(
     index="static_test",
     body={
         "query": {
@@ -20,10 +20,10 @@ es.search(
             }
         }
     }
-)
+))
 
 # Search using the keyword sub-field
-es.search(
+print(es.search(
     index="static_test",
     body={
         "query": {
@@ -32,4 +32,4 @@ es.search(
             }
         }
     }
-)
+))
