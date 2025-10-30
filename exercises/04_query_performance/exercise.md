@@ -7,6 +7,7 @@ Learn how to measure Elasticsearch query performance and understand the impact o
 - Python 3.x with modules: `elasticsearch`, `faker`
 - Elasticsearch running on http://localhost:9200
 - Install required modules:
+
 ```bash
 pip install elasticsearch faker
 ```
