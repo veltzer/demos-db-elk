@@ -201,6 +201,18 @@ print(f"Indexed {len(documents)} documents")
 ### Exercise 3.1: Text vs Keyword Fields
 
 ```python
+#!/usr/bin/env python
+
+from elasticsearch import Elasticsearch
+from datetime import datetime
+
+# Connect to Elasticsearch
+es = Elasticsearch(["http://localhost:9200"])
+
+# Delete index if it exists
+if es.indices.exists(index="dynamic_test"):
+    es.indices.delete(index="dynamic_test")
+
 # Search on text field (analyzed)
 text_search = es.search(
     index="static_test",
