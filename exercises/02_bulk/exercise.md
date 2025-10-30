@@ -51,7 +51,7 @@ python generate_data.py --products 50000 --customers 10000 --orders 100000
 
 ```bash
 # Compare indexed vs non-indexed performance
-python bulk_insert.py --data-file data/bulk_products.json
+python bulk_insert.py --data-file data/products_bulk.json
 
 # Test only indexed configuration
 python bulk_insert.py --test-type indexed
