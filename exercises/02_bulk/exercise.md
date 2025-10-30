@@ -29,7 +29,7 @@ pip install elasticsearch faker matplotlib numpy
 
 ```bash
 # Check Elasticsearch status
-curl -X GET "localhost:9200" -u elastic:changeme
+curl -X GET "http://localhost:9200"
 ```
 
 ## Quick Start
@@ -51,7 +51,7 @@ python generate_data.py --products 50000 --customers 10000 --orders 100000
 
 ```bash
 # Compare indexed vs non-indexed performance
-python bulk_insert.py --data-file ./data/bulk_products.json
+python bulk_insert.py --data-file data/bulk_products.json
 
 # Test only indexed configuration
 python bulk_insert.py --test-type indexed
