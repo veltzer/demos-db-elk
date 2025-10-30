@@ -61,6 +61,12 @@ print(mapping)
 ```python
 #!/usr/bin/env python
 
+from elasticsearch import Elasticsearch
+from datetime import datetime
+
+# Connect to Elasticsearch
+es = Elasticsearch(["http://localhost:9200"])
+
 # Try to index a document with conflicting field type
 doc2 = {
     "name": "Jane Smith",
@@ -314,7 +320,7 @@ if es.indices.exists(index="dynamic_test"):
     es.indices.delete(index="dynamic_test")
 
 # Search using the main text field
-es.search(
+print(es.search(
     index="static_test",
     body={
         "query": {
@@ -323,10 +329,10 @@ es.search(
             }
         }
     }
-)
+))
 
 # Search using the keyword sub-field
-es.search(
+print(es.search(
     index="static_test",
     body={
         "query": {
@@ -335,7 +341,7 @@ es.search(
             }
         }
     }
-)
+))
 ```
 
 **Task:** Compare the results of searching on `name` vs `name.keyword`.
