@@ -85,6 +85,12 @@ except Exception as e:
 ```python
 #!/usr/bin/env python
 
+from elasticsearch import Elasticsearch
+from datetime import datetime
+
+# Connect to Elasticsearch
+es = Elasticsearch(["http://localhost:9200"])
+
 # Delete index if it exists
 if es.indices.exists(index="static_test"):
     es.indices.delete(index="static_test")
@@ -139,6 +145,18 @@ print(created_mapping)
 ### Exercise 2.2: Index Documents with Static Mapping
 
 ```python
+#!/usr/bin/env python
+
+from elasticsearch import Elasticsearch
+from datetime import datetime
+
+# Connect to Elasticsearch
+es = Elasticsearch(["http://localhost:9200"])
+
+# Delete index if it exists
+if es.indices.exists(index="dynamic_test"):
+    es.indices.delete(index="dynamic_test")
+
 # Index multiple documents
 documents = [
     {
