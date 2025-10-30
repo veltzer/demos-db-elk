@@ -1,5 +1,11 @@
 #!/usr/bin/env python
 
+from elasticsearch import Elasticsearch
+from datetime import datetime
+
+# Connect to Elasticsearch
+es = Elasticsearch(["http://localhost:9200"])
+
 # Try to index a document with conflicting field type
 doc2 = {
     "name": "Jane Smith",
