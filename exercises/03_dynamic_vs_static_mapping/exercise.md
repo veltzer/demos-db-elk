@@ -25,29 +25,31 @@ Learn the differences between dynamic and static mappings in Elasticsearch and u
 ### Exercise 1.1: Observe Dynamic Mapping Behavior
 
 ```python
+#!/usr/bin/env python
+
 from elasticsearch import Elasticsearch
 from datetime import datetime
 
 # Connect to Elasticsearch
-es = Elasticsearch(['http://localhost:9200'])
+es = Elasticsearch(["http://localhost:9200"])
 
 # Delete index if it exists
-if es.indices.exists(index='dynamic_test'):
-    es.indices.delete(index='dynamic_test')
+if es.indices.exists(index="dynamic_test"):
+    es.indices.delete(index="dynamic_test")
 
 # Index a document without defining mapping
 doc1 = {
-    'name': 'John Doe',
-    'age': 30,
-    'joined_date': '2024-01-15',
-    'is_active': True,
-    'score': 95.5
+    "name": "John Doe",
+    "age": 30,
+    "joined_date": "2024-01-15",
+    "is_active": True,
+    "score": 95.5
 }
 
-es.index(index='dynamic_test', id=1, body=doc1)
+es.index(index="dynamic_test", id=1, body=doc1)
 
 # Check the dynamically created mapping
-mapping = es.indices.get_mapping(index='dynamic_test')
+mapping = es.indices.get_mapping(index="dynamic_test")
 print("Dynamic Mapping Created:")
 print(mapping)
 ```
@@ -57,17 +59,19 @@ print(mapping)
 ### Exercise 1.2: Dynamic Mapping Conflicts
 
 ```python
+#!/usr/bin/env python
+
 # Try to index a document with conflicting field type
 doc2 = {
-    'name': 'Jane Smith',
-    'age': 'thirty',  # This will cause an error - age was mapped as long
-    'joined_date': '2024-02-20',
-    'is_active': True,
-    'score': 88.0
+    "name": "Jane Smith",
+    "age": "thirty",  # This will cause an error - age was mapped as long
+    "joined_date": "2024-02-20",
+    "is_active": True,
+    "score": 88.0
 }
 
 try:
-    es.index(index='dynamic_test', id=2, body=doc2)
+    es.index(index="dynamic_test", id=2, body=doc2)
 except Exception as e:
     print(f"Error: {e}")
 ```
@@ -79,51 +83,53 @@ except Exception as e:
 ### Exercise 2.1: Create Static Mapping
 
 ```python
+#!/usr/bin/env python
+
 # Delete index if it exists
-if es.indices.exists(index='static_test'):
-    es.indices.delete(index='static_test')
+if es.indices.exists(index="static_test"):
+    es.indices.delete(index="static_test")
 
 # Define explicit mapping
 mapping = {
-    'mappings': {
-        'properties': {
-            'name': {
-                'type': 'text',
-                'fields': {
-                    'keyword': {
-                        'type': 'keyword'
+    "mappings": {
+        "properties": {
+            "name": {
+                "type": "text",
+                "fields": {
+                    "keyword": {
+                        "type": "keyword"
                     }
                 }
             },
-            'age': {
-                'type': 'integer'
+            "age": {
+                "type": "integer"
             },
-            'joined_date': {
-                'type': 'date',
-                'format': 'yyyy-MM-dd'
+            "joined_date": {
+                "type": "date",
+                "format": "yyyy-MM-dd"
             },
-            'is_active': {
-                'type': 'boolean'
+            "is_active": {
+                "type": "boolean"
             },
-            'score': {
-                'type': 'float'
+            "score": {
+                "type": "float"
             },
-            'description': {
-                'type': 'text',
-                'analyzer': 'standard'
+            "description": {
+                "type": "text",
+                "analyzer": "standard"
             },
-            'tags': {
-                'type': 'keyword'
+            "tags": {
+                "type": "keyword"
             }
         }
     }
 }
 
 # Create index with static mapping
-es.indices.create(index='static_test', body=mapping)
+es.indices.create(index="static_test", body=mapping)
 
 # Verify the mapping
-created_mapping = es.indices.get_mapping(index='static_test')
+created_mapping = es.indices.get_mapping(index="static_test")
 print("Static Mapping Created:")
 print(created_mapping)
 ```
@@ -136,36 +142,36 @@ print(created_mapping)
 # Index multiple documents
 documents = [
     {
-        'name': 'Alice Johnson',
-        'age': 28,
-        'joined_date': '2024-01-10',
-        'is_active': True,
-        'score': 92.3,
-        'description': 'Senior developer with expertise in Python and Java',
-        'tags': ['python', 'java', 'backend']
+        "name": "Alice Johnson",
+        "age": 28,
+        "joined_date": "2024-01-10",
+        "is_active": True,
+        "score": 92.3,
+        "description": "Senior developer with expertise in Python and Java",
+        "tags": ["python", "java", "backend"]
     },
     {
-        'name': 'Bob Wilson',
-        'age': 35,
-        'joined_date': '2024-02-15',
-        'is_active': False,
-        'score': 87.5,
-        'description': 'DevOps engineer specializing in cloud infrastructure',
-        'tags': ['aws', 'docker', 'kubernetes']
+        "name": "Bob Wilson",
+        "age": 35,
+        "joined_date": "2024-02-15",
+        "is_active": False,
+        "score": 87.5,
+        "description": "DevOps engineer specializing in cloud infrastructure",
+        "tags": ["aws", "docker", "kubernetes"]
     },
     {
-        'name': 'Carol Martinez',
-        'age': 31,
-        'joined_date': '2024-03-01',
-        'is_active': True,
-        'score': 94.8,
-        'description': 'Full stack developer with React and Node.js experience',
-        'tags': ['react', 'nodejs', 'fullstack']
+        "name": "Carol Martinez",
+        "age": 31,
+        "joined_date": "2024-03-01",
+        "is_active": True,
+        "score": 94.8,
+        "description": "Full stack developer with React and Node.js experience",
+        "tags": ["react", "nodejs", "fullstack"]
     }
 ]
 
 for i, doc in enumerate(documents, 1):
-    es.index(index='static_test', id=i, body=doc)
+    es.index(index="static_test", id=i, body=doc)
 
 print(f"Indexed {len(documents)} documents")
 ```
@@ -179,35 +185,35 @@ print(f"Indexed {len(documents)} documents")
 ```python
 # Search on text field (analyzed)
 text_search = es.search(
-    index='static_test',
+    index="static_test",
     body={
-        'query': {
-            'match': {
-                'description': 'python developer'
+        "query": {
+            "match": {
+                "description": "python developer"
             }
         }
     }
 )
 
 print("Text field search results:")
-for hit in text_search['hits']['hits']:
-    print(f"- {hit['_source']['name']}: {hit['_source']['description']}")
+for hit in text_search["hits"]["hits"]:
+    print(f"- {hit["_source"]["name"]}: {hit["_source"]["description"]}")
 
 # Search on keyword field (exact match)
 keyword_search = es.search(
-    index='static_test',
+    index="static_test",
     body={
-        'query': {
-            'term': {
-                'tags': 'python'
+        "query": {
+            "term": {
+                "tags": "python"
             }
         }
     }
 )
 
 print("\nKeyword field search results:")
-for hit in keyword_search['hits']['hits']:
-    print(f"- {hit['_source']['name']}: {hit['_source']['tags']}")
+for hit in keyword_search["hits"]["hits"]:
+    print(f"- {hit["_source"]["name"]}: {hit["_source"]["tags"]}")
 ```
 
 **Task:** Run both searches and observe the difference between text and keyword field searches.
@@ -217,24 +223,24 @@ for hit in keyword_search['hits']['hits']:
 ```python
 # Aggregation on keyword field
 agg_result = es.search(
-    index='static_test',
+    index="static_test",
     body={
-        'size': 0,
-        'aggs': {
-            'popular_tags': {
-                'terms': {
-                    'field': 'tags',
-                    'size': 10
+        "size": 0,
+        "aggs": {
+            "popular_tags": {
+                "terms": {
+                    "field": "tags",
+                    "size": 10
                 }
             },
-            'avg_score': {
-                'avg': {
-                    'field': 'score'
+            "avg_score": {
+                "avg": {
+                    "field": "score"
                 }
             },
-            'active_count': {
-                'value_count': {
-                    'field': 'is_active'
+            "active_count": {
+                "value_count": {
+                    "field": "is_active"
                 }
             }
         }
@@ -242,9 +248,9 @@ agg_result = es.search(
 )
 
 print("Aggregation Results:")
-print(f"Popular tags: {agg_result['aggregations']['popular_tags']['buckets']}")
-print(f"Average score: {agg_result['aggregations']['avg_score']['value']}")
-print(f"Active users count: {agg_result['aggregations']['active_count']['value']}")
+print(f"Popular tags: {agg_result["aggregations"]["popular_tags"]["buckets"]}")
+print(f"Average score: {agg_result["aggregations"]["avg_score"]["value"]}")
+print(f"Active users count: {agg_result["aggregations"]["active_count"]["value"]}")
 ```
 
 **Task:** Run the aggregation and analyze the results.
@@ -256,11 +262,11 @@ print(f"Active users count: {agg_result['aggregations']['active_count']['value']
 ```python
 # Search using the main text field
 es.search(
-    index='static_test',
+    index="static_test",
     body={
-        'query': {
-            'match': {
-                'name': 'alice'  # Case-insensitive, analyzed
+        "query": {
+            "match": {
+                "name": "alice"  # Case-insensitive, analyzed
             }
         }
     }
@@ -268,11 +274,11 @@ es.search(
 
 # Search using the keyword sub-field
 es.search(
-    index='static_test',
+    index="static_test",
     body={
-        'query': {
-            'term': {
-                'name.keyword': 'Alice Johnson'  # Exact match required
+        "query": {
+            "term": {
+                "name.keyword": "Alice Johnson"  # Exact match required
             }
         }
     }
@@ -286,35 +292,35 @@ es.search(
 ```python
 # Create index with dynamic mapping disabled
 strict_mapping = {
-    'mappings': {
-        'dynamic': 'strict',  # Reject documents with unmapped fields
-        'properties': {
-            'title': {'type': 'text'},
-            'price': {'type': 'float'}
+    "mappings": {
+        "dynamic": "strict",  # Reject documents with unmapped fields
+        "properties": {
+            "title": {"type": "text"},
+            "price": {"type": "float"}
         }
     }
 }
 
-if es.indices.exists(index='strict_test'):
-    es.indices.delete(index='strict_test')
+if es.indices.exists(index="strict_test"):
+    es.indices.delete(index="strict_test")
 
-es.indices.create(index='strict_test', body=strict_mapping)
+es.indices.create(index="strict_test", body=strict_mapping)
 
 # Try to index document with unmapped field
 try:
     es.index(
-        index='strict_test',
+        index="strict_test",
         body={
-            'title': 'Product A',
-            'price': 29.99,
-            'category': 'Electronics'  # This field is not mapped
+            "title": "Product A",
+            "price": 29.99,
+            "category": "Electronics"  # This field is not mapped
         }
     )
 except Exception as e:
     print(f"Error with strict mapping: {e}")
 ```
 
-**Task:** Observe what happens when trying to index a document with unmapped fields when dynamic mapping is set to 'strict'.
+**Task:** Observe what happens when trying to index a document with unmapped fields when dynamic mapping is set to "strict".
 
 ## Challenges
 
@@ -356,7 +362,7 @@ Research and implement dynamic templates to automatically map fields based on na
 2. When would you choose dynamic mapping over static mapping?
 3. What is the purpose of multi-fields in Elasticsearch?
 4. How can you prevent mapping conflicts in production?
-5. What are the implications of changing a field's mapping after data has been indexed?
+5. What are the implications of changing a fields mapping after data has been indexed?
 
 ## Resources
 
