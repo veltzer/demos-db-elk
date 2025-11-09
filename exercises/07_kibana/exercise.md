@@ -66,16 +66,29 @@ curl -X POST "localhost:9200/sample-data/_bulk" -H 'Content-Type: application/js
 Write KQL queries for the following:
 
 1. **Web Traffic Analysis:**
-   ```
+   ```KQL
    data_type: "web_log" AND status_code: 404
+   ```
+
+   ```KQL
    data_type: "web_log" AND response_time_ms > 1000
+   ```
+
+   This is in Lucene syntax (can be toggled to instead of KQL syntax)
+   ```LUCENE
    data_type: "web_log" AND method: "POST" AND status_code: [200 TO 299]
    ```
 
 2. **E-commerce Insights:**
-   ```
+   ```KQL
    data_type: "ecommerce" AND total_amount > 100
+   ```
+
+   ```KQL
    data_type: "ecommerce" AND product_category: "Electronics" AND payment_method: "credit_card"
+   ```
+
+   ```LUCENE
    data_type: "ecommerce" AND customer_age: [25 TO 35] AND is_mobile: true
    ```
 
