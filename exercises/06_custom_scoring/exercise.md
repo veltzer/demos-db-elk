@@ -102,6 +102,10 @@ print(f"Indexed {len(products)} products")
 ### Exercise 1.2: Simple Field Value Factor
 
 ```python
+from elasticsearch import Elasticsearch
+
+es = Elasticsearch(["http://localhost:9200"])
+
 # Boost by popularity (view_count)
 def search_with_popularity_boost(query_text):
     query = {
@@ -126,7 +130,7 @@ def search_with_popularity_boost(query_text):
     
     result = es.search(index="products", body=query)
     
-    print(f"\nSearch: "{query_text}" with popularity boost")
+    print(f"\nSearch: \"{query_text}\" with popularity boost")
     print("-" * 50)
     for hit in result["hits"]["hits"]:
         product = hit["_source"]
@@ -141,6 +145,10 @@ search_with_popularity_boost("quality features")
 ### Exercise 1.3: Multiple Scoring Functions
 
 ```python
+from elasticsearch import Elasticsearch
+
+es = Elasticsearch(["http://localhost:9200"])
+
 # Combine multiple scoring factors
 def multi_factor_search(query_text):
     query = {
@@ -190,9 +198,9 @@ def multi_factor_search(query_text):
     
     result = es.search(index="products", body=query)
     
-    print(f"\nMulti-factor search: "{query_text}"")
+    print(f"\nMulti-factor search: \"{query_text}\"")
     print("-" * 60)
-    print(f"{"Score":<10} {"Rating":<8} {"Reviews":<10} {"Featured":<10} {"Name"}")
+    print(f"{'Score':<10} {'Rating':<8} {'Reviews':<10} {'Featured':<10} {'Name'}")
     print("-" * 60)
     
     for hit in result["hits"]["hits"]:
@@ -210,6 +218,11 @@ multi_factor_search("excellent value")
 ### Exercise 2.1: Gauss Decay for Recency
 
 ```python
+from elasticsearch import Elasticsearch
+from datetime import datetime
+
+es = Elasticsearch(["http://localhost:9200"])
+
 # Boost recent products using Gaussian decay
 def search_with_recency_boost(query_text):
     query = {
@@ -241,7 +254,7 @@ def search_with_recency_boost(query_text):
     
     result = es.search(index="products", body=query)
     
-    print(f"\nRecency-boosted search: "{query_text}"")
+    print(f"\nRecency-boosted search: \"{query_text}\"")
     print("-" * 50)
     for hit in result["hits"]["hits"]:
         p = hit["_source"]
@@ -256,6 +269,10 @@ search_with_recency_boost("product features")
 ### Exercise 2.2: Geographic Distance Decay
 
 ```python
+from elasticsearch import Elasticsearch
+
+es = Elasticsearch(["http://localhost:9200"])
+
 # Boost products based on proximity to user location
 def search_by_proximity(query_text, user_location):
     query = {
@@ -302,6 +319,10 @@ search_by_proximity("quality", {"lat": 40.7, "lon": -74.0})
 ### Exercise 2.3: Price Decay for Budget Matching
 
 ```python
+from elasticsearch import Elasticsearch
+
+es = Elasticsearch(["http://localhost:9200"])
+
 # Boost products near a target price point
 def search_with_price_preference(query_text, target_price, price_flexibility):
     query = {
@@ -349,6 +370,10 @@ search_with_price_preference("product", target_price=100, price_flexibility=30)
 ### Exercise 3.1: Custom Script Score
 
 ```python
+from elasticsearch import Elasticsearch
+
+es = Elasticsearch(["http://localhost:9200"])
+
 # Use Painless script for complex scoring logic
 def search_with_script_score(query_text):
     query = {
@@ -413,6 +438,10 @@ search_with_script_score("excellent features")
 ### Exercise 3.2: Script with Parameters
 
 ```python
+from elasticsearch import Elasticsearch
+
+es = Elasticsearch(["http://localhost:9200"])
+
 # Parameterized script for flexible scoring
 def search_with_params(query_text, user_preferences):
     query = {
@@ -494,6 +523,10 @@ search_with_params("quality product", premium_shopper)
 ### Exercise 4.1: Random Score for A/B Testing
 
 ```python
+from elasticsearch import Elasticsearch
+
+es = Elasticsearch(["http://localhost:9200"])
+
 # Random scoring for result variation
 def search_with_randomization(query_text, user_id):
     query = {
@@ -550,6 +583,10 @@ search_with_randomization("product", user_id=67890)
 ### Exercise 5.1: E-commerce Recommendation Score
 
 ```python
+from elasticsearch import Elasticsearch
+
+es = Elasticsearch(["http://localhost:9200"])
+
 def advanced_ecommerce_scoring(query_text, user_context):
     """
     Complex scoring for e-commerce with:
@@ -679,6 +716,10 @@ advanced_ecommerce_scoring("premium", vip_user)
 ### Exercise 5.2: Click-Through Rate (CTR) Optimization
 
 ```python
+from elasticsearch import Elasticsearch
+
+es = Elasticsearch(["http://localhost:9200"])
+
 # Scoring based on historical click-through rates
 def ctr_optimized_search(query_text):
     # First, update some products with CTR data
@@ -771,7 +812,10 @@ ctr_optimized_search("quality product")
 ### Exercise 6.1: Scoring Performance Comparison
 
 ```python
+from elasticsearch import Elasticsearch
 import time
+
+es = Elasticsearch(["http://localhost:9200"])
 
 def compare_scoring_performance():
     """Compare performance of different scoring strategies"""
