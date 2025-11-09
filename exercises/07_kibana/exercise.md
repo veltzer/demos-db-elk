@@ -73,6 +73,10 @@ Write KQL queries for the following:
    ```KQL
    data_type: "web_log" AND response_time_ms > 1000
    ```
+   
+   ```KQL
+   data_type: "web_log" AND method: "POST" AND status_code >=200 AND status_cdode <= 299
+   ```
 
    This is in Lucene syntax (can be toggled to instead of KQL syntax)
    ```LUCENE
