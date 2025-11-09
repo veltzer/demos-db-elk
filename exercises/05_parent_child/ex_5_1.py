@@ -1,7 +1,6 @@
 #!/bin/env python
 
 from elasticsearch import Elasticsearch
-
 es = Elasticsearch(["http://localhost:9200"])
 
 # Create an e-commerce scenario with products and reviews
