@@ -1,5 +1,6 @@
-from elasticsearch import Elasticsearch
+#!/bin/env python
 
+from elasticsearch import Elasticsearch
 es = Elasticsearch(["http://localhost:9200"])
 
 # Index blog posts (parent documents)
