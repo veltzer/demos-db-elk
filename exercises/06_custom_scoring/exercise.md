@@ -1,4 +1,4 @@
-# Exercise 11: Custom Scoring Functions with function_score Queries
+# Custom Scoring Functions with function_score Queries
 
 ## Objective
 Learn how to implement custom scoring algorithms in Elasticsearch using function_score queries to boost relevance based on business requirements.

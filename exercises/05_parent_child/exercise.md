@@ -1,4 +1,4 @@
-# Exercise 7: Parent-Child Relationship Model for Hierarchical Data
+# Parent-Child Relationship Model for Hierarchical Data
 
 ## Objective
 Learn how to model hierarchical relationships in Elasticsearch using parent-child joins, understand their use cases, performance implications, and query patterns.

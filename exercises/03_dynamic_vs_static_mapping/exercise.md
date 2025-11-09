@@ -1,4 +1,4 @@
-# Exercise: Dynamic vs Static Mappings in Elasticsearch
+# Dynamic vs Static Mappings in Elasticsearch
 
 ## Objective
 Learn the differences between dynamic and static mappings in Elasticsearch and understand when to use each approach.

@@ -1,4 +1,4 @@
-# Exercise: Query Performance and Indexing in Elasticsearch
+# Query Performance and Indexing in Elasticsearch
 
 ## Objective
 Learn how to measure Elasticsearch query performance and understand the impact of field indexing on query speed.
