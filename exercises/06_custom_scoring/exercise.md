@@ -419,9 +419,9 @@ def search_with_script_score(query_text):
     
     result = es.search(index="products", body=query)
     
-    print(f"\nScript-scored search: "{query_text}"")
+    print(f"\nScript-scored search: \"{query_text}\"")
     print("-" * 80)
-    print(f"{"Score":<12} {"Rating":<8} {"Reviews":<10} {"Sales":<10} {"Conv Rate":<12} {"Name"}")
+    print(f"{'Score':<12} {'Rating':<8} {'Reviews':<10} {'Sales':<10} {'Conv Rate':<12} {'Name'}")
     print("-" * 80)
     
     for hit in result["hits"]["hits"]:
@@ -684,10 +684,10 @@ def advanced_ecommerce_scoring(query_text, user_context):
     result = es.search(index="products", body=query)
     
     print(f"\nAdvanced E-commerce Scoring")
-    print(f"Query: "{query_text}"")
+    print(f"Query: \"{query_text}\"")
     print(f"User Context: {user_context}")
     print("-" * 80)
-    print(f"{"Score":<10} {"Price":<10} {"Rating":<10} {"Reviews":<10} {"Margin":<10} {"Stock":<10} {"Name"}")
+    print(f"{'Score':<10} {'Price':<10} {'Rating':<10} {'Reviews':<10} {'Margin':<10} {'Stock':<10} {'Name'}")
     print("-" * 80)
     
     for hit in result["hits"]["hits"]:
@@ -793,7 +793,7 @@ def ctr_optimized_search(query_text):
     
     result = es.search(index="products", body=query)
     
-    print(f"\nCTR-Optimized Search: "{query_text}"")
+    print(f"\nCTR-Optimized Search: \"{query_text}\"")
     print("-" * 60)
     for hit in result["hits"]["hits"]:
         p = hit["_source"]
@@ -872,7 +872,7 @@ def compare_scoring_performance():
     
     print("\nScoring Performance Comparison")
     print("-" * 60)
-    print(f"{"Query Type":<25} {"Avg Time (ms)":<15} {"Results":<10}")
+    print(f"{'Query Type':<25} {'Avg Time (ms)':<15} {'Results':<10}")
     print("-" * 60)
     
     for query_config in queries:
@@ -935,8 +935,8 @@ print(best_practices)
 
 ## Summary Questions
 
-1. When should you use function_score vs regular queries?
-2. What"s the difference between boost_mode and score_mode?
+1. When should you use `function_score` vs regular queries?
+2. Whats the difference between `boost_mode` and `score_mode`?
 3. How do decay functions work and when to use each type?
 4. What are the performance implications of script scoring?
 5. How can you debug and optimize complex scoring functions?
