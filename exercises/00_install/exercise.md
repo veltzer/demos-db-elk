@@ -3,11 +3,12 @@
 ## Overview
 
 This exercise will guide you through installing Elasticsearch and Kibana on
-Linux using three different methods:
+Linux using four different methods:
 
 - APT Package Manager
 - Docker Compose
 - Direct Download (Archive)
+- Podman
 
 For each method, you'll learn how to:
 
