@@ -65,3 +65,9 @@ csv
 ctrl
 prev
 url
+hnsw
+knn
+neighbour
+neighbours
+normalised
+rrf
