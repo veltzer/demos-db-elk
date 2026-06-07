@@ -15,7 +15,7 @@ RED='\033[0;31m'
 NC='\033[0m' # No Color
 
 echo -e "\n${YELLOW}Step 1: Checking Elasticsearch connection...${NC}"
-curl -s -X GET "http://${ES_HOST}:${ES_PORT}" -u ${ES_USER}:${ES_PASSWORD} > /dev/null 2>&1
+curl -s -X GET "http://${ES_HOST}:${ES_PORT}" > /dev/null 2>&1
 if [ $? -eq 0 ]; then
     echo -e "${GREEN}✓ Elasticsearch is running${NC}"
 else
@@ -37,8 +37,6 @@ echo -e "\n${YELLOW}Step 3: Running bulk insert comparison test...${NC}"
 python bulk_insert.py \
     --host ${ES_HOST} \
     --port ${ES_PORT} \
-    --user ${ES_USER} \
-    --password ${ES_PASSWORD} \
     --data-file ./data/products.ndjson \
     --test-type compare
 
@@ -53,8 +51,6 @@ echo -e "\n${YELLOW}Step 4: Running comprehensive performance test...${NC}"
 python run_performance_test.py \
     --host ${ES_HOST} \
     --port ${ES_PORT} \
-    --user ${ES_USER} \
-    --password ${ES_PASSWORD} \
     --data-file ./data/products.ndjson \
     --test-sizes 500 1000 \
     --output-dir ./results

@@ -129,7 +129,7 @@ you might need:
 
 Try to write the queries yourself before looking at the answers document!
 
-### Experiment and Learn!
+### Experiment and Learn
 
 Try creating your own aggregations:
 

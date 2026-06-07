@@ -1,9 +1,14 @@
 # Kibana Exercise: Data Visualization and Analysis
 
 ## Overview
-This exercise will guide you through using Kibana to analyze and visualize data from multiple sources. You'll work with web logs, e-commerce transactions, system metrics, and application logs to create meaningful dashboards and perform various queries.
+
+This exercise will guide you through using Kibana to analyze and visualize data
+from multiple sources. You'll work with web logs, e-commerce transactions,
+system metrics, and application logs to create meaningful dashboards and perform
+various queries.
 
 ## Prerequisites
+
 - Elasticsearch and Kibana running locally
 - Python 3.x with `faker` library installed
 - Basic understanding of JSON and log formats
@@ -11,26 +16,29 @@ This exercise will guide you through using Kibana to analyze and visualize data 
 ## Setup
 
 ### 1. Install Dependencies
+
 ```bash
 pip install faker
 ```
 
 ### 2. Generate Sample Data
+
 See [`07_kibana_01.sh`](./07_kibana_01.sh)
 
-
 ### 3. Import Data into Elasticsearch
-See [`07_kibana_02.sh`](./07_kibana_02.sh)
 
+See [`07_kibana_02.sh`](./07_kibana_02.sh)
 
 ## Part 1: Basic Kibana Queries and Filters
 
 ### Exercise 1.1: Discover Data
-1. Open Kibana (http://localhost:5601)
-2. Go to **Discover** and create an index pattern for `sample-data`
-3. Set the time field to `timestamp`
+
+1. Open Kibana (<http://localhost:5601>)
+1. Go to **Discover** and create an index pattern for `sample-data`
+1. Set the time field to `timestamp`
 
 **Tasks:**
+
 - Explore the different data types by filtering on `data_type`
 - Find all HTTP 404 errors in web logs
 - Locate e-commerce transactions over $100
@@ -41,6 +49,7 @@ See [`07_kibana_02.sh`](./07_kibana_02.sh)
 Write KQL queries for the following:
 
 1. **Web Traffic Analysis:**
+
    ```KQL
    data_type: "web_log" AND status_code: 404
    ```
@@ -48,17 +57,19 @@ Write KQL queries for the following:
    ```KQL
    data_type: "web_log" AND response_time_ms > 1000
    ```
-   
+
    ```KQL
    data_type: "web_log" AND method: "POST" AND status_code >=200 AND status_cdode <= 299
    ```
 
    This is in Lucene syntax (can be toggled to instead of KQL syntax)
+
    ```LUCENE
    data_type: "web_log" AND method: "POST" AND status_code: [200 TO 299]
    ```
 
-2. **E-commerce Insights:**
+1. **E-commerce Insights:**
+
    ```KQL
    data_type: "ecommerce" AND total_amount > 100
    ```
@@ -71,14 +82,16 @@ Write KQL queries for the following:
    data_type: "ecommerce" AND customer_age: [25 TO 35] AND is_mobile: true
    ```
 
-3. **System Monitoring:**
+1. **System Monitoring:**
+
    ```
    data_type: "system_metrics" AND cpu_usage_percent > 80
    data_type: "system_metrics" AND memory_usage_percent > 70 AND cpu_usage_percent > 70
    server_name: "server-01" AND load_average > 2.0
    ```
 
-4. **Application Logs:**
+1. **Application Logs:**
+
    ```
    data_type: "application_log" AND level: "ERROR"
    service: "payment-service" AND duration_ms > 500
@@ -86,9 +99,10 @@ Write KQL queries for the following:
    ```
 
 ### Exercise 1.3: Time-based Filtering
+
 1. Filter data for the last 7 days
-2. Create a custom time range for specific dates
-3. Use relative time filters (e.g., "Last 4 hours", "Yesterday")
+1. Create a custom time range for specific dates
+1. Use relative time filters (e.g., "Last 4 hours", "Yesterday")
 
 ## Part 2: Visualizations
 
@@ -101,17 +115,17 @@ Create the following visualizations:
    - Field: `response_time_ms`
    - Filter: `data_type: "web_log"`
 
-2. **HTTP Status Codes**
+1. **HTTP Status Codes**
    - Chart type: Pie chart
    - Field: `status_code`
    - Filter: `data_type: "web_log"`
 
-3. **Traffic by Country**
+1. **Traffic by Country**
    - Chart type: Data table or World map
    - Field: `country`
    - Metric: Count of requests
 
-4. **Requests Over Time**
+1. **Requests Over Time**
    - Chart type: Line chart
    - X-axis: `timestamp` (Date histogram)
    - Y-axis: Count of documents
@@ -123,16 +137,16 @@ Create the following visualizations:
    - X-axis: `product_category`
    - Y-axis: Sum of `total_amount`
 
-2. **Payment Method Distribution**
+1. **Payment Method Distribution**
    - Chart type: Donut chart
    - Field: `payment_method`
 
-3. **Mobile vs Desktop Sales**
+1. **Mobile vs Desktop Sales**
    - Chart type: Metric visualization
    - Split by `is_mobile`
    - Metric: Average `total_amount`
 
-4. **Customer Demographics**
+1. **Customer Demographics**
    - Chart type: Heat map
    - X-axis: `customer_age` (ranges: 18-25, 26-35, 36-50, 51+)
    - Y-axis: `customer_gender`
@@ -145,17 +159,17 @@ Create the following visualizations:
    - Field: Average of `cpu_usage_percent`
    - Ranges: Green (0-70), Yellow (70-85), Red (85-100)
 
-2. **Memory vs CPU Scatter Plot**
+1. **Memory vs CPU Scatter Plot**
    - Chart type: Line chart (with dots)
    - X-axis: `cpu_usage_percent`
    - Y-axis: `memory_usage_percent`
 
-3. **Server Performance Comparison**
+1. **Server Performance Comparison**
    - Chart type: Horizontal bar chart
    - X-axis: `server_name`
    - Y-axis: Average `load_average`
 
-4. **Network Traffic Time Series**
+1. **Network Traffic Time Series**
    - Chart type: Area chart
    - X-axis: `timestamp`
    - Y-axis: Sum of `network_in_mbps` and `network_out_mbps`
@@ -170,7 +184,7 @@ Create the following visualizations:
      - Medium: 200-1000ms
      - Slow: > 1000ms
 
-2. **Revenue Brackets**
+1. **Revenue Brackets**
    - Create a runtime field for transaction amounts:
      - Small: $0-$50
      - Medium: $50-$200
@@ -183,11 +197,11 @@ Create the following visualizations:
    - Find the busiest hours for web traffic
    - Identify peak shopping hours for e-commerce
 
-2. **Error Rate Calculation**
+1. **Error Rate Calculation**
    - Calculate percentage of HTTP errors (4xx, 5xx) vs total requests
    - Create a metric showing error rate trend over time
 
-3. **Customer Lifetime Value**
+1. **Customer Lifetime Value**
    - Group by `customer_email`
    - Calculate total purchase amount per customer
    - Find top 10 customers by spending
@@ -198,11 +212,11 @@ Create the following visualizations:
    - Create a watcher/alert for when error rate exceeds 5%
    - Trigger: HTTP status codes 4xx or 5xx
 
-2. **System Resource Alert**
+1. **System Resource Alert**
    - Alert when CPU usage > 90% for more than 5 minutes
    - Alert when memory usage > 85%
 
-3. **Revenue Drop Alert**
+1. **Revenue Drop Alert**
    - Alert when hourly revenue drops below average by 30%
 
 ## Part 4: Dashboard Creation
@@ -217,12 +231,12 @@ Create a comprehensive dashboard with:
    - Error rate percentage
    - Total revenue (last 24h)
 
-2. **Traffic Overview**
+1. **Traffic Overview**
    - Requests timeline (last 7 days)
    - Top 10 URLs by traffic
    - Geographic distribution
 
-3. **System Health**
+1. **System Health**
    - Average CPU/Memory usage by server
    - Response time percentiles (50th, 90th, 95th)
 
@@ -233,7 +247,7 @@ Create a comprehensive dashboard with:
    - Active alerts count
    - Recent error logs
 
-2. **Performance Trends**
+1. **Performance Trends**
    - Response time trends (last 24h)
    - Error rate trends
    - Resource utilization trends
@@ -241,18 +255,23 @@ Create a comprehensive dashboard with:
 ## Part 5: Data Exploration Challenges
 
 ### Challenge 1: Anomaly Detection
+
 Find unusual patterns in the data:
+
 - Identify IP addresses making unusually high requests
 - Detect servers with abnormal resource usage
 - Find customers with suspicious transaction patterns
 
 ### Challenge 2: Correlation Analysis
+
 Explore relationships between different metrics:
+
 - Does response time correlate with server load?
 - Are mobile users more likely to use certain payment methods?
 - Do certain countries have higher error rates?
 
 ### Challenge 3: Seasonality and Trends
+
 - Identify patterns in web traffic throughout the day
 - Find peak shopping periods
 - Analyze system resource usage patterns
@@ -260,18 +279,21 @@ Explore relationships between different metrics:
 ## Bonus Exercises
 
 ### Machine Learning Integration
+
 1. Use Kibana's ML features to detect anomalies in:
    - Web traffic patterns
    - Transaction amounts
    - System resource usage
 
 ### Custom Visualizations
+
 1. Create a custom visualization plugin for:
    - Network topology view
    - Customer journey mapping
    - Performance correlation matrix
 
 ### Data Transformation
+
 1. Use Elasticsearch ingest pipelines to:
    - Enrich IP addresses with geolocation data
    - Parse user agents for browser/OS information
@@ -280,9 +302,9 @@ Explore relationships between different metrics:
 ## Expected Deliverables
 
 1. Screenshots of your dashboards
-2. Saved searches for complex queries
-3. Documentation of interesting findings
-4. Export of your dashboard configurations
+1. Saved searches for complex queries
+1. Documentation of interesting findings
+1. Export of your dashboard configurations
 
 ## Tips for Success
 

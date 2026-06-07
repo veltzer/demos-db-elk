@@ -104,9 +104,9 @@ the following requirements:
 Write a Python script that:
 
 1. Reads the mapping from an existing index
-2. Creates a new index with modified mapping
-3. Reindexes all documents from the old index to the new one
-4. Verifies the migration was successful
+1. Creates a new index with modified mapping
+1. Reindexes all documents from the old index to the new one
+1. Verifies the migration was successful
 
 ### Challenge 3: Dynamic Templates
 
@@ -120,19 +120,20 @@ naming patterns:
 ## Best Practices
 
 1. **Always define mappings explicitly for production systems**
-2. **Use multi-fields when you need both analyzed and exact matching**
-3. **Set `dynamic: false` or `dynamic: strict` to prevent mapping explosions**
-4. **Test your mappings with sample data before going to production**
-5. **Document your mapping decisions and field purposes**
-6. **Consider using index templates for consistent mappings across indices**
+1. **Use multi-fields when you need both analyzed and exact matching**
+1. **Set `dynamic: false` or `dynamic: strict` to prevent mapping explosions**
+1. **Test your mappings with sample data before going to production**
+1. **Document your mapping decisions and field purposes**
+1. **Consider using index templates for consistent mappings across indices**
 
 ## Summary Questions
 
 1. What are the main differences between dynamic and static mappings?
-2. When would you choose dynamic mapping over static mapping?
-3. What is the purpose of multi-fields in Elasticsearch?
-4. How can you prevent mapping conflicts in production?
-5. What are the implications of changing a fields mapping after data has been indexed?
+1. When would you choose dynamic mapping over static mapping?
+1. What is the purpose of multi-fields in Elasticsearch?
+1. How can you prevent mapping conflicts in production?
+1. What are the implications of changing a fields mapping after data has been
+   indexed?
 
 ## Resources
 

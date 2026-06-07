@@ -50,9 +50,10 @@ See [`02_bulk_04.sh`](./02_bulk_04.sh)
 ### Performance Configurations Tested
 
 1. **Standard**: Normal Elasticsearch settings with full indexing
-2. **Bulk Optimized**: Optimized settings for bulk loading (disabled refresh, async translog)
-3. **Minimal Indexing**: Only essential fields indexed
-4. **No Indexing**: Most fields stored but not indexed (fastest insertion)
+1. **Bulk Optimized**: Optimized settings for bulk loading (disabled refresh,
+   async translog)
+1. **Minimal Indexing**: Only essential fields indexed
+1. **No Indexing**: Most fields stored but not indexed (fastest insertion)
 
 ### Key Metrics
 
@@ -89,9 +90,9 @@ After running tests, you'll find:
 ### For Maximum Insert Speed
 
 1. **Disable Refresh**: Set `refresh_interval` to `-1`
-2. **Reduce Replicas**: Set `number_of_replicas` to 0 during bulk load
-3. **Increase Bulk Size**: Use larger chunk sizes (5000-10000 documents)
-4. **Disable Indexing**: Only index fields you need to search
+1. **Reduce Replicas**: Set `number_of_replicas` to 0 during bulk load
+1. **Increase Bulk Size**: Use larger chunk sizes (5000-10000 documents)
+1. **Disable Indexing**: Only index fields you need to search
 
 ### Example: Optimized Bulk Loading
 
@@ -112,9 +113,9 @@ See [`02_bulk_06.sh`](./02_bulk_06.sh)
 ### Slow Performance
 
 1. Check disk I/O: `iostat -x 1`
-2. Monitor Elasticsearch: `GET /_nodes/stats`
-3. Reduce chunk size if getting timeouts
-4. Ensure sufficient disk space
+1. Monitor Elasticsearch: `GET /_nodes/stats`
+1. Reduce chunk size if getting timeouts
+1. Ensure sufficient disk space
 
 ## Advanced Usage
 
@@ -133,15 +134,15 @@ See [`02_bulk_07.sh`](./02_bulk_07.sh)
 By completing this exercise, you'll understand:
 
 1. **Bulk API Usage**: How to efficiently insert large amounts of data
-2. **Index Settings Impact**: How settings affect insertion performance
-3. **Indexing vs Storage**: Trade-offs between searchability and insert speed
-4. **Performance Tuning**: Techniques to optimize bulk operations
-5. **Monitoring**: How to measure and analyze performance
+1. **Index Settings Impact**: How settings affect insertion performance
+1. **Indexing vs Storage**: Trade-offs between searchability and insert speed
+1. **Performance Tuning**: Techniques to optimize bulk operations
+1. **Monitoring**: How to measure and analyze performance
 
 ## Next Steps
 
 1. Try different mapping configurations
-2. Test with real-world data patterns
-3. Implement error handling and retry logic
-4. Explore parallel processing strategies
-5. Test with cluster configurations (multiple nodes)
+1. Test with real-world data patterns
+1. Implement error handling and retry logic
+1. Explore parallel processing strategies
+1. Test with cluster configurations (multiple nodes)

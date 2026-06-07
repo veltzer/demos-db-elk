@@ -124,9 +124,9 @@ See [`10_parent_child_vs_nested_17.sh`](./10_parent_child_vs_nested_17.sh)
 
 1. **Scenario**: A news website with articles that receive hundreds of comments
    daily. Which approach would you choose?
-2. **Scenario**: A product catalog where each product has 3-5 reviews that are
+1. **Scenario**: A product catalog where each product has 3-5 reviews that are
    rarely updated. Which approach would you choose?
-3. **Scenario**: A social media platform where posts can have thousands of
+1. **Scenario**: A social media platform where posts can have thousands of
    comments, and comments are frequently edited or deleted. Which approach would
    you choose?
 
@@ -138,6 +138,6 @@ See [`10_parent_child_vs_nested_18.sh`](./10_parent_child_vs_nested_18.sh)
 
 1. **Parent-Child** - High volume of comment updates favors independent document
    management
-2. **Nested** - Stable, low-volume data benefits from faster query performance
-3. **Parent-Child** - Frequent edits and deletes make independent documents
+1. **Nested** - Stable, low-volume data benefits from faster query performance
+1. **Parent-Child** - Frequent edits and deletes make independent documents
    essential

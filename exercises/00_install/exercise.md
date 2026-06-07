@@ -137,12 +137,10 @@ See [`00_install_23.sh`](./00_install_23.sh)
 
 ### Step 3.9: Create Systemd Services (Optional but Recommended)
 
-#### Elasticsearch Service
-
+**Elasticsearch Service:**
 See [`00_install_24.sh`](./00_install_24.sh)
 
-#### Kibana Service
-
+**Kibana Service:**
 See [`00_install_25.sh`](./00_install_25.sh)
 
 Enable services:
@@ -178,7 +176,7 @@ See [`00_install_31.sh`](./00_install_31.sh)
 
 ### APT Package Manager
 
-#### Advantages
+**Advantages:**
 
 - Integrated with system package management
 - Automatic dependency resolution
@@ -188,7 +186,7 @@ See [`00_install_31.sh`](./00_install_31.sh)
 - Automatic user/group creation
 - Security updates through distribution channels
 
-#### Disadvantages
+**Disadvantages:**
 
 - Limited to versions in repository
 - Requires root/sudo access for all operations
@@ -204,7 +202,7 @@ administrators preferring standard Linux management
 
 ### Docker Compose
 
-#### Advantages
+**Advantages:**
 
 - Complete isolation from host system
 - Easy version management and switching
@@ -216,7 +214,7 @@ administrators preferring standard Linux management
 - Can run multiple instances easily
 - No root access needed after Docker setup
 
-#### Disadvantages
+**Disadvantages:**
 
 - Requires Docker knowledge
 - Additional overhead from containerization
@@ -233,7 +231,7 @@ pipelines, testing multiple versions
 
 ### Direct Download (Archive)
 
-#### Advantages
+**Advantages:**
 
 - Full control over installation location
 - Easy to run multiple versions side-by-side
@@ -244,7 +242,7 @@ pipelines, testing multiple versions
 - Can customize startup scripts
 - No system service manager required
 
-#### Disadvantages
+**Disadvantages:**
 
 - Manual dependency management (Java)
 - No automatic updates
@@ -348,5 +346,3 @@ After completing this exercise, you should:
 - [Kibana Documentation](https://www.elastic.co/guide/en/kibana/current/index.html)
 - [Docker Compose Documentation](https://docs.docker.com/compose/)
 - [Elastic Stack Security](https://www.elastic.co/guide/en/elasticsearch/reference/current/security-minimal-setup.html)
-</content>
-</invoke>

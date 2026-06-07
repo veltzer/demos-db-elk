@@ -77,9 +77,9 @@ relationships:
 ### Exercise Questions
 
 1. Add more students with different test scores
-2. Try searching for students who scored 70 in Math - what happens with each
+1. Try searching for students who scored 70 in Math - what happens with each
    index?
-3. What query would you use to find students who scored above 90 in any subject
+1. What query would you use to find students who scored above 90 in any subject
    using nested fields?
 
 **Answer to Question 3:**
