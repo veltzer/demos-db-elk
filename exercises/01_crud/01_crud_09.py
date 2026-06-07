@@ -1,4 +1,18 @@
 #!/usr/bin/env python
+from datetime import datetime
+
+from elasticsearch import Elasticsearch, helpers
+
+# Initialize client
+es = Elasticsearch(
+    ['http://localhost:9200'],
+    basic_auth=('elastic', 'your-password'),
+    verify_certs=False,
+)
+
+INDEX_NAME = "products"
+
+
 def insert_single_document():
     """Insert a single document"""
     document = {

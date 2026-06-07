@@ -1,4 +1,11 @@
 #!/usr/bin/env python
+
+import time
+from elasticsearch import Elasticsearch
+
+es = Elasticsearch("http://localhost:9200")
+
+
 def measure_scroll_performance(index_name, query_body, scroll_size=1000):
     """Measure performance of scrolling through large result sets"""
     

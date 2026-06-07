@@ -2,6 +2,12 @@
 
 import concurrent.futures
 import statistics
+import time
+
+from elasticsearch import Elasticsearch
+
+es = Elasticsearch("http://localhost:9200")
+
 
 def run_concurrent_queries(index_name, query_body, num_threads=10, queries_per_thread=10):
     """Test query performance under concurrent load"""

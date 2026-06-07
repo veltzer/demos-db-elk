@@ -5,6 +5,8 @@ Elasticsearch CRUD operations using requests library
 
 import requests
 import json
+from datetime import datetime  # noqa: F401  (used by sibling snippets)
+from typing import Dict, Optional  # noqa: F401  (used by sibling snippets)
 
 # Configuration
 ES_HOST = "localhost"
@@ -19,9 +21,10 @@ session = requests.Session()
 session.auth = (ES_USER, ES_PASSWORD)
 session.headers.update({'Content-Type': 'application/json'})
 
+
 def pretty_print(response):
     """Pretty print JSON response"""
     try:
         print(json.dumps(response.json(), indent=2))
-    except:
+    except ValueError:
         print(response.text)

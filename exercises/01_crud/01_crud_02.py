@@ -1,4 +1,33 @@
 #!/usr/bin/env python
+"""
+Elasticsearch CRUD operations using requests library
+"""
+
+import requests
+import json
+
+# Configuration
+ES_HOST = "localhost"
+ES_PORT = 9200
+ES_USER = "elastic"
+ES_PASSWORD = "your-password"
+ES_URL = f"http://{ES_HOST}:{ES_PORT}"
+INDEX_NAME = "products"
+
+# Session with authentication
+session = requests.Session()
+session.auth = (ES_USER, ES_PASSWORD)
+session.headers.update({'Content-Type': 'application/json'})
+
+
+def pretty_print(response):
+    """Pretty print JSON response"""
+    try:
+        print(json.dumps(response.json(), indent=2))
+    except ValueError:
+        print(response.text)
+
+
 def create_index():
     """Create products index with mappings"""
     mappings = {
@@ -16,12 +45,12 @@ def create_index():
             }
         }
     }
-    
+
     response = session.put(
         f"{ES_URL}/{INDEX_NAME}",
         data=json.dumps(mappings)
     )
-    
+
     print(f"Index creation status: {response.status_code}")
     pretty_print(response)
     return response

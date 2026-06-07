@@ -188,6 +188,10 @@ class PerformanceTestSuite:
         doc_count = stats['indices'][index_name]['primaries']['docs']['count']
         index_size = stats['indices'][index_name]['primaries']['store']['size_in_bytes']
 
+        # Memory/storage growth caused by the bulk insert
+        end_memory = self._get_index_memory(index_name)
+        memory_delta = end_memory - start_memory
+
         result = {
             'config_type': config_type,
             'chunk_size': chunk_size,
@@ -197,6 +201,7 @@ class PerformanceTestSuite:
             'elapsed_time': elapsed_time,
             'docs_per_second': success_count / elapsed_time if elapsed_time > 0 else 0,
             'index_size_mb': index_size / (1024 * 1024),
+            'memory_delta_mb': memory_delta / (1024 * 1024),
             'bytes_per_doc': index_size / doc_count if doc_count > 0 else 0,
             'timestamp': datetime.now().isoformat()
         }
@@ -211,7 +216,7 @@ class PerformanceTestSuite:
         try:
             stats = self.es.indices.stats(index=index_name)
             return stats['indices'][index_name]['primaries']['store']['size_in_bytes']
-        except:
+        except Exception:
             return 0
 
     def run_comprehensive_test(self, data_file, test_sizes=[1000, 5000, 10000]):
@@ -288,10 +293,10 @@ class PerformanceTestSuite:
         ax2.grid(True, axis='y')
 
         # Add value labels on bars
-        for bar, time in zip(bars, avg_times):
+        for bar, avg_time in zip(bars, avg_times):
             height = bar.get_height()
             ax2.text(bar.get_x() + bar.get_width()/2., height,
-                    f'{time:.1f}s', ha='center', va='bottom')
+                    f'{avg_time:.1f}s', ha='center', va='bottom')
 
         # Chart 3: Index size comparison
         ax3 = axes[1, 0]

@@ -2,9 +2,9 @@
 # Install Kibana
 sudo apt install -y kibana
 
-# Configure Kibana (if you have the enrollment token)
-sudo /usr/share/kibana/bin/kibana-setup --enrollment-token <your-token>
-
-# Or manually configure by editing:
+# With Elasticsearch security disabled, no enrollment token is required.
+# Kibana connects to Elasticsearch over plain HTTP with no credentials.
+# Optionally edit the configuration for external access:
 sudo nano /etc/kibana/kibana.yml
 # Set: server.host: "0.0.0.0" for external access
+# Set: elasticsearch.hosts: ["http://localhost:9200"]

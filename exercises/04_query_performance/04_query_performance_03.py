@@ -1,4 +1,10 @@
 #!/usr/bin/env python
+
+from elasticsearch import Elasticsearch
+
+es = Elasticsearch("http://localhost:9200")
+
+
 def profile_query(index_name, query_body):
     """Use Elasticsearch's Profile API to get detailed timing"""
     

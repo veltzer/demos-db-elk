@@ -48,7 +48,7 @@ def compare_scoring_performance():
                         "query": {"match": {"description": "product"}},
                         "script_score": {
                             "script": {
-                                "source": "Math.log(2 + doc["rating"].value) * _score"
+                                "source": "Math.log(2 + doc['rating'].value) * _score"
                             }
                         }
                     }

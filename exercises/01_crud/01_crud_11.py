@@ -1,4 +1,18 @@
 #!/usr/bin/env python
+from datetime import datetime
+
+from elasticsearch import Elasticsearch
+
+# Initialize client
+es = Elasticsearch(
+    ['http://localhost:9200'],
+    basic_auth=('elastic', 'your-password'),
+    verify_certs=False,
+)
+
+INDEX_NAME = "products"
+
+
 def update_document_full(doc_id: str):
     """Full document update (replace)"""
     updated_doc = {

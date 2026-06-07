@@ -1,4 +1,11 @@
 #!/usr/bin/env python
+
+import time
+from elasticsearch import Elasticsearch
+
+es = Elasticsearch("http://localhost:9200")
+
+
 def measure_aggregation_performance(index_name, agg_body):
     """Measure aggregation query performance"""
     

@@ -17,11 +17,8 @@ def measure_query_time(index_name, query_body, runs=5):
         elapsed_ms = (end - start) * 1000
         times.append(elapsed_ms)
         
-        # Also get Elasticsearchs internal took time
-        es_took = result.get("took", 0)
-        
         if i == 0:  # Print first result details
-            print(f"  Hits: {result["hits"]["total"]["value"]}")
+            print(f"  Hits: {result['hits']['total']['value']}")
         
     avg_time = sum(times) / len(times)
     min_time = min(times)
@@ -48,5 +45,5 @@ query_indexed = {
 
 print("Index: users_indexed")
 result = measure_query_time("users_indexed", query_indexed)
-print(f"  Average: {result[\"avg_ms\"]:.2f}ms")
-print(f"  Min: {result[\"min_ms\"]:.2f}ms, Max: {result[\"max_ms\"]:.2f}ms")
+print(f"  Average: {result['avg_ms']:.2f}ms")
+print(f"  Min: {result['min_ms']:.2f}ms, Max: {result['max_ms']:.2f}ms")

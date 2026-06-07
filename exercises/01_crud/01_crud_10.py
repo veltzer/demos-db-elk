@@ -1,4 +1,18 @@
 #!/usr/bin/env python
+import json
+
+from elasticsearch import Elasticsearch
+
+# Initialize client
+es = Elasticsearch(
+    ['http://localhost:9200'],
+    basic_auth=('elastic', 'your-password'),
+    verify_certs=False,
+)
+
+INDEX_NAME = "products"
+
+
 def get_document(doc_id: str):
     """Get a specific document by ID"""
     try:
