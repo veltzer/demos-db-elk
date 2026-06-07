@@ -73,7 +73,7 @@ for i in range(1, 101):
         "profit_margin": round(random.uniform(0.1, 0.5), 2)
     }
     products.append(product)
-    es.index(index="products", id=i, body=product)
+    es.index(index="products", id=str(i), body=product)
 
 es.indices.refresh(index="products")
 print(f"Indexed {len(products)} products")

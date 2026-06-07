@@ -1,6 +1,9 @@
 # Markdown linting — lint every *.md under exercises/ (the exercise.md files).
+# MD013 (80-char line length) is disabled: the docs contain code blocks, KQL
+# query strings and wide comparison tables that can't wrap to 80 columns.
 [processor.mdl]
 src_dirs = ["exercises"]
+args = ["-r", "~MD013"]
 
 # Spell checking — run the spell checker over every *.md under exercises/.
 # Domain-specific terms (Elasticsearch, Kibana, …) live in .zspell-words.

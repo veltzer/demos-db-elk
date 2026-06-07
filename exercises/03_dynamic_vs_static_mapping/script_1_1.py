@@ -18,7 +18,7 @@ doc1 = {
     "score": 95.5
 }
 
-es.index(index="dynamic_test", id=1, body=doc1)
+es.index(index="dynamic_test", id="1", body=doc1)
 
 # Check the dynamically created mapping
 mapping = es.indices.get_mapping(index="dynamic_test")

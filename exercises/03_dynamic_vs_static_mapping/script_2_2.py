@@ -41,6 +41,6 @@ documents = [
 ]
 
 for i, doc in enumerate(documents, 1):
-    es.index(index="static_test", id=i, body=doc)
+    es.index(index="static_test", id=str(i), body=doc)
 
 print(f"Indexed {len(documents)} documents")

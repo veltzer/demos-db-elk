@@ -15,6 +15,6 @@ doc2 = {
 }
 
 try:
-    es.index(index="dynamic_test", id=2, body=doc2)
+    es.index(index="dynamic_test", id="2", body=doc2)
 except Exception as e:
     print(f"Error: {e}")
