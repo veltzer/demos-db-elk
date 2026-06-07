@@ -1,0 +1,42 @@
+#!/bin/bash
+# Create the compose file (security disabled, same as the Docker method).
+# Podman reads docker-compose.yml via its compose provider.
+cat > docker-compose.yml << 'EOF'
+services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:9.1.3
+    container_name: elasticsearch
+    environment:
+      - node.name=elasticsearch
+      - cluster.name=docker-cluster
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      # Disable security features
+      - xpack.security.enabled=false
+      - xpack.security.enrollment.enabled=false
+      - xpack.security.http.ssl.enabled=false
+      - xpack.security.transport.ssl.enabled=false
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - elasticsearch-data:/usr/share/elasticsearch/data
+    network_mode: host
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:9.1.3
+    container_name: kibana
+    environment:
+      - ELASTICSEARCH_HOSTS=http://localhost:9200
+      - ELASTICSEARCH_URL=http://localhost:9200
+      # Disable security for Kibana as well
+      - xpack.security.enabled=false
+      - xpack.encryptedSavedObjects.encryptionKey=fhjskloppd678ehkdfdlliverpoolfcr
+    network_mode: host
+
+volumes:
+  elasticsearch-data:
+    driver: local
+EOF

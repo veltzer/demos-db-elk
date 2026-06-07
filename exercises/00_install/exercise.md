@@ -156,6 +156,38 @@ See [`00_install_28.sh`](./00_install_28.sh)
 
 ---
 
+## Method 4: Podman Installation
+
+Podman is a daemonless, rootless-capable container engine that is compatible
+with the same `docker-compose.yml` used in Method 2. It reads the compose file
+through its compose provider, so the steps mirror the Docker Compose method.
+
+### Step 4.1: Install Podman
+
+See [`00_install_32.sh`](./00_install_32.sh)
+
+### Step 4.2: Create Project Directory
+
+See [`00_install_33.sh`](./00_install_33.sh)
+
+### Step 4.3: Create docker-compose.yml
+
+See [`00_install_34.sh`](./00_install_34.sh)
+
+### Step 4.4: Start Services
+
+See [`00_install_35.sh`](./00_install_35.sh)
+
+### Verification (Podman Method)
+
+See [`00_install_36.sh`](./00_install_36.sh)
+
+### Uninstallation (Podman Method)
+
+See [`00_install_37.sh`](./00_install_37.sh)
+
+---
+
 ## Verification Commands (All Methods)
 
 ### Check Elasticsearch Status
@@ -262,47 +294,41 @@ specific control, non-standard systems
 
 ### Development Environment
 
-**Recommended: Docker Compose**
-
+- **Recommended: Docker Compose**
 - Easy to spin up/down
 - Matches production if using containers
 - Clean separation from system
 
 ### Production Server (Single Node)
 
-**Recommended: APT Package Manager**
-
+- **Recommended: APT Package Manager**
 - Proper system integration
 - Automatic updates
 - Standard monitoring tools work
 
 ### Production Server (Cluster/Cloud)
 
-**Recommended: Docker Compose or Kubernetes**
-
+- **Recommended: Docker Compose or Kubernetes**
 - Better orchestration
 - Easier scaling
 - Container-native cloud platforms
 
 ### Testing Multiple Versions
 
-**Recommended: Docker Compose or Archive**
-
+- **Recommended: Docker Compose or Archive**
 - Docker: Complete isolation
 - Archive: Side-by-side installations
 
 ### Learning and Experimentation
 
-**Recommended: Docker Compose**
-
+- **Recommended: Docker Compose**
 - Easy to start fresh
 - No system pollution
 - Quick to try different configurations
 
 ### Restricted Environments (No Root)
 
-**Recommended: Archive Installation**
-
+- **Recommended: Archive Installation**
 - Can install in user space
 - No system-level changes needed
 
@@ -334,11 +360,11 @@ installation serves specialized needs requiring custom control.
 After completing this exercise, you should:
 
 1. Choose the most appropriate method for your use case
-2. Set up authentication and security properly
-3. Configure index patterns in Kibana
-4. Start ingesting data into Elasticsearch
-5. Explore Kibana visualizations and dashboards
-6. Learn about cluster configuration for production
+1. Set up authentication and security properly
+1. Configure index patterns in Kibana
+1. Start ingesting data into Elasticsearch
+1. Explore Kibana visualizations and dashboards
+1. Learn about cluster configuration for production
 
 ## Additional Resources
 

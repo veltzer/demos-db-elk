@@ -180,15 +180,15 @@ Create the following visualizations:
 
 1. **Response Time Categories**
    - Create a runtime field to categorize response times:
-     - Fast: < 200ms
-     - Medium: 200-1000ms
-     - Slow: > 1000ms
+      - Fast: < 200ms
+      - Medium: 200-1000ms
+      - Slow: > 1000ms
 
 1. **Revenue Brackets**
    - Create a runtime field for transaction amounts:
-     - Small: $0-$50
-     - Medium: $50-$200
-     - Large: > $200
+      - Small: $0-$50
+      - Medium: $50-$200
+      - Large: > $200
 
 ### Exercise 3.2: Aggregations and Bucket Analysis
 
