@@ -6,6 +6,8 @@ Run `15_vector_search_01.sh` first to create the index. Each document gets an
 similarity (kNN) as well as by keywords (BM25).
 """
 
+from typing import Any
+
 from elasticsearch import Elasticsearch
 
 from embedding import embed
@@ -40,10 +42,10 @@ ARTICLES = [
 def load() -> None:
     """Embed and index every article, then refresh so they are searchable."""
     for i, article in enumerate(ARTICLES, start=1):
-        doc = dict(article)
+        doc: dict[str, Any] = dict(article)
         # Embed title + content together for a richer document vector.
         doc["embedding"] = embed(f"{article['title']} {article['content']}")
-        result = es.index(index=INDEX_NAME, id=i, document=doc)
+        result = es.index(index=INDEX_NAME, id=str(i), document=doc)
         assert result["_shards"]["successful"] >= 1
         print(f"indexed #{i}: {article['title']}")
 

@@ -37,7 +37,7 @@ def knn_search(query_text: str, category: str | None = None, k: int = 3) -> None
     if category is not None:
         knn["filter"] = {"term": {"category": category}}
 
-    result = es.search(index=INDEX_NAME, knn=knn, source=["title", "category"])
+    result = es.search(index=INDEX_NAME, knn=knn, source_includes=["title", "category"])
 
     print(f"query: {query_text!r}" + (f" (category={category})" if category else ""))
     print(f"top {k} by vector similarity:")

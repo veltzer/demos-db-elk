@@ -45,7 +45,7 @@ def hybrid_search(query_text: str, k: int = 3) -> None:
         query=bm25,
         knn=knn,
         size=k,
-        source=["title", "category"],
+        source_includes=["title", "category"],
     )
 
     print(f"query: {query_text!r}")
