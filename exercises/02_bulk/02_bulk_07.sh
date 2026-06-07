@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -eu
 # Split large file
 split -l 10000 products.ndjson products_part_
 

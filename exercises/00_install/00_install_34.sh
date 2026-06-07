@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -eu
 # Create the compose file (security disabled, same as the Docker method).
 # Podman reads docker-compose.yml via its compose provider.
 cat > docker-compose.yml << 'EOF'

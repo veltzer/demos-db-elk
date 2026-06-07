@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -eu
 # Download Logstash (adjust version as needed)
 wget https://artifacts.elastic.co/downloads/logstash/logstash-8.11.0-linux-x86_64.tar.gz
 

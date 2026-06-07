@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -eu
 # Terminal 1: System logs
 /opt/logstash/bin/logstash -f simple-logs.conf
 

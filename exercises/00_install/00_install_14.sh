@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -eu
 # Test Elasticsearch (security disabled: plain HTTP, no credentials)
 curl -X GET "http://localhost:9200"
 

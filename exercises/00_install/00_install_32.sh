@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -eu
 # Install Podman (Debian/Ubuntu)
 sudo apt update
 sudo apt install -y podman

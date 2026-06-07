@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -eu
 # Start in detached mode
 docker compose up -d
 

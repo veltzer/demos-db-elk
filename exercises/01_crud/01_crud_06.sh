@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -eu
 # Full update
 curl -X PUT "localhost:9200/products/_doc/1" \
   -H 'Content-Type: application/json' \

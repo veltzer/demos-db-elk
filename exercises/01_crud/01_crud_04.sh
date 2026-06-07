@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -eu
 # Create a file with bulk data
 cat > bulk_products.json << 'EOF'
 { "index": { "_id": "2" } }

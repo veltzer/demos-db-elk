@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -eu
 # Extended price statistics with percentiles.
 # NOTE: This block was truncated/corrupt in the original answers.md
 # (it ended mid-array). Completed here to a runnable percentiles aggregation.

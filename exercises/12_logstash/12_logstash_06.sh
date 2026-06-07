@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -eu
 # Generate some syslog entries
 logger "Test message from logstash exercise - $(date)"
 logger "Another test message with some data: user=testuser action=login"

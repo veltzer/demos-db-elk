@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -eu
 # Check Kibana API status
 curl -X GET "http://localhost:5601/api/status"
 

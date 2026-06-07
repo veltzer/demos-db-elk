@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -eu
 # Enable and start Kibana
 sudo systemctl daemon-reload
 sudo systemctl enable kibana

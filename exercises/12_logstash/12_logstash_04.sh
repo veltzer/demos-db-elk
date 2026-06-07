@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -eu
 # Create config directory
 mkdir -p ~/logstash-exercise
 cd ~/logstash-exercise

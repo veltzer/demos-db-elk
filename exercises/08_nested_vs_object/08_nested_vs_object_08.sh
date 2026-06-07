@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -eu
 # Clean up any existing indices
 curl -X DELETE "localhost:9200/students_object?pretty"
 curl -X DELETE "localhost:9200/students_nested?pretty"

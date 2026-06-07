@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -eu
 # Security is disabled: plain HTTP, no credentials needed.
 
 # Basic health check

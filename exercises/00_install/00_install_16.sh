@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -eu
 # Install OpenJDK 17
 sudo apt install -y openjdk-17-jdk
 

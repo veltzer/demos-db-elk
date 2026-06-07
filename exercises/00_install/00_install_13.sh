@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -eu
 # No Kibana system user setup is required.
 #
 # The docker-compose.yml in this exercise runs Elasticsearch with security

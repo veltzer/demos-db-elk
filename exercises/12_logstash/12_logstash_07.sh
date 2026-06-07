@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -eu
 # Run Logstash (this will run in foreground)
 /opt/logstash/bin/logstash -f simple-logs.conf
 

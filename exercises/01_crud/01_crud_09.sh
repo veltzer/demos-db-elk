@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -eu
 # Authentication failed / 401 errors:
 # These exercises run Elasticsearch with security DISABLED, so no username
 # or password is required. Do NOT pass -u credentials or use https.

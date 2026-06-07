@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -eu
 # Generate all types of sample data (4000 records total)
 python generate_sample_data.py --count 1000 --output sample_data.json
 

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -eu
 # Start Elasticsearch in the background
 /opt/elastic/elasticsearch/bin/elasticsearch -d -p /tmp/elasticsearch.pid
 

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -eu
 # Install Kibana
 sudo apt install -y kibana
 

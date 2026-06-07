@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -eu
 # Generate default dataset (10K products, 5K customers, 20K orders)
 python generate_data.py
 

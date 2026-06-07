@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -eu
 # Delete single document
 curl -X DELETE "localhost:9200/products/_doc/1"
 

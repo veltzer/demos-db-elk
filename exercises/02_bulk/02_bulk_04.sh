@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -eu
 # Run full performance suite with visualizations
 python run_performance_test.py
 

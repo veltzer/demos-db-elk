@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -eu
 
 echo "================================================"
 echo "Elasticsearch Bulk Insert Exercise Test"

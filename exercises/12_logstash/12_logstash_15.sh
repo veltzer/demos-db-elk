@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -eu
 # Stop Logstash (Ctrl+C if running in foreground)
 # Or kill background process:
 pkill -f logstash

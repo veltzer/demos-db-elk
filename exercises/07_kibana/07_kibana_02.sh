@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -eu
 # Create the index and import data
 curl -X PUT "localhost:9200/sample-data" -H 'Content-Type: application/json' -d'
 {

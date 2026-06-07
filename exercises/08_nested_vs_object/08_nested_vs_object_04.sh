@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -eu
 curl -X POST "localhost:9200/students_nested/_doc/1?pretty" -H 'Content-Type: application/json' -d'
 {
   "name": "Alice",

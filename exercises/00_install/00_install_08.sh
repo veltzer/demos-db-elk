@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -eu
 # Stop services
 sudo systemctl stop kibana
 sudo systemctl stop elasticsearch

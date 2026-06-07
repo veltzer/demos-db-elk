@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -eu
 # Create both indexed and non-indexed indices with 10,000 documents each
 python create_data.py --create-both --docs 10000
 

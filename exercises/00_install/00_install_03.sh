@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -eu
 # Install Elasticsearch
 sudo apt install -y elasticsearch
 

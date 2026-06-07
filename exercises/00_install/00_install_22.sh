@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -eu
 # With Elasticsearch security disabled, no enrollment token is required.
 # Kibana connects to Elasticsearch over plain HTTP with no credentials.
 # Edit the configuration as needed:

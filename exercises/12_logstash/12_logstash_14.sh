@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -eu
 # Monitor index growth
 watch -n 5 'curl -s "localhost:9200/_cat/indices?v" | grep system-logs'
 

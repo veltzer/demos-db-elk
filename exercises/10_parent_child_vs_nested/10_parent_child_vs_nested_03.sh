@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -eu
 curl -X POST "localhost:9200/blog_nested/_doc/1?pretty" -H 'Content-Type: application/json' -d'
 {
   "title": "Getting Started with Elasticsearch",

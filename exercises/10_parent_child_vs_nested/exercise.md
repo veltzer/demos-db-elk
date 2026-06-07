@@ -86,13 +86,13 @@ See [`10_parent_child_vs_nested_15.sh`](./10_parent_child_vs_nested_15.sh)
 | Aspect | Nested | Parent-Child |
 |--------|---------|-------------|
 | **Storage** | All data in one document | Separate documents |
-| **Document Count** | 1 document per blog post | 1 document per blog post + 1 per comment |
-| **Updates** | Must reindex entire document | Update individual children only |
-| **Query Performance** | Faster (single document) | Slower (join operations + global ordinals) |
+| **Document Count** | 1 per blog post | 1 per post + 1 per comment |
+| **Updates** | Must reindex whole document | Update individual children |
+| **Query Performance** | Faster (single doc) | Slower (joins + ordinals) |
 | **Memory Usage** | Lower | Higher (global ordinals mapping) |
-| **Routing Required** | No | Yes (children must be on same shard) |
-| **Best Use Case** | Read-heavy, stable data | Write-heavy children, frequent updates |
-| **Query Complexity** | Moderate (`nested` queries) | Higher (`has_child`/`has_parent` queries) |
+| **Routing Required** | No | Yes (children on same shard) |
+| **Best Use Case** | Read-heavy, stable data | Write-heavy children, updates |
+| **Query Complexity** | Moderate (`nested`) | Higher (`has_child`) |
 
 ### When to Choose Which
 

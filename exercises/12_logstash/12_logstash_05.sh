@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -eu
 # Test the configuration syntax
 /opt/logstash/bin/logstash --config.test_and_exit -f simple-logs.conf
 

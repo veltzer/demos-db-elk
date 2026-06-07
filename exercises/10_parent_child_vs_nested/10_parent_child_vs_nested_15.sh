@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -eu
 # For nested: Each addition requires reindexing the entire document
 # For parent-child: Each addition is a simple new document
 

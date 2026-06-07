@@ -15,7 +15,7 @@ operations in Elasticsearch using four different methods:
 - Elasticsearch running on `localhost:9200`
 - Kibana running on `localhost:5601` (for Method 1)
 - Python 3.7+ installed (for Methods 3 & 4)
-- Basic authentication credentials (default: elastic/your-password)
+- Elasticsearch running with security disabled (plain HTTP, no authentication)
 
 ### Setup Test Environment
 
@@ -33,7 +33,7 @@ See [`01_crud_01.json`](./01_crud_01.json)
 ### Access Kibana Dev Tools
 
 1. Open browser: `http://localhost:5601`
-1. Login with your credentials
+1. No login required (security is disabled)
 1. Navigate to **Management → Dev Tools** (or use shortcut: `Ctrl+I`)
 
 ### 1.1 Create an Index

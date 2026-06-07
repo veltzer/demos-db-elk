@@ -59,7 +59,8 @@ Write KQL queries for the following:
    ```
 
    ```KQL
-   data_type: "web_log" AND method: "POST" AND status_code >=200 AND status_cdode <= 299
+   data_type: "web_log" AND method: "POST"
+     AND status_code >= 200 AND status_code <= 299
    ```
 
    This is in Lucene syntax (can be toggled to instead of KQL syntax)
@@ -75,7 +76,8 @@ Write KQL queries for the following:
    ```
 
    ```KQL
-   data_type: "ecommerce" AND product_category: "Electronics" AND payment_method: "credit_card"
+   data_type: "ecommerce" AND product_category: "Electronics"
+     AND payment_method: "credit_card"
    ```
 
    ```LUCENE
@@ -86,7 +88,8 @@ Write KQL queries for the following:
 
    ```
    data_type: "system_metrics" AND cpu_usage_percent > 80
-   data_type: "system_metrics" AND memory_usage_percent > 70 AND cpu_usage_percent > 70
+   data_type: "system_metrics"
+     AND memory_usage_percent > 70 AND cpu_usage_percent > 70
    server_name: "server-01" AND load_average > 2.0
    ```
 

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -eu
 # List indices
 curl -X GET "localhost:9200/_cat/indices?v&pretty"
 

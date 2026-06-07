@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -eu
 # Disable security for these exercises by editing the configuration.
 # Append the following to /etc/elasticsearch/elasticsearch.yml:
 #   xpack.security.enabled: false

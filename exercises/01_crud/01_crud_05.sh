@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -eu
 # Get specific document
 curl -X GET "localhost:9200/products/_doc/1?pretty"
 

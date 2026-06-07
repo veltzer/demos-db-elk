@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -eu
 # Check ports are listening
 sudo netstat -tlnp | grep -E '9200|5601'
 

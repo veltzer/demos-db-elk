@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -eu
 # Nested: All data in one document
 curl -X GET "localhost:9200/blog_nested/_doc/1?pretty"
 

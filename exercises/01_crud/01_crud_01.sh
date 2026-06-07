@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -eu
 # Verify Elasticsearch is running
 curl -X GET "localhost:9200"
 

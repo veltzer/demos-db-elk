@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -eu
 curl -X POST "localhost:9200/orders/_doc/1?pretty" -H 'Content-Type: application/json' -d'
 { "customer": "Alice", "product": "Laptop", "category": "Electronics", "price": 999.99, "quantity": 1, "date": "2024-01-15", "status": "shipped" }'
 

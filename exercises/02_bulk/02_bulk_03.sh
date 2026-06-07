@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -eu
 # Compare indexed vs non-indexed performance
 python bulk_insert.py --data-file data/products_bulk.json
 

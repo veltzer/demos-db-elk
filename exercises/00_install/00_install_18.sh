@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -eu
 # Download Elasticsearch
 sudo wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-9.1.3-linux-x86_64.tar.gz
 

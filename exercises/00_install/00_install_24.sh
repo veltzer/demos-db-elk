@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -eu
 sudo tee /etc/systemd/system/elasticsearch-archive.service > /dev/null << 'EOF'
 [Unit]
 Description=Elasticsearch (Archive Installation)

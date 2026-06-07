@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -eu
 # Insert with auto-generated ID
 curl -X POST "localhost:9200/products/_doc" \
   -H 'Content-Type: application/json' \

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -eu
 sudo tee /etc/systemd/system/kibana-archive.service > /dev/null << 'EOF'
 [Unit]
 Description=Kibana (Archive Installation)

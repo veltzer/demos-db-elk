@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -eu
 # Stop processes
 if [ -f /tmp/elasticsearch.pid ]; then
     kill $(cat /tmp/elasticsearch.pid)

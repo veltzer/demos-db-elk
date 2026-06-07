@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -eu
 # Import the Elasticsearch GPG key
 wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | \
 sudo gpg --dearmor -o /usr/share/keyrings/elasticsearch-keyring.gpg

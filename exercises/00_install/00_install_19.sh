@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -eu
 # Edit configuration
 nano /opt/elastic/elasticsearch/config/elasticsearch.yml
 

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -eu
 # If you have nginx/apache logs, create another config
 cat > web-logs.conf << 'EOF'
 input {
