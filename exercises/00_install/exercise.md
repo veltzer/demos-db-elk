@@ -2,9 +2,9 @@
 
 ## Overview
 This exercise will guide you through installing Elasticsearch and Kibana on Linux using three different methods:
-1. APT Package Manager
-2. Docker Compose
-3. Direct Download (Archive)
+- APT Package Manager
+- Docker Compose
+- Direct Download (Archive)
 
 For each method, you'll learn how to:
 - Install both Elasticsearch and Kibana
@@ -30,485 +30,142 @@ sudo apt update && sudo apt upgrade -y
 ## Method 1: APT Package Manager Installation
 
 ### Step 1.1: Install Dependencies
-```bash
-# Install required packages
-sudo apt install -y wget apt-transport-https ca-certificates gnupg
-```
+See [`00_install_01.sh`](./00_install_01.sh)
+
 
 ### Step 1.2: Add Elasticsearch Repository
-```bash
-# Import the Elasticsearch GPG key
-wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | \
-sudo gpg --dearmor -o /usr/share/keyrings/elasticsearch-keyring.gpg
+See [`00_install_02.sh`](./00_install_02.sh)
 
-# Add the repository
-echo "deb [signed-by=/usr/share/keyrings/elasticsearch-keyring.gpg] \
-https://artifacts.elastic.co/packages/9.x/apt stable main" | \
-sudo tee /etc/apt/sources.list.d/elastic-9.x.list
-
-# Update package list
-sudo apt update
-```
 
 ### Step 1.3: Install Elasticsearch
-```bash
-# Install Elasticsearch
-sudo apt install -y elasticsearch
+See [`00_install_03.sh`](./00_install_03.sh)
 
-# IMPORTANT: Save the generated password and enrollment token shown during installation!
-# If you miss it, reset the password:
-sudo /usr/share/elasticsearch/bin/elasticsearch-reset-password -u elastic
-```
 
 ### Step 1.4: Configure and Start Elasticsearch
-```bash
-# Enable and start Elasticsearch
-sudo systemctl daemon-reload
-sudo systemctl enable elasticsearch
-sudo systemctl start elasticsearch
+See [`00_install_04.sh`](./00_install_04.sh)
 
-# Check status
-sudo systemctl status elasticsearch
-```
 
 ### Step 1.5: Install Kibana
-```bash
-# Install Kibana
-sudo apt install -y kibana
+See [`00_install_05.sh`](./00_install_05.sh)
 
-# Configure Kibana (if you have the enrollment token)
-sudo /usr/share/kibana/bin/kibana-setup --enrollment-token <your-token>
-
-# Or manually configure by editing:
-sudo nano /etc/kibana/kibana.yml
-# Set: server.host: "0.0.0.0" for external access
-```
 
 ### Step 1.6: Start Kibana
-```bash
-# Enable and start Kibana
-sudo systemctl daemon-reload
-sudo systemctl enable kibana
-sudo systemctl start kibana
+See [`00_install_06.sh`](./00_install_06.sh)
 
-# Check status
-sudo systemctl status kibana
-```
 
 ### Verification (APT Method)
-```bash
-# Test Elasticsearch (replace <password> with your elastic user password)
-# with security
-curl -X GET "https://localhost:9200" -k -u elastic:<password>
-# without security
-curl -X GET "http://localhost:8200"
+See [`00_install_07.sh`](./00_install_07.sh)
 
-# Access Kibana
-# with security
-echo "Open browser: https://localhost:5601"
-echo "Login with username: elastic"
-echo "Password: <the password from Elasticsearch installation>"
-# without security
-echo "Open browser: http://localhost:5601"
-```
 
 ### Uninstallation (APT Method)
-```bash
-# Stop services
-sudo systemctl stop kibana
-sudo systemctl stop elasticsearch
+See [`00_install_08.sh`](./00_install_08.sh)
 
-# Disable services
-sudo systemctl disable kibana
-sudo systemctl disable elasticsearch
-
-# Remove packages
-sudo apt remove --purge -y elasticsearch kibana
-
-# Remove data directories (WARNING: This deletes all data!)
-sudo rm -rf /var/lib/elasticsearch
-sudo rm -rf /var/lib/kibana
-
-# Remove configuration
-sudo rm -rf /etc/elasticsearch
-sudo rm -rf /etc/kibana
-
-# Remove repository
-sudo rm /etc/apt/sources.list.d/elastic-9.x.list
-sudo rm /usr/share/keyrings/elasticsearch-keyring.gpg
-sudo apt update
-```
 
 ---
 
 ## Method 2: Docker Compose Installation
 
 ### Step 2.1: Install Docker and Docker Compose
-```bash
-# Install Docker
-curl -fsSL https://get.docker.com -o get-docker.sh
-sudo sh get-docker.sh
+See [`00_install_09.sh`](./00_install_09.sh)
 
-# Add user to docker group
-sudo usermod -aG docker $USER
-newgrp docker
-
-# Verify Docker Compose is installed
-docker compose version
-```
 
 ### Step 2.2: Create Project Directory
-```bash
-# Create and enter project directory
-mkdir -p ~/elastic-docker && cd ~/elastic-docker
-```
+See [`00_install_10.sh`](./00_install_10.sh)
+
 
 ### Step 2.3: Create docker-compose.yml
-```bash
-cat > docker-compose.yml << 'EOF'
-services:
-  elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:9.1.3
-    container_name: elasticsearch
-    environment:
-      - node.name=elasticsearch
-      - cluster.name=docker-cluster
-      - discovery.type=single-node
-      - bootstrap.memory_lock=true
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-      # Disable security features
-      - xpack.security.enabled=false
-      - xpack.security.enrollment.enabled=false
-      - xpack.security.http.ssl.enabled=false
-      - xpack.security.transport.ssl.enabled=false
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
-    volumes:
-      - elasticsearch-data:/usr/share/elasticsearch/data
-    network_mode: host
+See [`00_install_11.sh`](./00_install_11.sh)
 
-  kibana:
-    image: docker.elastic.co/kibana/kibana:9.1.3
-    container_name: kibana
-    environment:
-      - ELASTICSEARCH_HOSTS=http://localhost:9200
-      - ELASTICSEARCH_URL=http://localhost:9200
-      # Disable security for Kibana as well
-      - xpack.security.enabled=false
-      - xpack.encryptedSavedObjects.encryptionKey=fhjskloppd678ehkdfdlliverpoolfcr
-    network_mode: host
-
-volumes:
-  elasticsearch-data:
-    driver: local
-EOF
-```
 
 ### Step 2.4: Start Services
-```bash
-# Start in detached mode
-docker compose up -d
+See [`00_install_12.sh`](./00_install_12.sh)
 
-# View logs
-docker compose logs -f
-
-# Wait for services to be healthy
-docker compose ps
-```
 
 ### Step 2.5: Set up Kibana System User
-```bash
-# Generate password for kibana_system user
-docker exec -it elasticsearch /usr/share/elasticsearch/bin/elasticsearch-reset-password \
--u kibana_system -b
+See [`00_install_13.sh`](./00_install_13.sh)
 
-# Update the ELASTICSEARCH_PASSWORD in docker-compose.yml with the new password
-# Then restart Kibana
-docker compose restart kibana
-```
 
 ### Verification (Docker Compose Method)
-```bash
-# Test Elasticsearch
-# with security
-curl -X GET "https://localhost:9200" -k -u elastic:changeme123
-# without security
-curl -X GET "http://localhost:8200"
+See [`00_install_14.sh`](./00_install_14.sh)
 
-# Check container status
-docker compose ps
-
-# Access Kibana
-# with security
-echo "Open browser: https://localhost:5601"
-# without security
-echo "Open browser: http://localhost:5601"
-echo "Login with username: elastic"
-echo "Password: changeme123"
-```
 
 ### Uninstallation (Docker Compose Method)
-```bash
-# Navigate to project directory
-cd ~/elastic-docker
+See [`00_install_15.sh`](./00_install_15.sh)
 
-# Stop and remove containers
-docker compose down
-
-# Remove volumes (WARNING: This deletes all data!)
-docker compose down -v
-
-# Remove images (optional)
-docker rmi docker.elastic.co/elasticsearch/elasticsearch:9.1.3
-docker rmi docker.elastic.co/kibana/kibana:9.1.3
-
-# Remove project directory
-cd ~ && rm -rf ~/elastic-docker
-```
 
 ---
 
 ## Method 3: Direct Download (Archive) Installation
 
 ### Step 3.1: Install Java (Required for Archive Installation)
-```bash
-# Install OpenJDK 17
-sudo apt install -y openjdk-17-jdk
+See [`00_install_16.sh`](./00_install_16.sh)
 
-# Verify Java installation
-java -version
-```
 
 ### Step 3.2: Create Installation Directory
-```bash
-# Create directory for Elastic stack
-sudo mkdir -p /opt/elastic
-cd /opt/elastic
-```
+See [`00_install_17.sh`](./00_install_17.sh)
+
 
 ### Step 3.3: Download and Extract Elasticsearch
-```bash
-# Download Elasticsearch
-sudo wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-9.1.3-linux-x86_64.tar.gz
+See [`00_install_18.sh`](./00_install_18.sh)
 
-# Extract archive
-sudo tar -xzf elasticsearch-9.1.3-linux-x86_64.tar.gz
-
-# Create symbolic link for easier access
-sudo ln -s elasticsearch-9.1.3 elasticsearch
-
-# Set ownership
-sudo chown -R $USER:$USER /opt/elastic/elasticsearch-9.1.3
-```
 
 ### Step 3.4: Configure Elasticsearch
-```bash
-# Edit configuration
-nano /opt/elastic/elasticsearch/config/elasticsearch.yml
+See [`00_install_19.sh`](./00_install_19.sh)
 
-# Add/modify these lines:
-# network.host: 0.0.0.0
-# http.port: 9200
-# discovery.type: single-node
-
-# Set JVM heap size (optional)
-nano /opt/elastic/elasticsearch/config/jvm.options
-# Modify -Xms1g and -Xmx1g based on your system
-```
 
 ### Step 3.5: Start Elasticsearch
-```bash
-# Start Elasticsearch in the background
-/opt/elastic/elasticsearch/bin/elasticsearch -d -p /tmp/elasticsearch.pid
+See [`00_install_20.sh`](./00_install_20.sh)
 
-# Note the generated password for elastic user in the output!
-# If you need to reset it:
-/opt/elastic/elasticsearch/bin/elasticsearch-reset-password -u elastic
-```
 
 ### Step 3.6: Download and Extract Kibana
-```bash
-cd /opt/elastic
+See [`00_install_21.sh`](./00_install_21.sh)
 
-# Download Kibana
-sudo wget https://artifacts.elastic.co/downloads/kibana/kibana-9.1.3-linux-x86_64.tar.gz
-
-# Extract archive
-sudo tar -xzf kibana-9.1.3-linux-x86_64.tar.gz
-
-# Create symbolic link
-sudo ln -s kibana-9.1.3 kibana
-
-# Set ownership
-sudo chown -R $USER:$USER /opt/elastic/kibana-9.1.3
-```
 
 ### Step 3.7: Configure Kibana
-```bash
-# Generate enrollment token for Kibana
-/opt/elastic/elasticsearch/bin/elasticsearch-create-enrollment-token -s kibana
+See [`00_install_22.sh`](./00_install_22.sh)
 
-# Configure Kibana with the token
-/opt/elastic/kibana/bin/kibana-setup --enrollment-token <your-token>
-
-# Or manually edit configuration
-nano /opt/elastic/kibana/config/kibana.yml
-# Set: server.host: "0.0.0.0"
-```
 
 ### Step 3.8: Start Kibana
-```bash
-# Start Kibana in the background
-nohup /opt/elastic/kibana/bin/kibana > /tmp/kibana.log 2>&1 &
+See [`00_install_23.sh`](./00_install_23.sh)
 
-# Save the PID
-echo $! > /tmp/kibana.pid
-```
 
 ### Step 3.9: Create Systemd Services (Optional but Recommended)
 
 **Elasticsearch Service:**
-```bash
-sudo tee /etc/systemd/system/elasticsearch-archive.service > /dev/null << 'EOF'
-[Unit]
-Description=Elasticsearch (Archive Installation)
-Documentation=https://www.elastic.co
-Wants=network-online.target
-After=network-online.target
+See [`00_install_24.sh`](./00_install_24.sh)
 
-[Service]
-Type=simple
-User=$USER
-Group=$USER
-ExecStart=/opt/elastic/elasticsearch/bin/elasticsearch
-ExecStop=/bin/kill -TERM $MAINPID
-Restart=on-failure
-RestartSec=5
-StandardOutput=journal
-StandardError=journal
-
-[Install]
-WantedBy=multi-user.target
-EOF
-```
 
 **Kibana Service:**
-```bash
-sudo tee /etc/systemd/system/kibana-archive.service > /dev/null << 'EOF'
-[Unit]
-Description=Kibana (Archive Installation)
-Documentation=https://www.elastic.co
-Wants=network-online.target
-After=network-online.target elasticsearch-archive.service
+See [`00_install_25.sh`](./00_install_25.sh)
 
-[Service]
-Type=simple
-User=$USER
-Group=$USER
-ExecStart=/opt/elastic/kibana/bin/kibana
-ExecStop=/bin/kill -TERM $MAINPID
-Restart=on-failure
-RestartSec=5
-StandardOutput=journal
-StandardError=journal
-
-[Install]
-WantedBy=multi-user.target
-EOF
-```
 
 Enable services:
-```bash
-sudo systemctl daemon-reload
-sudo systemctl enable elasticsearch-archive
-sudo systemctl enable kibana-archive
-```
+See [`00_install_26.sh`](./00_install_26.sh)
+
 
 ### Verification (Archive Method)
-```bash
-# Check if processes are running
-ps aux | grep elasticsearch
-ps aux | grep kibana
+See [`00_install_27.sh`](./00_install_27.sh)
 
-# Test Elasticsearch
-curl -X GET "https://localhost:9200" -k -u elastic:<your-password>
-
-# Access Kibana
-echo "Open browser: http://localhost:5601"
-echo "Login with username: elastic"
-echo "Password: <password from Elasticsearch startup>"
-```
 
 ### Uninstallation (Archive Method)
-```bash
-# Stop processes
-if [ -f /tmp/elasticsearch.pid ]; then
-    kill $(cat /tmp/elasticsearch.pid)
-fi
-if [ -f /tmp/kibana.pid ]; then
-    kill $(cat /tmp/kibana.pid)
-fi
+See [`00_install_28.sh`](./00_install_28.sh)
 
-# Or if using systemd services
-sudo systemctl stop elasticsearch-archive
-sudo systemctl stop kibana-archive
-sudo systemctl disable elasticsearch-archive
-sudo systemctl disable kibana-archive
-sudo rm /etc/systemd/system/elasticsearch-archive.service
-sudo rm /etc/systemd/system/kibana-archive.service
-
-# Remove installation directory (WARNING: This deletes all data!)
-sudo rm -rf /opt/elastic
-
-# Remove PID files
-rm -f /tmp/elasticsearch.pid /tmp/kibana.pid
-```
 
 ---
 
 ## Verification Commands (All Methods)
 
 ### Check Elasticsearch Status
-```bash
-# Basic health check
-curl -X GET "https://localhost:9200/_cluster/health?pretty" -k -u elastic:<password>
+See [`00_install_29.sh`](./00_install_29.sh)
 
-# Get cluster information
-curl -X GET "https://localhost:9200" -k -u elastic:<password>
-
-# List indices
-curl -X GET "https://localhost:9200/_cat/indices?v" -k -u elastic:<password>
-```
 
 ### Check Kibana Status
-```bash
-# Check Kibana API status
-curl -X GET "http://localhost:5601/api/status"
+See [`00_install_30.sh`](./00_install_30.sh)
 
-# Verify in browser
-# Navigate to: http://localhost:5601 or http://<your-server-ip>:5601
-# You should see the Kibana login page
-```
 
 ### Common Troubleshooting
-```bash
-# Check ports are listening
-sudo netstat -tlnp | grep -E '9200|5601'
+See [`00_install_31.sh`](./00_install_31.sh)
 
-# Check logs (APT method)
-sudo journalctl -u elasticsearch -f
-sudo journalctl -u kibana -f
-
-# Check logs (Docker method)
-docker compose logs elasticsearch
-docker compose logs kibana
-
-# Check logs (Archive method)
-tail -f /opt/elastic/elasticsearch/logs/*.log
-tail -f /tmp/kibana.log
-```
 
 ---
 

@@ -1,5 +1,4 @@
-#!/bin/env python
-
+#!/usr/bin/env python
 from elasticsearch import Elasticsearch
 from datetime import datetime
 
@@ -33,14 +32,14 @@ def search_with_recency_boost(query_text):
         },
         "size": 5
     }
-
+    
     result = es.search(index="products", body=query)
-
+    
     print(f"\nRecency-boosted search: \"{query_text}\"")
     print("-" * 50)
     for hit in result["hits"]["hits"]:
         p = hit["_source"]
         days_old = (datetime.now() - datetime.fromisoformat(p["created_date"].replace("Z", "+00:00"))).days
-        print(f"Score: {hit['_score']:.2f} | Age: {days_old} days | {p['name']}")
+        print(f"Score: {hit["_score"]:.2f} | Age: {days_old} days | {p["name"]}")
 
 search_with_recency_boost("product features")

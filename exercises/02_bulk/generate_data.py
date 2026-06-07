@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 """
 Data generator for Elasticsearch bulk insert exercise
 Generates fake e-commerce data for testing bulk insert performance

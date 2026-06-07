@@ -1,0 +1,11 @@
+{
+  "product_id": "PROD001",
+  "name": "Wireless Bluetooth Headphones",
+  "category": "Electronics",
+  "price": 79.99,
+  "stock_quantity": 150,
+  "description": "High-quality wireless headphones with noise cancellation",
+  "tags": ["wireless", "bluetooth", "audio"],
+  "created_at": "2024-01-15T10:30:00Z",
+  "in_stock": true
+}

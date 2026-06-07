@@ -16,272 +16,80 @@ Let's implement the same blog and comments scenario using both approaches to see
 ### Step 1: Create Both Index Types
 
 **Nested Index:**
-```bash
-curl -X PUT "localhost:9200/blog_nested?pretty" -H 'Content-Type: application/json' -d'
-{
-  "mappings": {
-    "properties": {
-      "title": { "type": "text" },
-      "author": { "type": "keyword" },
-      "comments": {
-        "type": "nested",
-        "properties": {
-          "text": { "type": "text" },
-          "commenter": { "type": "keyword" },
-          "date": { "type": "date" }
-        }
-      }
-    }
-  }
-}'
-```
+See [`10_parent_child_vs_nested_01.sh`](./10_parent_child_vs_nested_01.sh)
+
 
 **Parent-Child Index:**
-```bash
-curl -X PUT "localhost:9200/blog_parent_child?pretty" -H 'Content-Type: application/json' -d'
-{
-  "mappings": {
-    "properties": {
-      "title": { "type": "text" },
-      "author": { "type": "keyword" },
-      "comment_text": { "type": "text" },
-      "commenter": { "type": "keyword" },
-      "date": { "type": "date" },
-      "relation": {
-        "type": "join",
-        "relations": { "post": "comment" }
-      }
-    }
-  }
-}'
-```
+See [`10_parent_child_vs_nested_02.sh`](./10_parent_child_vs_nested_02.sh)
+
 
 ### Step 2: Add Sample Data
 
 **Nested - Everything in One Document:**
-```bash
-curl -X POST "localhost:9200/blog_nested/_doc/1?pretty" -H 'Content-Type: application/json' -d'
-{
-  "title": "Getting Started with Elasticsearch",
-  "author": "John",
-  "comments": [
-    {
-      "text": "Great tutorial!",
-      "commenter": "Alice",
-      "date": "2024-01-15"
-    },
-    {
-      "text": "Very helpful, thanks!",
-      "commenter": "Bob",
-      "date": "2024-01-16"
-    }
-  ]
-}'
-```
+See [`10_parent_child_vs_nested_03.sh`](./10_parent_child_vs_nested_03.sh)
+
 
 **Parent-Child - Separate Documents:**
-```bash
-# Parent document
-curl -X POST "localhost:9200/blog_parent_child/_doc/1?pretty" -H 'Content-Type: application/json' -d'
-{
-  "title": "Getting Started with Elasticsearch",
-  "author": "John",
-  "relation": { "name": "post" }
-}'
+See [`10_parent_child_vs_nested_04.sh`](./10_parent_child_vs_nested_04.sh)
 
-# Child documents
-curl -X POST "localhost:9200/blog_parent_child/_doc/101?routing=1&pretty" -H 'Content-Type: application/json' -d'
-{
-  "comment_text": "Great tutorial!",
-  "commenter": "Alice",
-  "date": "2024-01-15",
-  "relation": { "name": "comment", "parent": "1" }
-}'
-
-curl -X POST "localhost:9200/blog_parent_child/_doc/102?routing=1&pretty" -H 'Content-Type: application/json' -d'
-{
-  "comment_text": "Very helpful, thanks!",
-  "commenter": "Bob",
-  "date": "2024-01-16",
-  "relation": { "name": "comment", "parent": "1" }
-}'
-```
 
 ### Step 3: Compare Query Approaches
 
 **Test 1: Find posts with comments containing "helpful"**
 
 *Nested Query:*
-```bash
-curl -X GET "localhost:9200/blog_nested/_search?pretty" -H 'Content-Type: application/json' -d'
-{
-  "query": {
-    "nested": {
-      "path": "comments",
-      "query": {
-        "match": { "comments.text": "helpful" }
-      }
-    }
-  }
-}'
-```
+See [`10_parent_child_vs_nested_05.sh`](./10_parent_child_vs_nested_05.sh)
+
 
 *Parent-Child Query:*
-```bash
-curl -X GET "localhost:9200/blog_parent_child/_search?pretty" -H 'Content-Type: application/json' -d'
-{
-  "query": {
-    "has_child": {
-      "type": "comment",
-      "query": {
-        "match": { "comment_text": "helpful" }
-      }
-    }
-  }
-}'
-```
+See [`10_parent_child_vs_nested_06.sh`](./10_parent_child_vs_nested_06.sh)
+
 
 **Test 2: Find all comments by Alice**
 
 *Nested Query:*
-```bash
-curl -X GET "localhost:9200/blog_nested/_search?pretty" -H 'Content-Type: application/json' -d'
-{
-  "query": {
-    "nested": {
-      "path": "comments",
-      "query": {
-        "term": { "comments.commenter": "Alice" }
-      },
-      "inner_hits": {}
-    }
-  }
-}'
-```
+See [`10_parent_child_vs_nested_07.sh`](./10_parent_child_vs_nested_07.sh)
+
 
 *Parent-Child Query:*
-```bash
-curl -X GET "localhost:9200/blog_parent_child/_search?pretty" -H 'Content-Type: application/json' -d'
-{
-  "query": {
-    "bool": {
-      "must": [
-        { "term": { "relation": "comment" } },
-        { "term": { "commenter": "Alice" } }
-      ]
-    }
-  }
-}'
-```
+See [`10_parent_child_vs_nested_08.sh`](./10_parent_child_vs_nested_08.sh)
+
 
 ### Step 4: Compare Update Scenarios
 
 **Adding a New Comment**
 
 *Nested - Requires Full Document Reindex:*
-```bash
-curl -X POST "localhost:9200/blog_nested/_doc/1?pretty" -H 'Content-Type: application/json' -d'
-{
-  "title": "Getting Started with Elasticsearch",
-  "author": "John",
-  "comments": [
-    {
-      "text": "Great tutorial!",
-      "commenter": "Alice",
-      "date": "2024-01-15"
-    },
-    {
-      "text": "Very helpful, thanks!",
-      "commenter": "Bob",
-      "date": "2024-01-16"
-    },
-    {
-      "text": "I bookmarked this post!",
-      "commenter": "Charlie",
-      "date": "2024-01-17"
-    }
-  ]
-}'
-```
+See [`10_parent_child_vs_nested_09.sh`](./10_parent_child_vs_nested_09.sh)
+
 
 *Parent-Child - Add Independent Document:*
-```bash
-curl -X POST "localhost:9200/blog_parent_child/_doc/103?routing=1&pretty" -H 'Content-Type: application/json' -d'
-{
-  "comment_text": "I bookmarked this post!",
-  "commenter": "Charlie",
-  "date": "2024-01-17",
-  "relation": { "name": "comment", "parent": "1" }
-}'
-```
+See [`10_parent_child_vs_nested_10.sh`](./10_parent_child_vs_nested_10.sh)
+
 
 **Updating an Existing Comment**
 
 *Nested - Must Update Entire Document:*
-```bash
-curl -X POST "localhost:9200/blog_nested/_doc/1?pretty" -H 'Content-Type: application/json' -d'
-{
-  "title": "Getting Started with Elasticsearch",
-  "author": "John",
-  "comments": [
-    {
-      "text": "Great tutorial! Updated my comment.",
-      "commenter": "Alice",
-      "date": "2024-01-15"
-    },
-    {
-      "text": "Very helpful, thanks!",
-      "commenter": "Bob",
-      "date": "2024-01-16"
-    },
-    {
-      "text": "I bookmarked this post!",
-      "commenter": "Charlie",
-      "date": "2024-01-17"
-    }
-  ]
-}'
-```
+See [`10_parent_child_vs_nested_11.sh`](./10_parent_child_vs_nested_11.sh)
+
 
 *Parent-Child - Update Individual Comment:*
-```bash
-curl -X POST "localhost:9200/blog_parent_child/_doc/101?routing=1&pretty" -H 'Content-Type: application/json' -d'
-{
-  "comment_text": "Great tutorial! Updated my comment.",
-  "commenter": "Alice",
-  "date": "2024-01-15",
-  "relation": { "name": "comment", "parent": "1" }
-}'
-```
+See [`10_parent_child_vs_nested_12.sh`](./10_parent_child_vs_nested_12.sh)
+
 
 ### Step 5: Compare Storage and Performance
 
 **Check Document Counts:**
-```bash
-# Nested: 1 document total (all comments stored within)
-curl -X GET "localhost:9200/blog_nested/_count?pretty"
+See [`10_parent_child_vs_nested_13.sh`](./10_parent_child_vs_nested_13.sh)
 
-# Parent-Child: Multiple documents (1 parent + N children)
-curl -X GET "localhost:9200/blog_parent_child/_count?pretty"
-```
 
 **View Actual Storage:**
-```bash
-# Nested: All data in one document
-curl -X GET "localhost:9200/blog_nested/_doc/1?pretty"
+See [`10_parent_child_vs_nested_14.sh`](./10_parent_child_vs_nested_14.sh)
 
-# Parent-Child: Separate documents
-curl -X GET "localhost:9200/blog_parent_child/_doc/1?pretty"
-curl -X GET "localhost:9200/blog_parent_child/_doc/101?routing=1&pretty"
-```
 
 **Performance Test - Add Many Comments:**
-```bash
-# For nested: Each addition requires reindexing the entire document
-# For parent-child: Each addition is a simple new document
+See [`10_parent_child_vs_nested_15.sh`](./10_parent_child_vs_nested_15.sh)
 
-# Try adding 10 more comments to each approach and notice the difference!
-```
 
 ### Key Differences Summary
 
@@ -315,23 +123,12 @@ curl -X GET "localhost:9200/blog_parent_child/_doc/101?routing=1&pretty"
 **Add 5 More Comments - Compare the Effort:**
 
 *Nested (must include ALL existing comments each time):*
-```bash
-# You'd need to fetch the existing document, add the new comment to the array,
-# and reindex the entire document - more complex and resource intensive
-```
+See [`10_parent_child_vs_nested_16.sh`](./10_parent_child_vs_nested_16.sh)
+
 
 *Parent-Child (simple new documents):*
-```bash
-curl -X POST "localhost:9200/blog_parent_child/_doc/104?routing=1&pretty" -H 'Content-Type: application/json' -d'
-{
-  "comment_text": "Fourth comment!",
-  "commenter": "David",
-  "date": "2024-01-18",
-  "relation": { "name": "comment", "parent": "1" }
-}'
+See [`10_parent_child_vs_nested_17.sh`](./10_parent_child_vs_nested_17.sh)
 
-# Much simpler - just add new documents independently!
-```
 
 ### Exercise Questions
 
@@ -343,10 +140,8 @@ curl -X POST "localhost:9200/blog_parent_child/_doc/104?routing=1&pretty" -H 'Co
 
 ### Clean Up
 
-```bash
-curl -X DELETE "localhost:9200/blog_nested?pretty"
-curl -X DELETE "localhost:9200/blog_parent_child?pretty"
-```
+See [`10_parent_child_vs_nested_18.sh`](./10_parent_child_vs_nested_18.sh)
+
 
 ### Exercise Answers
 

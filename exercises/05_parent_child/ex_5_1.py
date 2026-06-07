@@ -1,6 +1,6 @@
-#!/bin/env python
-
+#!/usr/bin/env python
 from elasticsearch import Elasticsearch
+
 es = Elasticsearch(["http://localhost:9200"])
 
 # Create an e-commerce scenario with products and reviews
@@ -117,5 +117,5 @@ avg_rating_query = {
     }
 }
 
-# Note: This is a simplified example. In practice, you'd need more complex aggregations
+# Note: This is a simplified example. In practice, you"d need more complex aggregations
 print("Products with reviews (example query created)")

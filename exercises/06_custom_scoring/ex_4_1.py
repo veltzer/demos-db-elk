@@ -1,5 +1,4 @@
-#!/bin/env python
-
+#!/usr/bin/env python
 from elasticsearch import Elasticsearch
 
 es = Elasticsearch(["http://localhost:9200"])
@@ -36,14 +35,14 @@ def search_with_randomization(query_text, user_id):
         },
         "size": 5
     }
-
+    
     print(f"\nRandomized search for user {user_id}")
     print("-" * 50)
-
+    
     result = es.search(index="products", body=query)
     for hit in result["hits"]["hits"]:
         p = hit["_source"]
-        print(f"Score: {hit['_score']:.2f} | Rating: {p['rating']} | {p['name'][:40]}")
+        print(f"Score: {hit["_score"]:.2f} | Rating: {p["rating"]} | {p["name"][:40]}")
 
 # Same user gets consistent results
 search_with_randomization("product", user_id=12345)

@@ -1,6 +1,6 @@
-#!/bin/env python
-
+#!/usr/bin/env python
 from elasticsearch import Elasticsearch
+
 es = Elasticsearch(["http://localhost:9200"])
 
 # Find blog posts that have comments from a specific user

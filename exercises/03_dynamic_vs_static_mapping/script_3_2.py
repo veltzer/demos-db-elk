@@ -9,7 +9,6 @@ es = Elasticsearch(["http://localhost:9200"])
 # Delete index if it exists
 if es.indices.exists(index="dynamic_test"):
     es.indices.delete(index="dynamic_test")
-
 # Aggregation on keyword field
 agg_result = es.search(
     index="static_test",

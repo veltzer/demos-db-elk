@@ -1,5 +1,4 @@
-#!/bin/env python
-
+#!/usr/bin/env python
 from elasticsearch import Elasticsearch
 
 es = Elasticsearch(["http://localhost:9200"])
@@ -12,7 +11,7 @@ def advanced_ecommerce_scoring(query_text, user_context):
     - Item quality (ratings, returns)
     - Temporal factors (trends, seasons)
     """
-
+    
     query = {
         "query": {
             "function_score": {
@@ -63,7 +62,7 @@ def advanced_ecommerce_scoring(query_text, user_context):
                                     double m = 4.0; // Prior mean rating
                                     double reviews = doc["review_count"].value;
                                     double rating = doc["rating"].value;
-
+                                    
                                     double bayesian_rating = (C * m + reviews * rating) / (C + reviews);
                                     return Math.pow(bayesian_rating / 5.0, 2);
                                 """
@@ -97,21 +96,21 @@ def advanced_ecommerce_scoring(query_text, user_context):
         "_source": ["name", "price", "rating", "review_count", "profit_margin", "stock_quantity"],
         "explain": False
     }
-
+    
     result = es.search(index="products", body=query)
-
+    
     print(f"\nAdvanced E-commerce Scoring")
     print(f"Query: \"{query_text}\"")
     print(f"User Context: {user_context}")
     print("-" * 80)
     print(f"{'Score':<10} {'Price':<10} {'Rating':<10} {'Reviews':<10} {'Margin':<10} {'Stock':<10} {'Name'}")
     print("-" * 80)
-
+    
     for hit in result["hits"]["hits"]:
         p = hit["_source"]
-        print(f"{hit['_score']:<10.2f} ${p['price']:<9.2f} {p['rating']:<10.1f} "
-              f"{p['review_count']:<10} {p['profit_margin']:<10.2f} {p['stock_quantity']:<10} "
-              f"{p['name'][:20]}")
+        print(f"{hit["_score"]:<10.2f} ${p["price"]:<9.2f} {p["rating"]:<10.1f} "
+              f"{p["review_count"]:<10} {p["profit_margin"]:<10.2f} {p["stock_quantity"]:<10} "
+              f"{p["name"][:20]}")
 
 # Different user contexts
 regular_user = {

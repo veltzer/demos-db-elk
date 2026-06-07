@@ -1,5 +1,4 @@
-#!/bin/env python
-
+#!/usr/bin/env python
 from elasticsearch import Elasticsearch
 
 es = Elasticsearch(["http://localhost:9200"])
@@ -15,6 +14,6 @@ parent_id_query = {
 }
 
 result = es.search(index="blog_system", body=parent_id_query)
-print(f"Comments on post_1: {result['hits']['total']['value']}")
+print(f"Comments on post_1: {result["hits"]["total"]["value"]}")
 for hit in result["hits"]["hits"]:
-    print(f"- {hit['_source']['author']}: {hit['_source']['content'][:50]}...")
+    print(f"- {hit["_source"]["author"]}: {hit["_source"]["content"][:50]}...")

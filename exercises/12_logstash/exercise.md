@@ -25,192 +25,61 @@ In this exercise, we'll set up Logstash to read system log files and send them t
 
 **Download and Install Logstash:**
 
-```bash
-# Download Logstash (adjust version as needed)
-wget https://artifacts.elastic.co/downloads/logstash/logstash-8.11.0-linux-x86_64.tar.gz
+See [`12_logstash_01.sh`](./12_logstash_01.sh)
 
-# Extract
-tar -xzf logstash-8.11.0-linux-x86_64.tar.gz
-
-# Move to a convenient location
-sudo mv logstash-8.11.0 /opt/logstash
-
-# Create symlink for easier access
-sudo ln -s /opt/logstash/bin/logstash /usr/local/bin/logstash
-```
 
 **Alternative - Using Package Manager (Ubuntu/Debian):**
-```bash
-# Add Elastic repository
-wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
-echo "deb https://artifacts.elastic.co/packages/8.x/apt stable main" | sudo tee /etc/apt/sources.list.d/elastic-8.x.list
+See [`12_logstash_02.sh`](./12_logstash_02.sh)
 
-# Install
-sudo apt update
-sudo apt install logstash
-```
 
 ### Step 2: Verify Elasticsearch is Running
 
-```bash
-# Check Elasticsearch status
-curl -X GET "localhost:9200/_cluster/health?pretty"
+See [`12_logstash_03.sh`](./12_logstash_03.sh)
 
-# Should return cluster status
-```
 
 ### Step 3: Create a Simple Logstash Configuration
 
 Create a configuration file that will read log files and send them to Elasticsearch:
 
-```bash
-# Create config directory
-mkdir -p ~/logstash-exercise
-cd ~/logstash-exercise
+See [`12_logstash_04.sh`](./12_logstash_04.sh)
 
-# Create the configuration file
-cat > simple-logs.conf << 'EOF'
-input {
-  file {
-    path => "/var/log/syslog"
-    start_position => "beginning"
-    type => "syslog"
-  }
-  
-  file {
-    path => "/var/log/auth.log"
-    start_position => "beginning"
-    type => "auth"
-  }
-}
-
-filter {
-  if [type] == "syslog" {
-    grok {
-      match => { "message" => "%{SYSLOGTIMESTAMP:timestamp} %{IPORHOST:host} %{DATA:program}(?:\[%{POSINT:pid}\])?: %{GREEDYDATA:log_message}" }
-    }
-    
-    date {
-      match => [ "timestamp", "MMM  d HH:mm:ss", "MMM dd HH:mm:ss" ]
-    }
-  }
-  
-  if [type] == "auth" {
-    grok {
-      match => { "message" => "%{SYSLOGTIMESTAMP:timestamp} %{IPORHOST:host} %{DATA:program}(?:\[%{POSINT:pid}\])?: %{GREEDYDATA:log_message}" }
-    }
-    
-    date {
-      match => [ "timestamp", "MMM  d HH:mm:ss", "MMM dd HH:mm:ss" ]
-    }
-  }
-  
-  # Add hostname field
-  mutate {
-    add_field => { "hostname" => "%{host}" }
-  }
-}
-
-output {
-  elasticsearch {
-    hosts => ["localhost:9200"]
-    index => "system-logs-%{+YYYY.MM.dd}"
-  }
-  
-  # Also output to console for debugging
-  stdout {
-    codec => rubydebug
-  }
-}
-EOF
-```
 
 ### Step 4: Test the Configuration
 
-```bash
-# Test the configuration syntax
-/opt/logstash/bin/logstash --config.test_and_exit -f simple-logs.conf
+See [`12_logstash_05.sh`](./12_logstash_05.sh)
 
-# Should output "Configuration OK"
-```
 
 ### Step 5: Generate Some Log Data (Optional)
 
 If your system doesn't have much log activity, generate some test data:
 
-```bash
-# Generate some syslog entries
-logger "Test message from logstash exercise - $(date)"
-logger "Another test message with some data: user=testuser action=login"
-logger "Error simulation: failed to connect to database"
+See [`12_logstash_06.sh`](./12_logstash_06.sh)
 
-# Generate auth log entries (if you have sudo access)
-sudo logger -t sshd "Test auth message: authentication failure"
-```
 
 ### Step 6: Run Logstash
 
 **Start Logstash with our configuration:**
 
-```bash
-# Run Logstash (this will run in foreground)
-/opt/logstash/bin/logstash -f simple-logs.conf
+See [`12_logstash_07.sh`](./12_logstash_07.sh)
 
-# You should see:
-# - Logstash starting up
-# - Pipeline being created
-# - Log entries being processed (in console output)
-# - Data being sent to Elasticsearch
-```
 
 **Alternative - Run in Background:**
-```bash
-# Run in background
-nohup /opt/logstash/bin/logstash -f simple-logs.conf > logstash.log 2>&1 &
+See [`12_logstash_08.sh`](./12_logstash_08.sh)
 
-# Check if it's running
-ps aux | grep logstash
-
-# View logs
-tail -f logstash.log
-```
 
 ### Step 7: Verify Data in Elasticsearch
 
 **Check if indices are being created:**
-```bash
-# List indices
-curl -X GET "localhost:9200/_cat/indices?v&pretty"
+See [`12_logstash_09.sh`](./12_logstash_09.sh)
 
-# Should see indices like: system-logs-2024.01.XX
-```
 
 **Search for log data:**
-```bash
-# Get some log entries
-curl -X GET "localhost:9200/system-logs-*/_search?pretty&size=5" -H 'Content-Type: application/json' -d'
-{
-  "query": {
-    "match_all": {}
-  },
-  "sort": [
-    { "@timestamp": { "order": "desc" } }
-  ]
-}'
-```
+See [`12_logstash_10.sh`](./12_logstash_10.sh)
+
 
 **Search for specific log types:**
-```bash
-# Search for auth logs
-curl -X GET "localhost:9200/system-logs-*/_search?pretty" -H 'Content-Type: application/json' -d'
-{
-  "query": {
-    "term": {
-      "type": "auth"
-    }
-  }
-}'
-```
+See [`12_logstash_11.sh`](./12_logstash_11.sh)
+
 
 ### Step 8: View Data in Kibana
 
@@ -239,89 +108,20 @@ curl -X GET "localhost:9200/system-logs-*/_search?pretty" -H 'Content-Type: appl
 
 **Create a more complex configuration for web server logs:**
 
-```bash
-# If you have nginx/apache logs, create another config
-cat > web-logs.conf << 'EOF'
-input {
-  file {
-    path => "/var/log/nginx/access.log"
-    start_position => "beginning"
-    type => "nginx_access"
-  }
-  
-  file {
-    path => "/var/log/apache2/access.log"
-    start_position => "beginning"
-    type => "apache_access"
-  }
-}
+See [`12_logstash_12.sh`](./12_logstash_12.sh)
 
-filter {
-  if [type] == "nginx_access" {
-    grok {
-      match => { "message" => "%{NGINXACCESS}" }
-    }
-  }
-  
-  if [type] == "apache_access" {
-    grok {
-      match => { "message" => "%{COMMONAPACHELOG}" }
-    }
-  }
-  
-  # Parse timestamp
-  date {
-    match => [ "timestamp", "dd/MMM/yyyy:HH:mm:ss Z" ]
-  }
-  
-  # Convert response code to number
-  mutate {
-    convert => { "response" => "integer" }
-    convert => { "bytes" => "integer" }
-  }
-}
-
-output {
-  elasticsearch {
-    hosts => ["localhost:9200"]
-    index => "web-logs-%{+YYYY.MM.dd}"
-  }
-  
-  stdout {
-    codec => rubydebug
-  }
-}
-EOF
-```
 
 ### Step 10: Monitor Multiple Pipelines
 
 **Run multiple Logstash instances:**
-```bash
-# Terminal 1: System logs
-/opt/logstash/bin/logstash -f simple-logs.conf
+See [`12_logstash_13.sh`](./12_logstash_13.sh)
 
-# Terminal 2: Web logs (if available)
-/opt/logstash/bin/logstash -f web-logs.conf
-```
 
 ### Step 11: Verify Data Flow
 
 **Check data is flowing:**
-```bash
-# Monitor index growth
-watch -n 5 'curl -s "localhost:9200/_cat/indices?v" | grep system-logs'
+See [`12_logstash_14.sh`](./12_logstash_14.sh)
 
-# Count documents
-curl -X GET "localhost:9200/system-logs-*/_count?pretty"
-
-# Get latest entries
-curl -X GET "localhost:9200/system-logs-*/_search?pretty&size=1" -H 'Content-Type: application/json' -d'
-{
-  "query": { "match_all": {} },
-  "sort": [{ "@timestamp": { "order": "desc" }}]
-}'
-```
 
 ### Expected Results
 
@@ -372,14 +172,7 @@ After completing this exercise, you should see:
 
 ### Clean Up
 
-```bash
-# Stop Logstash (Ctrl+C if running in foreground)
-# Or kill background process:
-pkill -f logstash
+See [`12_logstash_15.sh`](./12_logstash_15.sh)
 
-# Remove test indices
-curl -X DELETE "localhost:9200/system-logs-*"
-curl -X DELETE "localhost:9200/web-logs-*"
-```
 
 This exercise demonstrates the complete ELK pipeline: Logstash collecting and processing data, Elasticsearch storing it, and Kibana visualizing it!

@@ -1,6 +1,6 @@
-#!/bin/env python
-
+#!/usr/bin/env python
 from elasticsearch import Elasticsearch
+
 es = Elasticsearch(["http://localhost:9200"])
 
 # Index blog posts (parent documents)
@@ -43,7 +43,7 @@ blog_posts = [
 # Index parent documents
 for i, post in enumerate(blog_posts, 1):
     es.index(index="blog_system", id=f"post_{i}", body=post)
-    print(f"Indexed blog post: {post['title']}")
+    print(f"Indexed blog post: {post["title"]}")
 
 # Refresh to make documents searchable
 es.indices.refresh(index="blog_system")

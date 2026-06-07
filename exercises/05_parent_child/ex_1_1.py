@@ -1,5 +1,4 @@
-#!/bin/env python
-
+#!/usr/bin/env python
 from elasticsearch import Elasticsearch
 from datetime import datetime
 import json

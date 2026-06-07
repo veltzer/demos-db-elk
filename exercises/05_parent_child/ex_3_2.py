@@ -1,6 +1,6 @@
-#!/bin/env python
-
+#!/usr/bin/env python
 from elasticsearch import Elasticsearch
+
 es = Elasticsearch(["http://localhost:9200"])
 
 # Score blog posts based on comment activity
@@ -26,4 +26,4 @@ scoring_query = {
 result = es.search(index="blog_system", body=scoring_query)
 print("Blog posts scored by comment engagement:")
 for hit in result["hits"]["hits"]:
-    print(f"- {hit['_source']['title']} (score: {hit['_score']:.2f})")
+    print(f"- {hit["_source"]["title"]} (score: {hit["_score"]:.2f})")

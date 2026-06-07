@@ -16,105 +16,33 @@ Let's use a simple example of students and their test scores to see the differen
 
 ### Step 1: Create Index with Object Field (Default Behavior)
 
-```bash
-curl -X PUT "localhost:9200/students_object?pretty" -H 'Content-Type: application/json' -d'
-{
-  "mappings": {
-    "properties": {
-      "name": { "type": "text" },
-      "tests": {
-        "properties": {
-          "subject": { "type": "keyword" },
-          "score": { "type": "integer" }
-        }
-      }
-    }
-  }
-}'
-```
+See [`08_nested_vs_object_01.sh`](./08_nested_vs_object_01.sh)
+
 
 ### Step 2: Create Index with Nested Field
 
-```bash
-curl -X PUT "localhost:9200/students_nested?pretty" -H 'Content-Type: application/json' -d'
-{
-  "mappings": {
-    "properties": {
-      "name": { "type": "text" },
-      "tests": {
-        "type": "nested",
-        "properties": {
-          "subject": { "type": "keyword" },
-          "score": { "type": "integer" }
-        }
-      }
-    }
-  }
-}'
-```
+See [`08_nested_vs_object_02.sh`](./08_nested_vs_object_02.sh)
+
 
 ### Step 3: Add Sample Data to Both Indices
 
-```bash
-curl -X POST "localhost:9200/students_object/_doc/1?pretty" -H 'Content-Type: application/json' -d'
-{
-  "name": "Alice",
-  "tests": [
-    { "subject": "math", "score": 95 },
-    { "subject": "english", "score": 70 }
-  ]
-}'
-```
+See [`08_nested_vs_object_03.sh`](./08_nested_vs_object_03.sh)
 
-```bash
-curl -X POST "localhost:9200/students_nested/_doc/1?pretty" -H 'Content-Type: application/json' -d'
-{
-  "name": "Alice",
-  "tests": [
-    { "subject": "math", "score": 95 },
-    { "subject": "english", "score": 70 }
-  ]
-}'
-```
+
+See [`08_nested_vs_object_04.sh`](./08_nested_vs_object_04.sh)
+
 
 ### Step 4: The Problem Query
 
 Now let's search for students who scored 95 in English:
 
 **Object Field Query (Wrong Results!):**
-```bash
-curl -X GET "localhost:9200/students_object/_search?pretty" -H 'Content-Type: application/json' -d'
-{
-  "query": {
-    "bool": {
-      "must": [
-        { "term": { "tests.subject": "english" } },
-        { "term": { "tests.score": 95 } }
-      ]
-    }
-  }
-}'
-```
+See [`08_nested_vs_object_05.sh`](./08_nested_vs_object_05.sh)
+
 
 **Nested Field Query (Correct Results!):**
-```bash
-curl -X GET "localhost:9200/students_nested/_search?pretty" -H 'Content-Type: application/json' -d'
-{
-  "query": {
-    "nested": {
-      "path": "tests",
-      "query": {
-        "bool": {
-          "must": [
-            { "term": { "tests.subject": "english" } },
-            { "term": { "tests.score": 95 } }
-          ]
-        }
-      }
-    }
-  }
-}'
-```
+See [`08_nested_vs_object_06.sh`](./08_nested_vs_object_06.sh)
+
 
 ### Step 5: Results Analysis
 
@@ -144,30 +72,12 @@ With nested fields, each test is stored as a separate document, preserving the r
 3. What query would you use to find students who scored above 90 in any subject using nested fields?
 
 **Answer to Question 3:**
-```bash
-curl -X GET "localhost:9200/students_nested/_search?pretty" -H 'Content-Type: application/json' -d'
-{
-  "query": {
-    "nested": {
-      "path": "tests",
-      "query": {
-        "range": {
-          "tests.score": { "gt": 90 }
-        }
-      }
-    }
-  }
-}'
-```
+See [`08_nested_vs_object_07.sh`](./08_nested_vs_object_07.sh)
+
 
 ### Quick Start Commands
 
 To run this exercise, copy and paste these commands one by one into your terminal (assumes Elasticsearch is running on localhost:9200):
 
-```bash
-# Clean up any existing indices
-curl -X DELETE "localhost:9200/students_object?pretty"
-curl -X DELETE "localhost:9200/students_nested?pretty"
+See [`08_nested_vs_object_08.sh`](./08_nested_vs_object_08.sh)
 
-# Run all the commands above in order, then compare the search results!
-```

@@ -27,48 +27,25 @@ pip install elasticsearch faker matplotlib numpy
 
 ### 2. Ensure Elasticsearch is Running
 
-```bash
-# Check Elasticsearch status
-curl -X GET "http://localhost:9200"
-```
+See [`02_bulk_01.sh`](./02_bulk_01.sh)
+
 
 ## Quick Start
 
 ### Step 1: Generate Test Data
 
-```bash
-# Generate default dataset (10K products, 5K customers, 20K orders)
-python generate_data.py
+See [`02_bulk_02.sh`](./02_bulk_02.sh)
 
-# Generate smaller dataset for quick testing
-python generate_data.py --products 1000 --customers 500 --orders 2000
-
-# Generate larger dataset for stress testing
-python generate_data.py --products 50000 --customers 10000 --orders 100000
-```
 
 ### Step 2: Run Basic Bulk Insert Test
 
-```bash
-# Compare indexed vs non-indexed performance
-python bulk_insert.py --data-file data/products_bulk.json
+See [`02_bulk_03.sh`](./02_bulk_03.sh)
 
-# Test only indexed configuration
-python bulk_insert.py --test-type indexed
-
-# Test only non-indexed configuration
-python bulk_insert.py --test-type non-indexed
-```
 
 ### Step 3: Run Comprehensive Performance Tests
 
-```bash
-# Run full performance suite with visualizations
-python run_performance_test.py
+See [`02_bulk_04.sh`](./02_bulk_04.sh)
 
-# Test with custom sizes
-python run_performance_test.py --test-sizes 1000 5000 10000 25000
-```
 
 ## Understanding the Results
 
@@ -119,49 +96,22 @@ After running tests, you'll find:
 
 ### Example: Optimized Bulk Loading
 
-```python
-# 1. Create index with bulk-optimized settings
-PUT /products
-{
-  "settings": {
-    "number_of_shards": 2,
-    "number_of_replicas": 0,
-    "refresh_interval": "-1"
-  }
-}
+See [`02_bulk_01.py`](./02_bulk_01.py)
 
-# 2. Perform bulk insert
-# ... bulk insert operations ...
-
-# 3. Re-enable normal settings after loading
-PUT /products/_settings
-{
-  "number_of_replicas": 1,
-  "refresh_interval": "1s"
-}
-```
 
 ## Troubleshooting
 
 ### Connection Issues
 
 If you get connection errors:
-```bash
-# Check Elasticsearch is running
-systemctl status elasticsearch
+See [`02_bulk_05.sh`](./02_bulk_05.sh)
 
-# Test connection
-curl -X GET "http://localhost:9200"
-```
 
 ### Memory Issues
 
 For large datasets, increase heap size:
-```bash
-# Edit /etc/elasticsearch/jvm.options
--Xms4g
--Xmx4g
-```
+See [`02_bulk_06.sh`](./02_bulk_06.sh)
+
 
 ### Slow Performance
 
@@ -174,24 +124,15 @@ For large datasets, increase heap size:
 
 ### Custom Data Generation
 
-```python
-# Generate only products with specific settings
-python generate_data.py --products 100000 --customers 0 --orders 0 --format ndjson
-```
+See [`02_bulk_08.sh`](./02_bulk_08.sh)
+
 
 ### Parallel Bulk Loading
 
 For very large datasets, split files and load in parallel:
 
-```bash
-# Split large file
-split -l 10000 products.ndjson products_part_
+See [`02_bulk_07.sh`](./02_bulk_07.sh)
 
-# Load parts in parallel
-for file in products_part_*; do
-    python bulk_insert.py --data-file $file &
-done
-```
 
 ## Learning Objectives
 

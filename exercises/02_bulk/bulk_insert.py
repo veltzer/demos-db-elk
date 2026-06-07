@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 """
 Elasticsearch Bulk Insert with Performance Measurements
 Tests bulk insert performance with indexed vs non-indexed data

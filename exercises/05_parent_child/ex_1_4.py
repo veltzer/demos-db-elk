@@ -1,6 +1,6 @@
-#!/bin/env python
-
+#!/usr/bin/env python
 from elasticsearch import Elasticsearch
+
 es = Elasticsearch(["http://localhost:9200"])
 
 # Index replies to comments (grandchild documents)
@@ -37,6 +37,6 @@ for i, reply in enumerate(replies, 1):
         body=reply,
         routing="post_1"  # Route to root parent (blog post)
     )
-    print(f"Indexed reply to {reply['join_field']['parent']}")
+    print(f"Indexed reply to {reply["join_field"]["parent"]}")
 
 es.indices.refresh(index="blog_system")

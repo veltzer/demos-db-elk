@@ -18,67 +18,18 @@ Let's use a small dataset of online store orders to explore different queries an
 
 ### Step 1: Create Index and Add Sample Data
 
-```bash
-curl -X PUT "localhost:9200/orders?pretty" -H 'Content-Type: application/json' -d'
-{
-  "mappings": {
-    "properties": {
-      "customer": { "type": "keyword" },
-      "product": { "type": "text" },
-      "category": { "type": "keyword" },
-      "price": { "type": "float" },
-      "quantity": { "type": "integer" },
-      "date": { "type": "date" },
-      "status": { "type": "keyword" }
-    }
-  }
-}'
-```
+See [`11_queries_and_aggredations_01.sh`](./11_queries_and_aggredations_01.sh)
+
 
 **Add 10 Simple Orders:**
-```bash
-curl -X POST "localhost:9200/orders/_doc/1?pretty" -H 'Content-Type: application/json' -d'
-{ "customer": "Alice", "product": "Laptop", "category": "Electronics", "price": 999.99, "quantity": 1, "date": "2024-01-15", "status": "shipped" }'
+See [`11_queries_and_aggredations_02.sh`](./11_queries_and_aggredations_02.sh)
 
-curl -X POST "localhost:9200/orders/_doc/2?pretty" -H 'Content-Type: application/json' -d'
-{ "customer": "Bob", "product": "Coffee Mug", "category": "Kitchen", "price": 12.50, "quantity": 2, "date": "2024-01-16", "status": "delivered" }'
-
-curl -X POST "localhost:9200/orders/_doc/3?pretty" -H 'Content-Type: application/json' -d'
-{ "customer": "Alice", "product": "Wireless Mouse", "category": "Electronics", "price": 25.99, "quantity": 1, "date": "2024-01-17", "status": "delivered" }'
-
-curl -X POST "localhost:9200/orders/_doc/4?pretty" -H 'Content-Type: application/json' -d'
-{ "customer": "Charlie", "product": "Running Shoes", "category": "Sports", "price": 89.99, "quantity": 1, "date": "2024-01-18", "status": "pending" }'
-
-curl -X POST "localhost:9200/orders/_doc/5?pretty" -H 'Content-Type: application/json' -d'
-{ "customer": "Bob", "product": "Yoga Mat", "category": "Sports", "price": 35.00, "quantity": 1, "date": "2024-01-19", "status": "shipped" }'
-
-curl -X POST "localhost:9200/orders/_doc/6?pretty" -H 'Content-Type: application/json' -d'
-{ "customer": "Alice", "product": "Smartphone", "category": "Electronics", "price": 599.99, "quantity": 1, "date": "2024-01-20", "status": "delivered" }'
-
-curl -X POST "localhost:9200/orders/_doc/7?pretty" -H 'Content-Type: application/json' -d'
-{ "customer": "Diana", "product": "Cooking Pan", "category": "Kitchen", "price": 45.99, "quantity": 1, "date": "2024-01-21", "status": "shipped" }'
-
-curl -X POST "localhost:9200/orders/_doc/8?pretty" -H 'Content-Type: application/json' -d'
-{ "customer": "Charlie", "product": "Headphones", "category": "Electronics", "price": 150.00, "quantity": 1, "date": "2024-01-22", "status": "delivered" }'
-
-curl -X POST "localhost:9200/orders/_doc/9?pretty" -H 'Content-Type: application/json' -d'
-{ "customer": "Bob", "product": "Water Bottle", "category": "Sports", "price": 18.99, "quantity": 3, "date": "2024-01-23", "status": "pending" }'
-
-curl -X POST "localhost:9200/orders/_doc/10?pretty" -H 'Content-Type: application/json' -d'
-{ "customer": "Diana", "product": "Blender", "category": "Kitchen", "price": 79.99, "quantity": 1, "date": "2024-01-24", "status": "delivered" }'
-```
 
 ### Step 2: Basic Queries (Finding Documents)
 
 **1. Find all orders (match_all):**
-```bash
-curl -X GET "localhost:9200/orders/_search?pretty" -H 'Content-Type: application/json' -d'
-{
-  "query": {
-    "match_all": {}
-  }
-}'
-```
+See [`11_queries_and_aggredations_03.sh`](./11_queries_and_aggredations_03.sh)
+
 
 **Now try these queries yourself:**
 
@@ -91,19 +42,8 @@ curl -X GET "localhost:9200/orders/_search?pretty" -H 'Content-Type: application
 ### Step 3: Basic Aggregations (Analyzing Data)
 
 **1. Count orders by category:**
-```bash
-curl -X GET "localhost:9200/orders/_search?pretty" -H 'Content-Type: application/json' -d'
-{
-  "size": 0,
-  "aggs": {
-    "categories": {
-      "terms": {
-        "field": "category"
-      }
-    }
-  }
-}'
-```
+See [`11_queries_and_aggredations_04.sh`](./11_queries_and_aggredations_04.sh)
+
 
 **Now try these aggregations yourself:**
 

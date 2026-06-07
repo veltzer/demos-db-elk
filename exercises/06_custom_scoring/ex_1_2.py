@@ -1,5 +1,4 @@
-#!/bin/env python
-
+#!/usr/bin/env python
 from elasticsearch import Elasticsearch
 
 es = Elasticsearch(["http://localhost:9200"])
@@ -25,14 +24,14 @@ def search_with_popularity_boost(query_text):
         },
         "size": 5
     }
-
+    
     result = es.search(index="products", body=query)
-
+    
     print(f"\nSearch: \"{query_text}\" with popularity boost")
     print("-" * 50)
     for hit in result["hits"]["hits"]:
         product = hit["_source"]
-        print(f"Score: {hit['_score']:.2f} | Views: {product['view_count']} | {product['name']}")
+        print(f"Score: {hit["_score"]:.2f} | Views: {product["view_count"]} | {product["name"]}")
 
 # Test popularity boosting
 search_with_popularity_boost("quality features")

@@ -1,5 +1,4 @@
-#!/bin/env python
-
+#!/usr/bin/env python
 from elasticsearch import Elasticsearch
 
 es = Elasticsearch(["http://localhost:9200"])
@@ -50,17 +49,17 @@ def multi_factor_search(query_text):
         "size": 5,
         "explain": False  # Set to True to see scoring details
     }
-
+    
     result = es.search(index="products", body=query)
-
+    
     print(f"\nMulti-factor search: \"{query_text}\"")
     print("-" * 60)
     print(f"{'Score':<10} {'Rating':<8} {'Reviews':<10} {'Featured':<10} {'Name'}")
     print("-" * 60)
-
+    
     for hit in result["hits"]["hits"]:
         p = hit["_source"]
         featured = "Yes" if p["is_featured"] else "No"
-        print(f"{hit['_score']:<10.2f} {p['rating']:<8.1f} {p['review_count']:<10} {featured:<10} {p['name'][:30]}")
+        print(f"{hit["_score"]:<10.2f} {p["rating"]:<8.1f} {p["review_count"]:<10} {featured:<10} {p["name"][:30]}")
 
 multi_factor_search("excellent value")
