@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+from typing import Any
+
 from elasticsearch import Elasticsearch
 
 es = Elasticsearch(["http://localhost:9200"])
@@ -54,7 +56,7 @@ for i, product in enumerate(products, 1):
     es.index(index="ecommerce", id=f"product_{i}", body=product)
 
 # Index reviews
-reviews = [
+reviews: list[dict[str, Any]] = [
     {
         "rating": 5,
         "review_text": "Amazing sound quality and comfort!",

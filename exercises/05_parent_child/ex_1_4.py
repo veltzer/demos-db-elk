@@ -1,10 +1,12 @@
 #!/usr/bin/env python
+from typing import Any
+
 from elasticsearch import Elasticsearch
 
 es = Elasticsearch(["http://localhost:9200"])
 
 # Index replies to comments (grandchild documents)
-replies = [
+replies: list[dict[str, Any]] = [
     {
         "content": "I agree! The examples are very clear.",
         "author": "user_alice",
