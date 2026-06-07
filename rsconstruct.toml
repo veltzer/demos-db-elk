@@ -3,6 +3,7 @@
 src_dirs = ["exercises"]
 
 # Spell checking — run the spell checker over every *.md under exercises/.
+# Domain-specific terms (Elasticsearch, Kibana, …) live in .zspell-words.
 [processor.zspell]
 src_dirs = ["exercises"]
 
@@ -12,8 +13,12 @@ src_dirs = ["exercises"]
 [processor.ruff]
 src_dirs = ["exercises", "config"]
 
+# Check each file on its own (batch = false): the exercise scripts reuse
+# basenames across directories (e.g. ex_1_1.py in several dirs), which mypy's
+# batch mode rejects as "duplicate module". Per-file invocation sidesteps that.
 [processor.mypy]
 src_dirs = ["exercises", "config"]
+batch = false
 
 # Shell-script linting — the exercises are driven by *.sh scripts.
 [processor.shellcheck]

@@ -4,11 +4,9 @@ echo "================================================"
 echo "Elasticsearch Bulk Insert Exercise Test"
 echo "================================================"
 
-# Configuration
+# Configuration (security disabled: plain HTTP, no credentials)
 ES_HOST="localhost"
 ES_PORT="9200"
-ES_USER="elastic"
-ES_PASSWORD="changeme"
 
 # Colors for output
 GREEN='\033[0;32m'

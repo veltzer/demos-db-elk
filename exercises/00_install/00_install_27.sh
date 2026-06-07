@@ -3,10 +3,8 @@
 ps aux | grep elasticsearch
 ps aux | grep kibana
 
-# Test Elasticsearch
-curl -X GET "https://localhost:9200" -k -u elastic:<your-password>
+# Test Elasticsearch (security disabled: plain HTTP, no credentials)
+curl -X GET "http://localhost:9200"
 
-# Access Kibana
+# Access Kibana (security disabled: no login required)
 echo "Open browser: http://localhost:5601"
-echo "Login with username: elastic"
-echo "Password: <password from Elasticsearch startup>"

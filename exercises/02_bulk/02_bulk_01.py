@@ -12,14 +12,11 @@ from elasticsearch import Elasticsearch
 
 ES_HOST = "localhost"
 ES_PORT = 9200
-ES_USER = "elastic"
-ES_PASSWORD = "changeme"
 INDEX_NAME = "products"
 
+# Security is disabled: connect over plain HTTP with no credentials.
 es = Elasticsearch(
     [{"host": ES_HOST, "port": ES_PORT, "scheme": "http"}],
-    basic_auth=(ES_USER, ES_PASSWORD),
-    verify_certs=False,
     request_timeout=60,
 )
 

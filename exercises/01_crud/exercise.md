@@ -12,7 +12,7 @@ This exercise demonstrates how to perform CRUD (Create, Read, Update, Delete) op
 - Elasticsearch running on `localhost:9200`
 - Kibana running on `localhost:5601` (for Method 1)
 - Python 3.7+ installed (for Methods 3 & 4)
-- Basic authentication credentials (default: elastic/your-password)
+- Elasticsearch running with security disabled (plain HTTP, no authentication)
 
 ### Setup Test Environment
 See [`01_crud_01.sh`](./01_crud_01.sh)

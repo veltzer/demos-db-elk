@@ -1,10 +1,12 @@
 # Elasticsearch Bulk Insert Performance Exercise
 
-This exercise demonstrates bulk data insertion into Elasticsearch and compares performance between indexed and non-indexed data configurations.
+This exercise demonstrates bulk data insertion into Elasticsearch and
+compares performance between indexed and non-indexed data configurations.
 
 ## Overview
 
 The exercise includes:
+
 - Fake e-commerce data generation
 - Bulk insert implementation with different strategies
 - Performance comparison between indexed vs non-indexed configurations
@@ -29,23 +31,19 @@ pip install elasticsearch faker matplotlib numpy
 
 See [`02_bulk_01.sh`](./02_bulk_01.sh)
 
-
 ## Quick Start
 
 ### Step 1: Generate Test Data
 
 See [`02_bulk_02.sh`](./02_bulk_02.sh)
 
-
 ### Step 2: Run Basic Bulk Insert Test
 
 See [`02_bulk_03.sh`](./02_bulk_03.sh)
 
-
 ### Step 3: Run Comprehensive Performance Tests
 
 See [`02_bulk_04.sh`](./02_bulk_04.sh)
-
 
 ## Understanding the Results
 
@@ -65,6 +63,7 @@ See [`02_bulk_04.sh`](./02_bulk_04.sh)
 ### Expected Results
 
 Typical performance improvements:
+
 - **No Indexing**: 50-100% faster than standard
 - **Bulk Optimized**: 30-50% faster than standard
 - **Minimal Indexing**: 20-40% faster than standard
@@ -98,7 +97,6 @@ After running tests, you'll find:
 
 See [`02_bulk_01.py`](./02_bulk_01.py)
 
-
 ## Troubleshooting
 
 ### Connection Issues
@@ -106,12 +104,10 @@ See [`02_bulk_01.py`](./02_bulk_01.py)
 If you get connection errors:
 See [`02_bulk_05.sh`](./02_bulk_05.sh)
 
-
 ### Memory Issues
 
 For large datasets, increase heap size:
 See [`02_bulk_06.sh`](./02_bulk_06.sh)
-
 
 ### Slow Performance
 
@@ -126,13 +122,11 @@ See [`02_bulk_06.sh`](./02_bulk_06.sh)
 
 See [`02_bulk_08.sh`](./02_bulk_08.sh)
 
-
 ### Parallel Bulk Loading
 
 For very large datasets, split files and load in parallel:
 
 See [`02_bulk_07.sh`](./02_bulk_07.sh)
-
 
 ## Learning Objectives
 

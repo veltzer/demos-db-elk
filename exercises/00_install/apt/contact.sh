@@ -1,3 +1,3 @@
 #!/usr/bin/bash -eu
 
-curl -k "http://localhost:9200"
+curl "http://localhost:9200"

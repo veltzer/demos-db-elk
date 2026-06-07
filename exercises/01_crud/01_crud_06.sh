@@ -2,7 +2,6 @@
 # Full update
 curl -X PUT "localhost:9200/products/_doc/1" \
   -H 'Content-Type: application/json' \
-  -u elastic:your-password \
   -d '{
     "product_id": "PROD002",
     "name": "Smart Watch Pro - Updated",
@@ -18,7 +17,6 @@ curl -X PUT "localhost:9200/products/_doc/1" \
 # Partial update
 curl -X POST "localhost:9200/products/_update/1" \
   -H 'Content-Type: application/json' \
-  -u elastic:your-password \
   -d '{
     "doc": {
       "price": 229.99,
@@ -29,7 +27,6 @@ curl -X POST "localhost:9200/products/_update/1" \
 # Update with script
 curl -X POST "localhost:9200/products/_update/1" \
   -H 'Content-Type: application/json' \
-  -u elastic:your-password \
   -d '{
     "script": {
       "source": "ctx._source.stock_quantity += params.count",

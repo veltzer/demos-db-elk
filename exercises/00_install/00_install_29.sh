@@ -1,9 +1,11 @@
 #!/bin/bash
+# Security is disabled: plain HTTP, no credentials needed.
+
 # Basic health check
-curl -X GET "https://localhost:9200/_cluster/health?pretty" -k -u elastic:<password>
+curl -X GET "http://localhost:9200/_cluster/health?pretty"
 
 # Get cluster information
-curl -X GET "https://localhost:9200" -k -u elastic:<password>
+curl -X GET "http://localhost:9200"
 
 # List indices
-curl -X GET "https://localhost:9200/_cat/indices?v" -k -u elastic:<password>
+curl -X GET "http://localhost:9200/_cat/indices?v"

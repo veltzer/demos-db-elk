@@ -10,14 +10,11 @@ from datetime import datetime
 # Configuration
 ES_HOST = "localhost"
 ES_PORT = 9200
-ES_USER = "elastic"
-ES_PASSWORD = "your-password"
 ES_URL = f"http://{ES_HOST}:{ES_PORT}"
 INDEX_NAME = "products"
 
-# Session with authentication
+# HTTP session (security disabled: no authentication)
 session = requests.Session()
-session.auth = (ES_USER, ES_PASSWORD)
 session.headers.update({'Content-Type': 'application/json'})
 
 

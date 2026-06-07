@@ -15,12 +15,10 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 class PerformanceTestSuite:
-    def __init__(self, es_host='localhost', es_port=9200, es_user='elastic', es_password='changeme'):
-        """Initialize test suite"""
+    def __init__(self, es_host='localhost', es_port=9200):
+        """Initialize test suite (security disabled: no credentials)"""
         self.es = Elasticsearch(
             [{'host': es_host, 'port': es_port, 'scheme': 'http'}],
-            basic_auth=(es_user, es_password),
-            verify_certs=False,
             request_timeout=120
         )
 
@@ -386,8 +384,6 @@ def main():
     parser = argparse.ArgumentParser(description='Run comprehensive Elasticsearch bulk insert performance tests')
     parser.add_argument('--host', default='localhost', help='Elasticsearch host')
     parser.add_argument('--port', type=int, default=9200, help='Elasticsearch port')
-    parser.add_argument('--user', default='elastic', help='Elasticsearch username')
-    parser.add_argument('--password', default='changeme', help='Elasticsearch password')
     parser.add_argument('--data-file', default='./data/products.ndjson', help='Path to data file')
     parser.add_argument('--test-sizes', nargs='+', type=int, default=[1000, 5000, 10000],
                        help='Document counts to test')

@@ -9,8 +9,6 @@ from elasticsearch import Elasticsearch
 # Initialize connection
 es = Elasticsearch(
     ['http://localhost:9200'],
-    basic_auth=('elastic', 'your-password'),
-    verify_certs=False
 )
 
 INDEX_NAME = "products_demo"

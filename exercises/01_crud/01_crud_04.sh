@@ -13,5 +13,4 @@ EOF
 # Execute bulk insert
 curl -X POST "localhost:9200/products/_bulk" \
   -H 'Content-Type: application/x-ndjson' \
-  -u elastic:your-password \
   --data-binary @bulk_products.json

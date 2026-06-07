@@ -2,7 +2,6 @@
 # Insert with auto-generated ID
 curl -X POST "localhost:9200/products/_doc" \
   -H 'Content-Type: application/json' \
-  -u elastic:your-password \
   -d '{
     "product_id": "PROD001",
     "name": "Wireless Bluetooth Headphones",
@@ -18,7 +17,6 @@ curl -X POST "localhost:9200/products/_doc" \
 # Insert with specific ID
 curl -X PUT "localhost:9200/products/_doc/1" \
   -H 'Content-Type: application/json' \
-  -u elastic:your-password \
   -d '{
     "product_id": "PROD002",
     "name": "Smart Watch Pro",

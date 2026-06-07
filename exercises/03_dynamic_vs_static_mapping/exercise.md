@@ -1,21 +1,26 @@
 # Dynamic vs Static Mappings in Elasticsearch
 
 ## Objective
-Learn the differences between dynamic and static mappings in Elasticsearch and understand when to use each approach.
+
+Learn the differences between dynamic and static mappings in Elasticsearch
+and understand when to use each approach.
 
 ## Prerequisites
+
 - Python 3.x installed
-- Elasticsearch running locally (default: http://localhost:9200)
+- Elasticsearch running locally (default: <http://localhost:9200>)
 - Python elasticsearch module installed (`pip install elasticsearch`)
 
 ## Background
 
 ### Dynamic Mapping
+
 - Elasticsearch automatically detects and adds new fields when documents are indexed
 - Field types are inferred from the data
 - Convenient but can lead to mapping conflicts
 
 ### Static Mapping
+
 - You explicitly define the mapping before indexing data
 - Provides control over field types and indexing options
 - Prevents mapping conflicts and ensures data consistency
@@ -26,13 +31,11 @@ Learn the differences between dynamic and static mappings in Elasticsearch and u
 
 See [`script_1_1.py`](./script_1_1.py)
 
-
 **Task:** Run the code and observe the field types Elasticsearch assigned automatically.
 
 ### Exercise 1.2: Dynamic Mapping Conflicts
 
 See [`script_1_2.py`](./script_1_2.py)
-
 
 **Task:** Run this code and observe the mapping conflict error. Why does it occur?
 
@@ -42,13 +45,12 @@ See [`script_1_2.py`](./script_1_2.py)
 
 See [`script_2_1.py`](./script_2_1.py)
 
-
-**Task:** Create the index with static mapping and compare it to the dynamic mapping from Part 1.
+**Task:** Create the index with static mapping and compare it to the dynamic
+mapping from Part 1.
 
 ### Exercise 2.2: Index Documents with Static Mapping
 
 See [`script_2_2.py`](./script_2_2.py)
-
 
 **Task:** Index the documents and verify they were indexed successfully.
 
@@ -58,13 +60,12 @@ See [`script_2_2.py`](./script_2_2.py)
 
 See [`script_3_1.py`](./script_3_1.py)
 
-
-**Task:** Run both searches and observe the difference between text and keyword field searches.
+**Task:** Run both searches and observe the difference between text and keyword
+field searches.
 
 ### Exercise 3.2: Aggregations
 
 See [`script_3_2.py`](./script_3_2.py)
-
 
 **Task:** Run the aggregation and analyze the results.
 
@@ -74,20 +75,22 @@ See [`script_3_2.py`](./script_3_2.py)
 
 See [`script_4_1.py`](./script_4_1.py)
 
-
 **Task:** Compare the results of searching on `name` vs `name.keyword`.
 
 ### Exercise 4.2: Disable Dynamic Mapping
 
 See [`script_4_2.py`](./script_4_2.py)
 
-
-**Task:** Observe what happens when trying to index a document with unmapped fields when dynamic mapping is set to "strict".
+**Task:** Observe what happens when trying to index a document with unmapped
+fields when dynamic mapping is set to "strict".
 
 ## Challenges
 
 ### Challenge 1: Design a Mapping
-Design and implement a static mapping for an e-commerce product catalog with the following requirements:
+
+Design and implement a static mapping for an e-commerce product catalog with
+the following requirements:
+
 - Product name (searchable and sortable)
 - Description (full-text searchable)
 - Price (numeric, for range queries)
@@ -97,14 +100,19 @@ Design and implement a static mapping for an e-commerce product catalog with the
 - Rating (1-5 scale)
 
 ### Challenge 2: Migration Strategy
+
 Write a Python script that:
+
 1. Reads the mapping from an existing index
 2. Creates a new index with modified mapping
 3. Reindexes all documents from the old index to the new one
 4. Verifies the migration was successful
 
 ### Challenge 3: Dynamic Templates
-Research and implement dynamic templates to automatically map fields based on naming patterns:
+
+Research and implement dynamic templates to automatically map fields based on
+naming patterns:
+
 - Fields ending with `_date` should be mapped as dates
 - Fields starting with `is_` should be mapped as booleans
 - Fields ending with `_count` should be mapped as integers

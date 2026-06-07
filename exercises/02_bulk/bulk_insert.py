@@ -12,12 +12,10 @@ import os
 import sys
 
 class BulkInsertTester:
-    def __init__(self, es_host='localhost', es_port=9200, es_user='elastic', es_password='changeme'):
-        """Initialize Elasticsearch connection"""
+    def __init__(self, es_host='localhost', es_port=9200):
+        """Initialize Elasticsearch connection (security disabled: no credentials)"""
         self.es = Elasticsearch(
             [{'host': es_host, 'port': es_port, 'scheme': 'http'}],
-            basic_auth=(es_user, es_password),
-            verify_certs=False,
             request_timeout=60
         )
 
@@ -280,8 +278,6 @@ def main():
     parser = argparse.ArgumentParser(description='Test Elasticsearch bulk insert performance')
     parser.add_argument('--host', default='localhost', help='Elasticsearch host')
     parser.add_argument('--port', type=int, default=9200, help='Elasticsearch port')
-    parser.add_argument('--user', default='elastic', help='Elasticsearch username')
-    parser.add_argument('--password', default='changeme', help='Elasticsearch password')
     parser.add_argument('--data-file', default='./data/products.ndjson', help='Path to data file')
     parser.add_argument('--test-type', choices=['indexed', 'non-indexed', 'compare'], default='compare',
                        help='Type of test to run')
@@ -295,7 +291,7 @@ def main():
         sys.exit(1)
 
     # Initialize tester
-    tester = BulkInsertTester(args.host, args.port, args.user, args.password)
+    tester = BulkInsertTester(args.host, args.port)
 
     # Run tests based on type
     if args.test_type == 'indexed':
