@@ -5,8 +5,6 @@ Elasticsearch CRUD operations using requests library
 
 import requests
 import json
-from datetime import datetime
-from typing import Dict, List, Optional
 
 # Configuration
 ES_HOST = "localhost"

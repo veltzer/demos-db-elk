@@ -99,7 +99,7 @@ def advanced_ecommerce_scoring(query_text, user_context):
     
     result = es.search(index="products", body=query)
     
-    print(f"\nAdvanced E-commerce Scoring")
+    print("\nAdvanced E-commerce Scoring")
     print(f"Query: \"{query_text}\"")
     print(f"User Context: {user_context}")
     print("-" * 80)

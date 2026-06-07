@@ -56,5 +56,5 @@ try:
     result = measure_aggregation_performance('users_non_indexed', agg_query_non_indexed_field)
     print(f"  ES took: {result['es_took_ms']}ms")
 except Exception as e:
-    print(f"  Error: Cannot aggregate on non-indexed field!")
+    print("  Error: Cannot aggregate on non-indexed field!")
     print(f"  {str(e)[:150]}...")

@@ -3,10 +3,7 @@
 Elasticsearch CRUD operations using official elasticsearch-py client
 """
 
-from elasticsearch import Elasticsearch, helpers
-from datetime import datetime
-import json
-from typing import Dict, List, Optional
+from elasticsearch import Elasticsearch
 
 # Initialize client
 es = Elasticsearch(

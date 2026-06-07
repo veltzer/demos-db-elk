@@ -21,7 +21,7 @@ def profile_query(index_name, query_body):
             for search in shard['searches']:
                 print(f"  Query type: {search['query'][0]['type']}")
                 print(f"  Time: {search['query'][0]['time_in_nanos'] / 1_000_000:.2f}ms")
-                print(f"  Breakdown:")
+                print("  Breakdown:")
                 breakdown = search['query'][0]['breakdown']
                 for key, value in sorted(breakdown.items(), key=lambda x: x[1], reverse=True)[:5]:
                     if value > 0:

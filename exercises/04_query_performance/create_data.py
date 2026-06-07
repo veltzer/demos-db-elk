@@ -6,7 +6,6 @@ Demonstrates the impact of indexing on query performance.
 
 import random
 import time
-from datetime import datetime, timedelta
 from elasticsearch import Elasticsearch, helpers
 from faker import Faker
 import argparse

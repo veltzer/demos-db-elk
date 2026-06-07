@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 from elasticsearch import Elasticsearch
-from datetime import datetime
-import json
 
 es = Elasticsearch(["http://localhost:9200"])
 

@@ -7,7 +7,6 @@ Tests bulk insert performance with indexed vs non-indexed data
 import json
 import time
 import argparse
-from datetime import datetime
 from elasticsearch import Elasticsearch, helpers
 import os
 import sys

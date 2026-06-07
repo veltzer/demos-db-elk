@@ -4,10 +4,7 @@ Complete Elasticsearch CRUD example
 Run this script to see all operations in action
 """
 
-from elasticsearch import Elasticsearch, helpers
-from datetime import datetime
-import time
-import json
+from elasticsearch import Elasticsearch
 
 # Initialize connection
 es = Elasticsearch(

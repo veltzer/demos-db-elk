@@ -63,8 +63,8 @@ def demonstrate_index_impact():
                 result2 = measure_query_time('users_non_indexed', query, runs=5)
                 print(f"  users_non_indexed: {result2['avg_ms']:.2f}ms (Success)")
                 non_indexed_time = result2['avg_ms']
-            except Exception as e:
-                print(f"  users_non_indexed: FAILED - Cannot search non-indexed field!")
+            except Exception:
+                print("  users_non_indexed: FAILED - Cannot search non-indexed field!")
                 non_indexed_time = None
         
         results.append({

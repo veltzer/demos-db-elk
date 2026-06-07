@@ -2,7 +2,6 @@
 from elasticsearch import Elasticsearch
 from datetime import datetime, timedelta
 import random
-import math
 
 es = Elasticsearch(["http://localhost:9200"])
 

@@ -6,7 +6,6 @@ Generates fake e-commerce data for testing bulk insert performance
 
 import json
 import random
-from datetime import datetime, timedelta
 from faker import Faker
 import argparse
 import os
@@ -161,7 +160,7 @@ def main():
     # Create output directory
     os.makedirs(args.output_dir, exist_ok=True)
 
-    print(f"Generating fake e-commerce data...")
+    print("Generating fake e-commerce data...")
     print(f"  Products: {args.products}")
     print(f"  Customers: {args.customers}")
     print(f"  Orders: {args.orders}")

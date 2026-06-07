@@ -49,7 +49,7 @@ def search_with_params(query_text, user_preferences):
     
     result = es.search(index="products", body=query)
     
-    print(f"\nPersonalized search with user preferences")
+    print("\nPersonalized search with user preferences")
     print(f"Preferences: {user_preferences}")
     print("-" * 60)
     for hit in result["hits"]["hits"]:

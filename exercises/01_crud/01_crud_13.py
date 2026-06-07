@@ -42,7 +42,7 @@ def scroll_through_results():
     scroll_id = response['_scroll_id']
     results = response['hits']['hits']
     
-    print(f"Scrolling through results (batch size: 2)")
+    print("Scrolling through results (batch size: 2)")
     batch = 1
     
     while results:
