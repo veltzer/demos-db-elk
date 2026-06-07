@@ -1,0 +1,25 @@
+# Markdown linting — lint every *.md under exercises/ (the exercise.md files).
+[processor.mdl]
+src_dirs = ["exercises"]
+
+# Spell checking — run the spell checker over every *.md under exercises/.
+[processor.zspell]
+src_dirs = ["exercises"]
+
+# Python checks. Most *.py files are exercise scripts under exercises/; the
+# rest are the project config under config/. ruff covers syntax and lint;
+# mypy covers the typing.
+[processor.ruff]
+src_dirs = ["exercises", "config"]
+
+[processor.mypy]
+src_dirs = ["exercises", "config"]
+
+# Shell-script linting — the exercises are driven by *.sh scripts.
+[processor.shellcheck]
+src_dirs = ["exercises", "config"]
+args = ["--severity=error", "--shell=bash"]
+
+[analyzer.markdown]
+
+[analyzer.python]
