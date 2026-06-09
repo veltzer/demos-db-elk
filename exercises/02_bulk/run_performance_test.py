@@ -398,7 +398,7 @@ def main():
         sys.exit(1)
 
     # Initialize test suite
-    suite = PerformanceTestSuite(args.host, args.port, args.user, args.password)
+    suite = PerformanceTestSuite(args.host, args.port)
 
     # Run comprehensive tests
     results = suite.run_comprehensive_test(args.data_file, args.test_sizes)
