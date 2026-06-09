@@ -20,19 +20,19 @@ but often you need to incorporate business metrics like:
 
 ### Exercise 1.1: Setup Sample E-commerce Data
 
-See [`ex_1_1.py`](./ex_1_1.py)
+See [`01_setup_sample_products.py`](./01_setup_sample_products.py)
 
 **Task:** Create the index and load sample data.
 
 ### Exercise 1.2: Simple Field Value Factor
 
-See [`ex_1_2.py`](./ex_1_2.py)
+See [`02_popularity_boost.py`](./02_popularity_boost.py)
 
 **Task:** Modify to boost by rating instead of view_count.
 
 ### Exercise 1.3: Multiple Scoring Functions
 
-See [`ex_1_3.py`](./ex_1_3.py)
+See [`03_multi_factor_score.py`](./03_multi_factor_score.py)
 
 **Task:** Add a decay function for products created recently.
 
@@ -40,19 +40,19 @@ See [`ex_1_3.py`](./ex_1_3.py)
 
 ### Exercise 2.1: Gauss Decay for Recency
 
-See [`ex_2_1.py`](./ex_2_1.py)
+See [`04_recency_gauss_decay.py`](./04_recency_gauss_decay.py)
 
 **Task:** Implement linear and exponential decay functions.
 
 ### Exercise 2.2: Geographic Distance Decay
 
-See [`ex_2_2.py`](./ex_2_2.py)
+See [`05_geo_proximity_decay.py`](./05_geo_proximity_decay.py)
 
 **Task:** Combine distance decay with price range decay.
 
 ### Exercise 2.3: Price Decay for Budget Matching
 
-See [`ex_2_3.py`](./ex_2_3.py)
+See [`06_price_preference_decay.py`](./06_price_preference_decay.py)
 
 **Task:** Create a combined decay for both price and rating targets.
 
@@ -60,13 +60,13 @@ See [`ex_2_3.py`](./ex_2_3.py)
 
 ### Exercise 3.1: Custom Script Score
 
-See [`ex_3_1.py`](./ex_3_1.py)
+See [`07_custom_script_score.py`](./07_custom_script_score.py)
 
 **Task:** Modify the script to include profit margin in scoring.
 
 ### Exercise 3.2: Script with Parameters
 
-See [`ex_3_2.py`](./ex_3_2.py)
+See [`08_parameterized_script_score.py`](./08_parameterized_script_score.py)
 
 **Task:** Add category preferences to the scoring parameters.
 
@@ -74,7 +74,7 @@ See [`ex_3_2.py`](./ex_3_2.py)
 
 ### Exercise 4.1: Random Score for A/B Testing
 
-See [`ex_4_1.py`](./ex_4_1.py)
+See [`09_random_score_ab_test.py`](./09_random_score_ab_test.py)
 
 **Task:** Implement an A/B test with 50/50 split using random scoring.
 
@@ -82,13 +82,13 @@ See [`ex_4_1.py`](./ex_4_1.py)
 
 ### Exercise 5.1: E-commerce Recommendation Score
 
-See [`ex_5_1.py`](./ex_5_1.py)
+See [`10_advanced_ecommerce_score.py`](./10_advanced_ecommerce_score.py)
 
 **Task:** Add seasonal scoring adjustments.
 
 ### Exercise 5.2: Click-Through Rate (CTR) Optimization
 
-See [`ex_5_2.py`](./ex_5_2.py)
+See [`11_ctr_optimization.py`](./11_ctr_optimization.py)
 
 **Task:** Implement a multi-armed bandit approach for exploration vs
 exploitation.
@@ -97,7 +97,7 @@ exploitation.
 
 ### Exercise 6.1: Scoring Performance Comparison
 
-See [`ex_6_1.py`](./ex_6_1.py)
+See [`12_scoring_performance_comparison.py`](./12_scoring_performance_comparison.py)
 
 **Task:** Add caching analysis for repeated queries.
 

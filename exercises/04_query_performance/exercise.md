@@ -19,7 +19,7 @@ pip install elasticsearch faker
 
 First, create test data using the provided script:
 
-See [`04_query_performance_01.sh`](./04_query_performance_01.sh)
+See [`01_generate_test_data.sh`](./01_generate_test_data.sh)
 
 This creates two indices:
 
@@ -30,39 +30,39 @@ This creates two indices:
 
 ### Exercise 2.1: Basic Query Timing
 
-See [`04_query_performance_01.py`](./04_query_performance_01.py)
+See [`02_basic_query_timing.py`](./02_basic_query_timing.py)
 
 ### Exercise 2.2: Compare Indexed vs Non-Indexed Fields
 
-See [`04_query_performance_02.py`](./04_query_performance_02.py)
+See [`03_compare_indexed_vs_non_indexed.py`](./03_compare_indexed_vs_non_indexed.py)
 
 ### Exercise 2.3: Using Elasticsearch's Profile API
 
-See [`04_query_performance_03.py`](./04_query_performance_03.py)
+See [`04_profile_api.py`](./04_profile_api.py)
 
 ### Exercise 2.4: Aggregation Performance
 
-See [`04_query_performance_04.py`](./04_query_performance_04.py)
+See [`05_aggregation_performance.py`](./05_aggregation_performance.py)
 
 ### Exercise 2.5: Scroll Performance for Large Result Sets
 
-See [`04_query_performance_05.py`](./04_query_performance_05.py)
+See [`06_scroll_performance.py`](./06_scroll_performance.py)
 
 ## Part 3: Advanced Performance Testing
 
 ### Exercise 3.1: Concurrent Query Performance
 
-See [`04_query_performance_06.py`](./04_query_performance_06.py)
+See [`07_concurrent_query_performance.py`](./07_concurrent_query_performance.py)
 
 ### Exercise 3.2: Script to Demonstrate Non-Indexed Field Impact
 
-See [`04_query_performance_07.py`](./04_query_performance_07.py)
+See [`08_demonstrate_non_indexed_impact.py`](./08_demonstrate_non_indexed_impact.py)
 
 ## Part 4: Best Practices and Optimization
 
 ### Exercise 4.1: Identify Fields to Not Index
 
-See [`04_query_performance_08.py`](./04_query_performance_08.py)
+See [`09_identify_fields_to_not_index.py`](./09_identify_fields_to_not_index.py)
 
 ## Summary and Key Takeaways
 

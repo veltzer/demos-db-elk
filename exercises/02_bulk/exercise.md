@@ -29,21 +29,21 @@ pip install elasticsearch faker matplotlib numpy
 
 ### 2. Ensure Elasticsearch is Running
 
-See [`02_bulk_01.sh`](./02_bulk_01.sh)
+See [`01_check_elasticsearch_status.sh`](./01_check_elasticsearch_status.sh)
 
 ## Quick Start
 
 ### Step 1: Generate Test Data
 
-See [`02_bulk_02.sh`](./02_bulk_02.sh)
+See [`02_generate_test_data.sh`](./02_generate_test_data.sh)
 
 ### Step 2: Run Basic Bulk Insert Test
 
-See [`02_bulk_03.sh`](./02_bulk_03.sh)
+See [`03_run_bulk_insert_test.sh`](./03_run_bulk_insert_test.sh)
 
 ### Step 3: Run Comprehensive Performance Tests
 
-See [`02_bulk_04.sh`](./02_bulk_04.sh)
+See [`04_run_performance_suite.sh`](./04_run_performance_suite.sh)
 
 ## Understanding the Results
 
@@ -96,19 +96,19 @@ After running tests, you'll find:
 
 ### Example: Optimized Bulk Loading
 
-See [`02_bulk_01.py`](./02_bulk_01.py)
+See [`05_bulk_optimized_index_setup.py`](./05_bulk_optimized_index_setup.py)
 
 ## Troubleshooting
 
 ### Connection Issues
 
 If you get connection errors:
-See [`02_bulk_05.sh`](./02_bulk_05.sh)
+See [`06_check_connection.sh`](./06_check_connection.sh)
 
 ### Memory Issues
 
 For large datasets, increase heap size:
-See [`02_bulk_06.sh`](./02_bulk_06.sh)
+See [`07_increase_heap_size.sh`](./07_increase_heap_size.sh)
 
 ### Slow Performance
 
@@ -121,13 +121,13 @@ See [`02_bulk_06.sh`](./02_bulk_06.sh)
 
 ### Custom Data Generation
 
-See [`02_bulk_08.sh`](./02_bulk_08.sh)
+See [`08_generate_products_only.sh`](./08_generate_products_only.sh)
 
 ### Parallel Bulk Loading
 
 For very large datasets, split files and load in parallel:
 
-See [`02_bulk_07.sh`](./02_bulk_07.sh)
+See [`09_parallel_bulk_load.sh`](./09_parallel_bulk_load.sh)
 
 ## Learning Objectives
 

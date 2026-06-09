@@ -33,8 +33,8 @@ The exercise covers:
 
 ## Files
 
-- `15_vector_search_01.sh` - Create the `articles` index with a `dense_vector` field
-- `15_vector_search_02.sh` - Drop the `articles` index
+- `01_create_articles_index.sh` - Create the `articles` index with a `dense_vector` field
+- `02_drop_articles_index.sh` - Drop the `articles` index
 - `embedding.py` - Tiny deterministic text → vector function (no dependencies)
 - `load_data.py` - Embed and index a small corpus of articles
 - `knn_search.py` - kNN vector search (with optional category filter)
@@ -60,7 +60,7 @@ it up yet. `dense_vector` kNN requires Elasticsearch 8.0+ (this course uses
 
 ### Step 1: Create the Index
 
-See [`15_vector_search_01.sh`](./15_vector_search_01.sh)
+See [`01_create_articles_index.sh`](./01_create_articles_index.sh)
 
 The `embedding` field is declared as a `dense_vector` with `dims: 16`,
 `index: true` and `similarity: cosine`. The dimension **must** match the
@@ -109,7 +109,7 @@ Blend keyword and vector relevance in one query:
 ```
 
 To remove the index entirely, see
-[`15_vector_search_02.sh`](./15_vector_search_02.sh).
+[`02_drop_articles_index.sh`](./02_drop_articles_index.sh).
 
 ## Discussion
 
@@ -134,12 +134,12 @@ To remove the index entirely, see
 ## Exercises
 
 1. Increase the corpus in `load_data.py` and observe how ranking changes.
-1. Change the `similarity` in `15_vector_search_01.sh` from `cosine` to
+1. Change the `similarity` in `01_create_articles_index.sh` from `cosine` to
    `l2_norm`, reload, and compare the scores.
 1. Swap the toy embedding for a real one: `pip install sentence-transformers`,
    then in `embedding.py` return
    `model.encode(text).tolist()` from `all-MiniLM-L6-v2` (384 dims) and update
-   `dims` in `15_vector_search_01.sh` to `384`. Re-run and notice that
+   `dims` in `01_create_articles_index.sh` to `384`. Re-run and notice that
    semantically similar sentences now rank well even with no shared words.
 1. Replace the hybrid query's score addition with **RRF** using the `retriever`
    syntax and compare the rankings.

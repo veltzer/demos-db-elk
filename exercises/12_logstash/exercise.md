@@ -29,56 +29,56 @@ to Elasticsearch, then view them in Kibana.
 
 **Download and Install Logstash:**
 
-See [`12_logstash_01.sh`](./12_logstash_01.sh)
+See [`01_download_install_logstash.sh`](./01_download_install_logstash.sh)
 
 **Alternative - Using Package Manager (Ubuntu/Debian):**
 
-See [`12_logstash_02.sh`](./12_logstash_02.sh)
+See [`02_install_logstash_apt.sh`](./02_install_logstash_apt.sh)
 
 ### Step 2: Verify Elasticsearch is Running
 
-See [`12_logstash_03.sh`](./12_logstash_03.sh)
+See [`03_check_elasticsearch_health.sh`](./03_check_elasticsearch_health.sh)
 
 ### Step 3: Create a Simple Logstash Configuration
 
 Create a configuration file that will read log files and send them to
 Elasticsearch:
 
-See [`12_logstash_04.sh`](./12_logstash_04.sh)
+See [`04_create_syslog_config.sh`](./04_create_syslog_config.sh)
 
 ### Step 4: Test the Configuration
 
-See [`12_logstash_05.sh`](./12_logstash_05.sh)
+See [`05_test_config_syntax.sh`](./05_test_config_syntax.sh)
 
 ### Step 5: Generate Some Log Data (Optional)
 
 If your system doesn't have much log activity, generate some test data:
 
-See [`12_logstash_06.sh`](./12_logstash_06.sh)
+See [`06_generate_test_logs.sh`](./06_generate_test_logs.sh)
 
 ### Step 6: Run Logstash
 
 **Start Logstash with our configuration:**
 
-See [`12_logstash_07.sh`](./12_logstash_07.sh)
+See [`07_run_logstash_foreground.sh`](./07_run_logstash_foreground.sh)
 
 **Alternative - Run in Background:**
 
-See [`12_logstash_08.sh`](./12_logstash_08.sh)
+See [`08_run_logstash_background.sh`](./08_run_logstash_background.sh)
 
 ### Step 7: Verify Data in Elasticsearch
 
 **Check if indices are being created:**
 
-See [`12_logstash_09.sh`](./12_logstash_09.sh)
+See [`09_list_indices.sh`](./09_list_indices.sh)
 
 **Search for log data:**
 
-See [`12_logstash_10.sh`](./12_logstash_10.sh)
+See [`10_search_recent_logs.sh`](./10_search_recent_logs.sh)
 
 **Search for specific log types:**
 
-See [`12_logstash_11.sh`](./12_logstash_11.sh)
+See [`11_search_auth_logs.sh`](./11_search_auth_logs.sh)
 
 ### Step 8: View Data in Kibana
 
@@ -107,19 +107,19 @@ See [`12_logstash_11.sh`](./12_logstash_11.sh)
 
 **Create a more complex configuration for web server logs:**
 
-See [`12_logstash_12.sh`](./12_logstash_12.sh)
+See [`12_create_weblog_config.sh`](./12_create_weblog_config.sh)
 
 ### Step 10: Monitor Multiple Pipelines
 
 **Run multiple Logstash instances:**
 
-See [`12_logstash_13.sh`](./12_logstash_13.sh)
+See [`13_run_multiple_pipelines.sh`](./13_run_multiple_pipelines.sh)
 
 ### Step 11: Verify Data Flow
 
 **Check data is flowing:**
 
-See [`12_logstash_14.sh`](./12_logstash_14.sh)
+See [`14_monitor_data_flow.sh`](./14_monitor_data_flow.sh)
 
 ### Expected Results
 
@@ -175,7 +175,7 @@ After completing this exercise, you should see:
 
 ### Clean Up
 
-See [`12_logstash_15.sh`](./12_logstash_15.sh)
+See [`15_cleanup_indices.sh`](./15_cleanup_indices.sh)
 
 This exercise demonstrates the complete ELK pipeline: Logstash collecting and
 processing data, Elasticsearch storing it, and Kibana visualizing it!

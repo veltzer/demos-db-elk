@@ -19,8 +19,8 @@ The exercise includes:
 
 ## Files
 
-- `13_streaming_ingestion_01.sh` - Create the `wpt` index with an explicit mapping
-- `13_streaming_ingestion_02.sh` - Drop the `wpt` index
+- `01_create_index.sh` - Create the `wpt` index with an explicit mapping
+- `02_drop_index.sh` - Drop the `wpt` index
 - `stream_data.py` - Continuously insert one document per second (Ctrl-C to stop)
 - `show_data.py` - Show the current document count and most recent records
 - `remove_data.py` - Delete all documents from the index (keeps the mapping)
@@ -42,7 +42,7 @@ Elasticsearch should be reachable on `localhost:9200`. See the
 
 ### Step 1: Create the Index
 
-See [`13_streaming_ingestion_01.sh`](./13_streaming_ingestion_01.sh)
+See [`01_create_index.sh`](./01_create_index.sh)
 
 ### Step 2: Start Streaming
 
@@ -70,7 +70,7 @@ Stop the producer with Ctrl-C, then empty the index:
 ```
 
 To remove the index entirely, see
-[`13_streaming_ingestion_02.sh`](./13_streaming_ingestion_02.sh).
+[`02_drop_index.sh`](./02_drop_index.sh).
 
 ## Discussion
 

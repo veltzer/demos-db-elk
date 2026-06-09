@@ -24,27 +24,27 @@ difference.
 
 ### Step 1: Create Index with Object Field (Default Behavior)
 
-See [`08_nested_vs_object_01.sh`](./08_nested_vs_object_01.sh)
+See [`01_create_object_index.sh`](./01_create_object_index.sh)
 
 ### Step 2: Create Index with Nested Field
 
-See [`08_nested_vs_object_02.sh`](./08_nested_vs_object_02.sh)
+See [`02_create_nested_index.sh`](./02_create_nested_index.sh)
 
 ### Step 3: Add Sample Data to Both Indices
 
-See [`08_nested_vs_object_03.sh`](./08_nested_vs_object_03.sh)
+See [`03_index_object_doc.sh`](./03_index_object_doc.sh)
 
-See [`08_nested_vs_object_04.sh`](./08_nested_vs_object_04.sh)
+See [`04_index_nested_doc.sh`](./04_index_nested_doc.sh)
 
 ### Step 4: The Problem Query
 
 Now let's search for students who scored 95 in English:
 
 **Object Field Query (Wrong Results!):**
-See [`08_nested_vs_object_05.sh`](./08_nested_vs_object_05.sh)
+See [`05_search_object_index.sh`](./05_search_object_index.sh)
 
 **Nested Field Query (Correct Results!):**
-See [`08_nested_vs_object_06.sh`](./08_nested_vs_object_06.sh)
+See [`06_search_nested_index.sh`](./06_search_nested_index.sh)
 
 ### Step 5: Results Analysis
 
@@ -83,11 +83,11 @@ relationships:
    using nested fields?
 
 **Answer to Question 3:**
-See [`08_nested_vs_object_07.sh`](./08_nested_vs_object_07.sh)
+See [`07_nested_range_query.sh`](./07_nested_range_query.sh)
 
 ### Quick Start Commands
 
 To run this exercise, copy and paste these commands one by one into your
 terminal (assumes Elasticsearch is running on localhost:9200):
 
-See [`08_nested_vs_object_08.sh`](./08_nested_vs_object_08.sh)
+See [`08_delete_indices.sh`](./08_delete_indices.sh)

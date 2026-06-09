@@ -38,35 +38,35 @@ sudo apt update && sudo apt upgrade -y
 
 ### Step 1.1: Install Dependencies
 
-See [`00_install_01.sh`](./00_install_01.sh)
+See [`01_apt_install_dependencies.sh`](./01_apt_install_dependencies.sh)
 
 ### Step 1.2: Add Elasticsearch Repository
 
-See [`00_install_02.sh`](./00_install_02.sh)
+See [`02_apt_add_elasticsearch_repo.sh`](./02_apt_add_elasticsearch_repo.sh)
 
 ### Step 1.3: Install Elasticsearch
 
-See [`00_install_03.sh`](./00_install_03.sh)
+See [`03_apt_install_elasticsearch.sh`](./03_apt_install_elasticsearch.sh)
 
 ### Step 1.4: Configure and Start Elasticsearch
 
-See [`00_install_04.sh`](./00_install_04.sh)
+See [`04_apt_disable_security_start_elasticsearch.sh`](./04_apt_disable_security_start_elasticsearch.sh)
 
 ### Step 1.5: Install Kibana
 
-See [`00_install_05.sh`](./00_install_05.sh)
+See [`05_apt_install_kibana.sh`](./05_apt_install_kibana.sh)
 
 ### Step 1.6: Start Kibana
 
-See [`00_install_06.sh`](./00_install_06.sh)
+See [`06_apt_start_kibana.sh`](./06_apt_start_kibana.sh)
 
 ### Verification (APT Method)
 
-See [`00_install_07.sh`](./00_install_07.sh)
+See [`07_apt_verify_install.sh`](./07_apt_verify_install.sh)
 
 ### Uninstallation (APT Method)
 
-See [`00_install_08.sh`](./00_install_08.sh)
+See [`08_apt_uninstall.sh`](./08_apt_uninstall.sh)
 
 ---
 
@@ -74,31 +74,31 @@ See [`00_install_08.sh`](./00_install_08.sh)
 
 ### Step 2.1: Install Docker and Docker Compose
 
-See [`00_install_09.sh`](./00_install_09.sh)
+See [`09_docker_install.sh`](./09_docker_install.sh)
 
 ### Step 2.2: Create Project Directory
 
-See [`00_install_10.sh`](./00_install_10.sh)
+See [`10_docker_create_project_dir.sh`](./10_docker_create_project_dir.sh)
 
 ### Step 2.3: Create docker-compose.yml
 
-See [`00_install_11.sh`](./00_install_11.sh)
+See [`11_docker_create_compose_file.sh`](./11_docker_create_compose_file.sh)
 
 ### Step 2.4: Start Services
 
-See [`00_install_12.sh`](./00_install_12.sh)
+See [`12_docker_compose_up.sh`](./12_docker_compose_up.sh)
 
 ### Step 2.5: Kibana System User (not required — security disabled)
 
-See [`00_install_13.sh`](./00_install_13.sh)
+See [`13_docker_kibana_system_user_note.sh`](./13_docker_kibana_system_user_note.sh)
 
 ### Verification (Docker Compose Method)
 
-See [`00_install_14.sh`](./00_install_14.sh)
+See [`14_docker_verify_install.sh`](./14_docker_verify_install.sh)
 
 ### Uninstallation (Docker Compose Method)
 
-See [`00_install_15.sh`](./00_install_15.sh)
+See [`15_docker_uninstall.sh`](./15_docker_uninstall.sh)
 
 ---
 
@@ -106,54 +106,54 @@ See [`00_install_15.sh`](./00_install_15.sh)
 
 ### Step 3.1: Install Java (Required for Archive Installation)
 
-See [`00_install_16.sh`](./00_install_16.sh)
+See [`16_archive_install_java.sh`](./16_archive_install_java.sh)
 
 ### Step 3.2: Create Installation Directory
 
-See [`00_install_17.sh`](./00_install_17.sh)
+See [`17_archive_create_install_dir.sh`](./17_archive_create_install_dir.sh)
 
 ### Step 3.3: Download and Extract Elasticsearch
 
-See [`00_install_18.sh`](./00_install_18.sh)
+See [`18_archive_download_elasticsearch.sh`](./18_archive_download_elasticsearch.sh)
 
 ### Step 3.4: Configure Elasticsearch
 
-See [`00_install_19.sh`](./00_install_19.sh)
+See [`19_archive_configure_elasticsearch.sh`](./19_archive_configure_elasticsearch.sh)
 
 ### Step 3.5: Start Elasticsearch
 
-See [`00_install_20.sh`](./00_install_20.sh)
+See [`20_archive_start_elasticsearch.sh`](./20_archive_start_elasticsearch.sh)
 
 ### Step 3.6: Download and Extract Kibana
 
-See [`00_install_21.sh`](./00_install_21.sh)
+See [`21_archive_download_kibana.sh`](./21_archive_download_kibana.sh)
 
 ### Step 3.7: Configure Kibana
 
-See [`00_install_22.sh`](./00_install_22.sh)
+See [`22_archive_configure_kibana.sh`](./22_archive_configure_kibana.sh)
 
 ### Step 3.8: Start Kibana
 
-See [`00_install_23.sh`](./00_install_23.sh)
+See [`23_archive_start_kibana.sh`](./23_archive_start_kibana.sh)
 
 ### Step 3.9: Create Systemd Services (Optional but Recommended)
 
 **Elasticsearch Service:**
-See [`00_install_24.sh`](./00_install_24.sh)
+See [`24_archive_create_elasticsearch_service.sh`](./24_archive_create_elasticsearch_service.sh)
 
 **Kibana Service:**
-See [`00_install_25.sh`](./00_install_25.sh)
+See [`25_archive_create_kibana_service.sh`](./25_archive_create_kibana_service.sh)
 
 Enable services:
-See [`00_install_26.sh`](./00_install_26.sh)
+See [`26_archive_enable_services.sh`](./26_archive_enable_services.sh)
 
 ### Verification (Archive Method)
 
-See [`00_install_27.sh`](./00_install_27.sh)
+See [`27_archive_verify_install.sh`](./27_archive_verify_install.sh)
 
 ### Uninstallation (Archive Method)
 
-See [`00_install_28.sh`](./00_install_28.sh)
+See [`28_archive_uninstall.sh`](./28_archive_uninstall.sh)
 
 ---
 
@@ -165,27 +165,27 @@ through its compose provider, so the steps mirror the Docker Compose method.
 
 ### Step 4.1: Install Podman
 
-See [`00_install_32.sh`](./00_install_32.sh)
+See [`32_podman_install.sh`](./32_podman_install.sh)
 
 ### Step 4.2: Create Project Directory
 
-See [`00_install_33.sh`](./00_install_33.sh)
+See [`33_podman_create_project_dir.sh`](./33_podman_create_project_dir.sh)
 
 ### Step 4.3: Create docker-compose.yml
 
-See [`00_install_34.sh`](./00_install_34.sh)
+See [`34_podman_create_compose_file.sh`](./34_podman_create_compose_file.sh)
 
 ### Step 4.4: Start Services
 
-See [`00_install_35.sh`](./00_install_35.sh)
+See [`35_podman_compose_up.sh`](./35_podman_compose_up.sh)
 
 ### Verification (Podman Method)
 
-See [`00_install_36.sh`](./00_install_36.sh)
+See [`36_podman_verify_install.sh`](./36_podman_verify_install.sh)
 
 ### Uninstallation (Podman Method)
 
-See [`00_install_37.sh`](./00_install_37.sh)
+See [`37_podman_uninstall.sh`](./37_podman_uninstall.sh)
 
 ---
 
@@ -193,15 +193,15 @@ See [`00_install_37.sh`](./00_install_37.sh)
 
 ### Check Elasticsearch Status
 
-See [`00_install_29.sh`](./00_install_29.sh)
+See [`29_check_elasticsearch_status.sh`](./29_check_elasticsearch_status.sh)
 
 ### Check Kibana Status
 
-See [`00_install_30.sh`](./00_install_30.sh)
+See [`30_check_kibana_status.sh`](./30_check_kibana_status.sh)
 
 ### Common Troubleshooting
 
-See [`00_install_31.sh`](./00_install_31.sh)
+See [`31_troubleshooting_logs.sh`](./31_troubleshooting_logs.sh)
 
 ---
 

@@ -20,25 +20,25 @@ have relationships with other documents. Common use cases include:
 
 ### Exercise 1.1: Create Index with Join Field
 
-See [`ex_1_1.py`](./ex_1_1.py)
+See [`01_create_join_index.py`](./01_create_join_index.py)
 
 **Task:** Create the index and understand the join field structure.
 
 ### Exercise 1.2: Index Parent Documents (Blog Posts)
 
-See [`ex_1_2.py`](./ex_1_2.py)
+See [`02_index_parent_blog_posts.py`](./02_index_parent_blog_posts.py)
 
 **Task:** Index the parent documents and note how the `join_field` is set.
 
 ### Exercise 1.3: Index Child Documents (Comments)
 
-See [`ex_1_3.py`](./ex_1_3.py)
+See [`03_index_child_comments.py`](./03_index_child_comments.py)
 
 **Task:** Index child documents and understand why routing is required.
 
 ### Exercise 1.4: Index Grandchild Documents (Replies to Comments)
 
-See [`ex_1_4.py`](./ex_1_4.py)
+See [`04_index_grandchild_replies.py`](./04_index_grandchild_replies.py)
 
 **Task:** Understand the routing requirements for multi-level hierarchies.
 
@@ -46,25 +46,25 @@ See [`ex_1_4.py`](./ex_1_4.py)
 
 ### Exercise 2.1: Has Child Query
 
-See [`ex_2_1.py`](./ex_2_1.py)
+See [`05_has_child_query.py`](./05_has_child_query.py)
 
 **Task:** Find all blog posts that have at least one comment.
 
 ### Exercise 2.2: Has Parent Query
 
-See [`ex_2_2.py`](./ex_2_2.py)
+See [`06_has_parent_query.py`](./06_has_parent_query.py)
 
 **Task:** Find all comments on posts authored by a specific user.
 
 ### Exercise 2.3: Parent ID Query
 
-See [`ex_2_3.py`](./ex_2_3.py)
+See [`07_parent_id_query.py`](./07_parent_id_query.py)
 
 **Task:** Retrieve all comments for a specific blog post.
 
 ### Exercise 2.4: Children Aggregation
 
-See [`ex_2_4.py`](./ex_2_4.py)
+See [`08_children_aggregation.py`](./08_children_aggregation.py)
 
 **Task:** Calculate the average number of likes on comments per blog post.
 
@@ -72,19 +72,19 @@ See [`ex_2_4.py`](./ex_2_4.py)
 
 ### Exercise 3.1: Inner Hits - Getting Related Documents
 
-See [`ex_3_1.py`](./ex_3_1.py)
+See [`09_inner_hits_comments.py`](./09_inner_hits_comments.py)
 
 **Task:** Retrieve blog posts with their most recent 5 comments.
 
 ### Exercise 3.2: Scoring with Child Documents
 
-See [`ex_3_2.py`](./ex_3_2.py)
+See [`10_has_child_function_score.py`](./10_has_child_function_score.py)
 
 **Task:** Score blog posts based on the number of comments they have.
 
 ### Exercise 3.3: Complex Multi-Level Queries
 
-See [`ex_3_3.py`](./ex_3_3.py)
+See [`11_multi_level_has_child.py`](./11_multi_level_has_child.py)
 
 **Task:** Find comments that have replies from the original post author.
 
@@ -92,13 +92,13 @@ See [`ex_3_3.py`](./ex_3_3.py)
 
 ### Exercise 4.1: Compare Parent-Child vs Nested Performance
 
-See [`ex_4_1.py`](./ex_4_1.py)
+See [`12_query_performance_benchmark.py`](./12_query_performance_benchmark.py)
 
 **Task:** Compare the performance of different parent-child query types.
 
 ### Exercise 4.2: Create Alternative Denormalized Structure
 
-See [`ex_4_2.py`](./ex_4_2.py)
+See [`13_denormalized_nested_structure.py`](./13_denormalized_nested_structure.py)
 
 **Task:** Compare query complexity between parent-child and nested approaches.
 
@@ -106,7 +106,7 @@ See [`ex_4_2.py`](./ex_4_2.py)
 
 ### Exercise 5.1: E-commerce Product Reviews
 
-See [`ex_5_1.py`](./ex_5_1.py)
+See [`14_ecommerce_product_reviews.py`](./14_ecommerce_product_reviews.py)
 
 **Task:** Create queries to find:
 
@@ -116,7 +116,7 @@ See [`ex_5_1.py`](./ex_5_1.py)
 
 ### Exercise 5.2: Company Organization Structure
 
-See [`ex_5_2.py`](./ex_5_2.py)
+See [`15_company_org_hierarchy.py`](./15_company_org_hierarchy.py)
 
 **Task:** Implement a complete company hierarchy with:
 

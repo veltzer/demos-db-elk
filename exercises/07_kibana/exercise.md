@@ -23,11 +23,11 @@ pip install faker
 
 ### 2. Generate Sample Data
 
-See [`07_kibana_01.sh`](./07_kibana_01.sh)
+See [`01_generate_sample_data.sh`](./01_generate_sample_data.sh)
 
 ### 3. Import Data into Elasticsearch
 
-See [`07_kibana_02.sh`](./07_kibana_02.sh)
+See [`02_create_index_and_import.sh`](./02_create_index_and_import.sh)
 
 ## Part 1: Basic Kibana Queries and Filters
 

@@ -4,83 +4,83 @@
 
 **2. Find orders by specific customer (Alice):**
 
-See [`11_queries_and_aggredations_05.sh`](./11_queries_and_aggredations_05.sh)
+See [`05_find_orders_by_customer_alice.sh`](./05_find_orders_by_customer_alice.sh)
 
 **3. Find orders for Electronics products:**
 
-See [`11_queries_and_aggredations_06.sh`](./11_queries_and_aggredations_06.sh)
+See [`06_find_electronics_orders.sh`](./06_find_electronics_orders.sh)
 
 **4. Find orders with price greater than $50:**
 
-See [`11_queries_and_aggredations_07.sh`](./11_queries_and_aggredations_07.sh)
+See [`07_find_orders_price_over_50.sh`](./07_find_orders_price_over_50.sh)
 
 **5. Find pending orders:**
 
-See [`11_queries_and_aggredations_08.sh`](./11_queries_and_aggredations_08.sh)
+See [`08_find_pending_orders.sh`](./08_find_pending_orders.sh)
 
 **6. Search products containing "phone" (text search):**
 
-See [`11_queries_and_aggredations_09.sh`](./11_queries_and_aggredations_09.sh)
+See [`09_search_products_containing_phone.sh`](./09_search_products_containing_phone.sh)
 
 ## Step 3: Basic Aggregations
 
 **2. Count orders by customer:**
 
-See [`11_queries_and_aggredations_10.sh`](./11_queries_and_aggredations_10.sh)
+See [`10_count_orders_by_customer.sh`](./10_count_orders_by_customer.sh)
 
 **3. Calculate average order price:**
 
-See [`11_queries_and_aggredations_11.sh`](./11_queries_and_aggredations_11.sh)
+See [`11_average_order_price.sh`](./11_average_order_price.sh)
 
 **4. Get total sales (sum of all prices):**
 
-See [`11_queries_and_aggredations_12.sh`](./11_queries_and_aggredations_12.sh)
+See [`12_total_sales_sum.sh`](./12_total_sales_sum.sh)
 
 **5. Get price statistics (min, max, avg, sum):**
 
-See [`11_queries_and_aggredations_13.sh`](./11_queries_and_aggredations_13.sh)
+See [`13_price_statistics.sh`](./13_price_statistics.sh)
 
 **6. Count orders by status:**
 
-See [`11_queries_and_aggredations_14.sh`](./11_queries_and_aggredations_14.sh)
+See [`14_count_orders_by_status.sh`](./14_count_orders_by_status.sh)
 
 ## Step 4: Combined Queries and Aggregations
 
 **1. Find Electronics orders AND get their average price:**
 
-See [`11_queries_and_aggredations_15.sh`](./11_queries_and_aggredations_15.sh)
+See [`15_electronics_average_price.sh`](./15_electronics_average_price.sh)
 
 **2. Get Alice orders AND count them by category:**
 
-See [`11_queries_and_aggredations_16.sh`](./11_queries_and_aggredations_16.sh)
+See [`16_alice_orders_by_category.sh`](./16_alice_orders_by_category.sh)
 
 ## Step 5: Advanced Aggregations
 
 **1. Average price per category:**
 
-See [`11_queries_and_aggredations_17.sh`](./11_queries_and_aggredations_17.sh)
+See [`17_average_price_per_category.sh`](./17_average_price_per_category.sh)
 
 **2. Total sales per customer:**
 
-See [`11_queries_and_aggredations_18.sh`](./11_queries_and_aggredations_18.sh)
+See [`18_total_sales_per_customer.sh`](./18_total_sales_per_customer.sh)
 
 **3. Price ranges (buckets):**
 
-See [`11_queries_and_aggredations_19.sh`](./11_queries_and_aggredations_19.sh)
+See [`19_price_range_buckets.sh`](./19_price_range_buckets.sh)
 
 ## Basic Exercise Answers
 
 **1. Orders over $100:**
 
-See [`11_queries_and_aggredations_20.sh`](./11_queries_and_aggredations_20.sh)
+See [`20_orders_over_100.sh`](./20_orders_over_100.sh)
 
 **2. Delivered orders by Bob:**
 
-See [`11_queries_and_aggredations_21.sh`](./11_queries_and_aggredations_21.sh)
+See [`21_delivered_orders_by_bob.sh`](./21_delivered_orders_by_bob.sh)
 
 **3. Most expensive order:**
 
-See [`11_queries_and_aggredations_22.sh`](./11_queries_and_aggredations_22.sh)
+See [`22_most_expensive_order.sh`](./22_most_expensive_order.sh)
 
 **4. Customer who spent the most:**
 
@@ -89,11 +89,11 @@ results. Alice spent the most with $1625.97 total.
 
 **5. Average price of pending orders:**
 
-See [`11_queries_and_aggredations_23.sh`](./11_queries_and_aggredations_23.sh)
+See [`23_average_price_pending_orders.sh`](./23_average_price_pending_orders.sh)
 
 **6. Challenge - Electronics orders under $200 with total sales:**
 
-See [`11_queries_and_aggredations_24.sh`](./11_queries_and_aggredations_24.sh)
+See [`24_electronics_under_200_total_sales.sh`](./24_electronics_under_200_total_sales.sh)
 
 ---
 
@@ -101,26 +101,26 @@ See [`11_queries_and_aggredations_24.sh`](./11_queries_and_aggredations_24.sh)
 
 **1. Which category generates the most revenue?**
 
-See [`11_queries_and_aggredations_25.sh`](./11_queries_and_aggredations_25.sh)
+See [`25_revenue_by_category.sh`](./25_revenue_by_category.sh)
 
 **2. What's the average order value per customer?**
 
-See [`11_queries_and_aggredations_26.sh`](./11_queries_and_aggredations_26.sh)
+See [`26_average_order_value_per_customer.sh`](./26_average_order_value_per_customer.sh)
 
 **3. How many items (total quantity) have been ordered across all orders?**
 
-See [`11_queries_and_aggredations_27.sh`](./11_queries_and_aggredations_27.sh)
+See [`27_total_items_ordered.sh`](./27_total_items_ordered.sh)
 
 **4. What percentage of orders are in each status?**
 
-See [`11_queries_and_aggredations_28.sh`](./11_queries_and_aggredations_28.sh)
+See [`28_order_status_distribution.sh`](./28_order_status_distribution.sh)
 
 *Note: To get percentages, you'd need to calculate them from the doc_count
 values returned by this aggregation.*
 
 **5. Which price range ($0-25, $25-100, $100+) has the most orders?**
 
-See [`11_queries_and_aggredations_29.sh`](./11_queries_and_aggredations_29.sh)
+See [`29_price_range_with_most_orders.sh`](./29_price_range_with_most_orders.sh)
 
 ---
 
@@ -128,16 +128,16 @@ See [`11_queries_and_aggredations_29.sh`](./11_queries_and_aggredations_29.sh)
 
 **1. Total quantity of items sold:**
 
-See [`11_queries_and_aggredations_30.sh`](./11_queries_and_aggredations_30.sh)
+See [`30_total_quantity_sold.sh`](./30_total_quantity_sold.sh)
 
 **2. Top 3 customers by total spending:**
 
-See [`11_queries_and_aggredations_31.sh`](./11_queries_and_aggredations_31.sh)
+See [`31_top_3_customers_by_spending.sh`](./31_top_3_customers_by_spending.sh)
 
 **3. Date histogram - orders per day:**
 
-See [`11_queries_and_aggredations_32.sh`](./11_queries_and_aggredations_32.sh)
+See [`32_orders_per_day_histogram.sh`](./32_orders_per_day_histogram.sh)
 
 **4. Extended price statistics with percentiles:**
 
-See [`11_queries_and_aggredations_33.sh`](./11_queries_and_aggredations_33.sh)
+See [`33_price_percentiles.sh`](./33_price_percentiles.sh)

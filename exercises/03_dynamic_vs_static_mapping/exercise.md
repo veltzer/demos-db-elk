@@ -29,13 +29,13 @@ and understand when to use each approach.
 
 ### Exercise 1.1: Observe Dynamic Mapping Behavior
 
-See [`script_1_1.py`](./script_1_1.py)
+See [`01_observe_dynamic_mapping.py`](./01_observe_dynamic_mapping.py)
 
 **Task:** Run the code and observe the field types Elasticsearch assigned automatically.
 
 ### Exercise 1.2: Dynamic Mapping Conflicts
 
-See [`script_1_2.py`](./script_1_2.py)
+See [`02_dynamic_mapping_conflicts.py`](./02_dynamic_mapping_conflicts.py)
 
 **Task:** Run this code and observe the mapping conflict error. Why does it occur?
 
@@ -43,14 +43,14 @@ See [`script_1_2.py`](./script_1_2.py)
 
 ### Exercise 2.1: Create Static Mapping
 
-See [`script_2_1.py`](./script_2_1.py)
+See [`03_create_static_mapping.py`](./03_create_static_mapping.py)
 
 **Task:** Create the index with static mapping and compare it to the dynamic
 mapping from Part 1.
 
 ### Exercise 2.2: Index Documents with Static Mapping
 
-See [`script_2_2.py`](./script_2_2.py)
+See [`04_index_documents_static_mapping.py`](./04_index_documents_static_mapping.py)
 
 **Task:** Index the documents and verify they were indexed successfully.
 
@@ -58,14 +58,14 @@ See [`script_2_2.py`](./script_2_2.py)
 
 ### Exercise 3.1: Text vs Keyword Fields
 
-See [`script_3_1.py`](./script_3_1.py)
+See [`05_text_vs_keyword_fields.py`](./05_text_vs_keyword_fields.py)
 
 **Task:** Run both searches and observe the difference between text and keyword
 field searches.
 
 ### Exercise 3.2: Aggregations
 
-See [`script_3_2.py`](./script_3_2.py)
+See [`06_aggregations.py`](./06_aggregations.py)
 
 **Task:** Run the aggregation and analyze the results.
 
@@ -73,13 +73,13 @@ See [`script_3_2.py`](./script_3_2.py)
 
 ### Exercise 4.1: Multi-fields
 
-See [`script_4_1.py`](./script_4_1.py)
+See [`07_multi_fields.py`](./07_multi_fields.py)
 
 **Task:** Compare the results of searching on `name` vs `name.keyword`.
 
 ### Exercise 4.2: Disable Dynamic Mapping
 
-See [`script_4_2.py`](./script_4_2.py)
+See [`08_disable_dynamic_mapping.py`](./08_disable_dynamic_mapping.py)
 
 **Task:** Observe what happens when trying to index a document with unmapped
 fields when dynamic mapping is set to "strict".

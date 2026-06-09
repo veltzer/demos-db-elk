@@ -21,65 +21,65 @@ the differences in practice.
 ### Step 1: Create Both Index Types
 
 **Nested Index:**
-See [`10_parent_child_vs_nested_01.sh`](./10_parent_child_vs_nested_01.sh)
+See [`01_create_nested_index.sh`](./01_create_nested_index.sh)
 
 **Parent-Child Index:**
-See [`10_parent_child_vs_nested_02.sh`](./10_parent_child_vs_nested_02.sh)
+See [`02_create_parent_child_index.sh`](./02_create_parent_child_index.sh)
 
 ### Step 2: Add Sample Data
 
 **Nested - Everything in One Document:**
-See [`10_parent_child_vs_nested_03.sh`](./10_parent_child_vs_nested_03.sh)
+See [`03_add_nested_document.sh`](./03_add_nested_document.sh)
 
 **Parent-Child - Separate Documents:**
-See [`10_parent_child_vs_nested_04.sh`](./10_parent_child_vs_nested_04.sh)
+See [`04_add_parent_child_documents.sh`](./04_add_parent_child_documents.sh)
 
 ### Step 3: Compare Query Approaches
 
 #### Test 1: Find posts with comments containing "helpful"
 
 *Nested Query:*
-See [`10_parent_child_vs_nested_05.sh`](./10_parent_child_vs_nested_05.sh)
+See [`05_nested_query_comments_helpful.sh`](./05_nested_query_comments_helpful.sh)
 
 *Parent-Child Query:*
-See [`10_parent_child_vs_nested_06.sh`](./10_parent_child_vs_nested_06.sh)
+See [`06_has_child_query_comments_helpful.sh`](./06_has_child_query_comments_helpful.sh)
 
 #### Test 2: Find all comments by Alice
 
 *Nested Query:*
-See [`10_parent_child_vs_nested_07.sh`](./10_parent_child_vs_nested_07.sh)
+See [`07_nested_query_comments_by_alice.sh`](./07_nested_query_comments_by_alice.sh)
 
 *Parent-Child Query:*
-See [`10_parent_child_vs_nested_08.sh`](./10_parent_child_vs_nested_08.sh)
+See [`08_parent_child_query_comments_by_alice.sh`](./08_parent_child_query_comments_by_alice.sh)
 
 ### Step 4: Compare Update Scenarios
 
 #### Adding a New Comment
 
 *Nested - Requires Full Document Reindex:*
-See [`10_parent_child_vs_nested_09.sh`](./10_parent_child_vs_nested_09.sh)
+See [`09_nested_add_comment_reindex.sh`](./09_nested_add_comment_reindex.sh)
 
 *Parent-Child - Add Independent Document:*
-See [`10_parent_child_vs_nested_10.sh`](./10_parent_child_vs_nested_10.sh)
+See [`10_parent_child_add_comment_document.sh`](./10_parent_child_add_comment_document.sh)
 
 #### Updating an Existing Comment
 
 *Nested - Must Update Entire Document:*
-See [`10_parent_child_vs_nested_11.sh`](./10_parent_child_vs_nested_11.sh)
+See [`11_nested_update_comment_reindex.sh`](./11_nested_update_comment_reindex.sh)
 
 *Parent-Child - Update Individual Comment:*
-See [`10_parent_child_vs_nested_12.sh`](./10_parent_child_vs_nested_12.sh)
+See [`12_parent_child_update_comment_document.sh`](./12_parent_child_update_comment_document.sh)
 
 ### Step 5: Compare Storage and Performance
 
 **Check Document Counts:**
-See [`10_parent_child_vs_nested_13.sh`](./10_parent_child_vs_nested_13.sh)
+See [`13_compare_document_counts.sh`](./13_compare_document_counts.sh)
 
 **View Actual Storage:**
-See [`10_parent_child_vs_nested_14.sh`](./10_parent_child_vs_nested_14.sh)
+See [`14_view_stored_documents.sh`](./14_view_stored_documents.sh)
 
 **Performance Test - Add Many Comments:**
-See [`10_parent_child_vs_nested_15.sh`](./10_parent_child_vs_nested_15.sh)
+See [`15_performance_test_instructions.sh`](./15_performance_test_instructions.sh)
 
 ### Key Differences Summary
 
@@ -115,10 +115,10 @@ See [`10_parent_child_vs_nested_15.sh`](./10_parent_child_vs_nested_15.sh)
 **Add 5 More Comments - Compare the Effort:**
 
 *Nested (must include ALL existing comments each time):*
-See [`10_parent_child_vs_nested_16.sh`](./10_parent_child_vs_nested_16.sh)
+See [`16_nested_add_many_comments_note.sh`](./16_nested_add_many_comments_note.sh)
 
 *Parent-Child (simple new documents):*
-See [`10_parent_child_vs_nested_17.sh`](./10_parent_child_vs_nested_17.sh)
+See [`17_parent_child_add_comment_simple.sh`](./17_parent_child_add_comment_simple.sh)
 
 ### Exercise Questions
 
@@ -132,7 +132,7 @@ See [`10_parent_child_vs_nested_17.sh`](./10_parent_child_vs_nested_17.sh)
 
 ### Clean Up
 
-See [`10_parent_child_vs_nested_18.sh`](./10_parent_child_vs_nested_18.sh)
+See [`18_cleanup_delete_indices.sh`](./18_cleanup_delete_indices.sh)
 
 ### Exercise Answers
 

@@ -23,17 +23,17 @@ and aggregations.
 
 ### Step 1: Create Index and Add Sample Data
 
-See [`11_queries_and_aggredations_01.sh`](./11_queries_and_aggredations_01.sh)
+See [`01_create_orders_index.sh`](./01_create_orders_index.sh)
 
 #### Add 10 Simple Orders
 
-See [`11_queries_and_aggredations_02.sh`](./11_queries_and_aggredations_02.sh)
+See [`02_add_sample_orders.sh`](./02_add_sample_orders.sh)
 
 ### Step 2: Basic Queries (Finding Documents)
 
 #### 1. Find all orders (match_all)
 
-See [`11_queries_and_aggredations_03.sh`](./11_queries_and_aggredations_03.sh)
+See [`03_match_all_orders.sh`](./03_match_all_orders.sh)
 
 **Now try these queries yourself:**
 
@@ -47,7 +47,7 @@ See [`11_queries_and_aggredations_03.sh`](./11_queries_and_aggredations_03.sh)
 
 #### 1. Count orders by category
 
-See [`11_queries_and_aggredations_04.sh`](./11_queries_and_aggredations_04.sh)
+See [`04_count_orders_by_category.sh`](./04_count_orders_by_category.sh)
 
 **Now try these aggregations yourself:**
 

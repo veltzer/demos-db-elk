@@ -19,12 +19,12 @@ operations in Elasticsearch using four different methods:
 
 ### Setup Test Environment
 
-See [`01_crud_01.sh`](./01_crud_01.sh)
+See [`01_setup_environment.sh`](./01_setup_environment.sh)
 
 ## Sample Data Structure
 
 We'll work with a simple e-commerce product catalog:
-See [`01_crud_01.json`](./01_crud_01.json)
+See [`02_sample_document.json`](./02_sample_document.json)
 
 ---
 
@@ -38,27 +38,27 @@ See [`01_crud_01.json`](./01_crud_01.json)
 
 ### 1.1 Create an Index
 
-See [`01_crud_01.js`](./01_crud_01.js)
+See [`03_create_index.js`](./03_create_index.js)
 
 ### 1.2 Insert Single Document
 
-See [`01_crud_02.js`](./01_crud_02.js)
+See [`04_insert_document.js`](./04_insert_document.js)
 
 ### 1.3 Bulk Insert Documents
 
-See [`01_crud_03.js`](./01_crud_03.js)
+See [`05_bulk_insert.js`](./05_bulk_insert.js)
 
 ### 1.4 Search/Read Documents
 
-See [`01_crud_04.js`](./01_crud_04.js)
+See [`06_search_documents.js`](./06_search_documents.js)
 
 ### 1.5 Update Documents
 
-See [`01_crud_05.js`](./01_crud_05.js)
+See [`07_update_documents.js`](./07_update_documents.js)
 
 ### 1.6 Delete Documents
 
-See [`01_crud_06.js`](./01_crud_06.js)
+See [`08_delete_documents.js`](./08_delete_documents.js)
 
 ---
 
@@ -66,27 +66,27 @@ See [`01_crud_06.js`](./01_crud_06.js)
 
 ### 2.1 Create an Index
 
-See [`01_crud_02.sh`](./01_crud_02.sh)
+See [`09_create_index.sh`](./09_create_index.sh)
 
 ### 2.2 Insert Single Document
 
-See [`01_crud_03.sh`](./01_crud_03.sh)
+See [`10_insert_document.sh`](./10_insert_document.sh)
 
 ### 2.3 Bulk Insert Documents
 
-See [`01_crud_04.sh`](./01_crud_04.sh)
+See [`11_bulk_insert.sh`](./11_bulk_insert.sh)
 
 ### 2.4 Search/Read Documents
 
-See [`01_crud_05.sh`](./01_crud_05.sh)
+See [`12_search_documents.sh`](./12_search_documents.sh)
 
 ### 2.5 Update Documents
 
-See [`01_crud_06.sh`](./01_crud_06.sh)
+See [`13_update_documents.sh`](./13_update_documents.sh)
 
 ### 2.6 Delete Documents
 
-See [`01_crud_07.sh`](./01_crud_07.sh)
+See [`14_delete_documents.sh`](./14_delete_documents.sh)
 
 ---
 
@@ -113,27 +113,27 @@ See [`01_crud_07.sh`](./01_crud_07.sh)
 
 ### 3.1 Setup and Configuration
 
-See [`01_crud_01.py`](./01_crud_01.py)
+See [`15_requests_setup.py`](./15_requests_setup.py)
 
 ### 3.2 Create Index
 
-See [`01_crud_02.py`](./01_crud_02.py)
+See [`16_requests_create_index.py`](./16_requests_create_index.py)
 
 ### 3.3 Insert Documents
 
-See [`01_crud_03.py`](./01_crud_03.py)
+See [`17_requests_insert_documents.py`](./17_requests_insert_documents.py)
 
 ### 3.4 Search/Read Documents
 
-See [`01_crud_04.py`](./01_crud_04.py)
+See [`18_requests_search_documents.py`](./18_requests_search_documents.py)
 
 ### 3.5 Update Documents
 
-See [`01_crud_05.py`](./01_crud_05.py)
+See [`19_requests_update_documents.py`](./19_requests_update_documents.py)
 
 ### 3.6 Delete Documents
 
-See [`01_crud_06.py`](./01_crud_06.py)
+See [`20_requests_delete_documents.py`](./20_requests_delete_documents.py)
 
 ---
 
@@ -141,31 +141,31 @@ See [`01_crud_06.py`](./01_crud_06.py)
 
 ### 4.1 Setup and Configuration
 
-See [`01_crud_07.py`](./01_crud_07.py)
+See [`21_client_setup.py`](./21_client_setup.py)
 
 ### 4.2 Create Index
 
-See [`01_crud_08.py`](./01_crud_08.py)
+See [`22_client_create_index.py`](./22_client_create_index.py)
 
 ### 4.3 Insert Documents
 
-See [`01_crud_09.py`](./01_crud_09.py)
+See [`23_client_insert_documents.py`](./23_client_insert_documents.py)
 
 ### 4.4 Search/Read Documents
 
-See [`01_crud_10.py`](./01_crud_10.py)
+See [`24_client_search_documents.py`](./24_client_search_documents.py)
 
 ### 4.5 Update Documents
 
-See [`01_crud_11.py`](./01_crud_11.py)
+See [`25_client_update_documents.py`](./25_client_update_documents.py)
 
 ### 4.6 Delete Documents
 
-See [`01_crud_12.py`](./01_crud_12.py)
+See [`26_client_delete_documents.py`](./26_client_delete_documents.py)
 
 ### 4.7 Advanced Operations
 
-See [`01_crud_13.py`](./01_crud_13.py)
+See [`27_client_advanced_operations.py`](./27_client_advanced_operations.py)
 
 ---
 
@@ -173,7 +173,7 @@ See [`01_crud_13.py`](./01_crud_13.py)
 
 Here's a complete script that demonstrates all CRUD operations:
 
-See [`01_crud_14.py`](./01_crud_14.py)
+See [`28_complete_crud_demo.py`](./28_complete_crud_demo.py)
 
 ---
 
@@ -278,19 +278,19 @@ See [`01_crud_14.py`](./01_crud_14.py)
 
 ### Connection Refused
 
-See [`01_crud_08.sh`](./01_crud_08.sh)
+See [`29_troubleshoot_connection_refused.sh`](./29_troubleshoot_connection_refused.sh)
 
 ### Authentication Failed
 
-See [`01_crud_09.sh`](./01_crud_09.sh)
+See [`30_troubleshoot_authentication.sh`](./30_troubleshoot_authentication.sh)
 
 ### Document Not Found Immediately After Insert
 
-See [`01_crud_17.py`](./01_crud_17.py)
+See [`31_troubleshoot_refresh_visibility.py`](./31_troubleshoot_refresh_visibility.py)
 
 ### Mapping Conflicts
 
-See [`01_crud_18.py`](./01_crud_18.py)
+See [`32_troubleshoot_mapping_conflicts.py`](./32_troubleshoot_mapping_conflicts.py)
 
 ---
 
