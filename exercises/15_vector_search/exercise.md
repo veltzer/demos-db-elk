@@ -33,7 +33,8 @@ The exercise covers:
 
 ## Files
 
-- `01_create_articles_index.sh` - Create the `articles` index with a `dense_vector` field
+- `01_create_articles_index.sh` - Create the `articles` index with a
+  `dense_vector` field
 - `02_drop_articles_index.sh` - Drop the `articles` index
 - `embedding.py` - Tiny deterministic text → vector function (no dependencies)
 - `load_data.py` - Embed and index a small corpus of articles
