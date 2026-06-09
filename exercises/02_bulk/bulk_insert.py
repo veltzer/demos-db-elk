@@ -203,6 +203,15 @@ class BulkInsertTester:
             # Perform bulk insert
             result = self.bulk_insert_with_helpers(index_name, data, chunk_size)
 
+            # Re-enable indexing settings after bulk load
+            if not enable_indexing:
+                print("  Re-enabling indexing settings (refresh_interval, replicas)")
+                self.es.indices.put_settings(
+                    index=index_name,
+                    body={"index": {"refresh_interval": "1s", "number_of_replicas": 1}}
+                )
+                self.es.indices.refresh(index=index_name)
+
             # Add metadata
             result['chunk_size'] = chunk_size
             result['total_docs'] = len(data)
