@@ -66,7 +66,7 @@ def compare_scoring_performance():
         times = []
         for _ in range(10):
             start = time.perf_counter()
-            result = es.search(index="products", body=query_config["body"], size=10)
+            result = es.search(index="products", body={**query_config["body"], "size": 10})
             times.append((time.perf_counter() - start) * 1000)
         
         avg_time = sum(times) / len(times)

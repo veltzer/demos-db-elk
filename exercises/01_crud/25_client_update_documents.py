@@ -89,6 +89,8 @@ def update_by_query():
         }
     }
     
+    # Refresh so update_by_query sees the latest document versions
+    es.indices.refresh(index=INDEX_NAME)
     response = es.update_by_query(index=INDEX_NAME, body=update_query)
     print(f"Update by query - Updated: {response['updated']}, Failed: {response['failures']}")
     return response

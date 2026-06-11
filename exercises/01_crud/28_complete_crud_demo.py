@@ -94,6 +94,8 @@ def run_complete_demo():
     print("✓ Updated Laptop price to $899.99")
     
     # Update by query - add discount
+    # Refresh so update_by_query sees the latest document versions
+    es.indices.refresh(index=INDEX_NAME)
     es.update_by_query(
         index=INDEX_NAME,
         body={
@@ -111,6 +113,8 @@ def run_complete_demo():
     print("✓ Deleted document 5 (Desk Chair)")
     
     # Delete by query
+    # Refresh so delete_by_query sees the documents update_by_query just changed
+    es.indices.refresh(index=INDEX_NAME)
     es.delete_by_query(
         index=INDEX_NAME,
         body={"query": {"term": {"in_stock": False}}}

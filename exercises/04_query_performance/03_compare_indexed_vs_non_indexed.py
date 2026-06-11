@@ -92,11 +92,14 @@ print("\n" + "=" * 60)
 print("PERFORMANCE COMPARISON: Indexed vs Non-Indexed Fields")
 print("=" * 60)
 
+# Use values that actually exist in the generated data so term queries hit
+sample = es.search(index="users_indexed", body={"size": 1})["hits"]["hits"][0]["_source"]
+
 # Field that's indexed in both
-compare_field_performance('username', 'john_smith', 'term')
+compare_field_performance('username', sample['username'], 'term')
 
 # Field that's NOT indexed in users_non_indexed
-compare_field_performance('email', 'user@example.com', 'term')
+compare_field_performance('email', sample['email'], 'term')
 
 # Numeric field comparison
 compare_field_performance('salary', {'gte': 50000, 'lte': 100000}, 'range')

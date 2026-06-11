@@ -42,7 +42,7 @@ def ctr_optimized_search(query_text):
                         "script_score": {
                             "script": {
                                 "source": """
-                                    if (!doc.containsKey("clicks") || !doc.containsKey("impressions")) {
+                                    if (doc["clicks"].size() == 0 || doc["impressions"].size() == 0) {
                                         return 1.0;
                                     }
                                     

@@ -2,8 +2,8 @@
 curl -X GET "localhost:9200/orders/_search?pretty" -H 'Content-Type: application/json' -d'
 {
   "query": {
-    "match": {
-      "product": "phone"
+    "wildcard": {
+      "product": "*phone*"
     }
   }
 }'

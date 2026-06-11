@@ -1,4 +1,8 @@
 #!/bin/bash -eu
+# Use the same config directory as 04_create_syslog_config.sh
+mkdir -p ~/logstash-exercise
+cd ~/logstash-exercise
+
 # If you have nginx/apache logs, create another config
 cat > web-logs.conf << 'EOF'
 input {
