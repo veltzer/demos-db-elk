@@ -156,6 +156,30 @@ See [`04_reindex_transform.sh`](./04_reindex_transform.sh)
 job; `slices: "auto"` splits the copy into parallel sub-tasks (one per shard)
 to use all cores on a large reindex.
 
+**Where conflicts come from:** by default reindex writes with `op_type:
+"index"`, which overwrites whatever is already in the destination. If you set
+`op_type: "create"`, reindex refuses to overwrite an existing `_id` and raises
+a *version conflict*. Normally one conflict aborts the entire job. Setting
+`conflicts: "proceed"` tells reindex to count the conflict, skip that
+document, and keep going. The script demonstrates this by pre-seeding the
+destination with a document whose `_id` collides with the source: the result
+is `created=2, version_conflicts=1`, and the pre-existing document is left
+untouched. This is the safe way to top up a destination with only the new
+documents.
+
+**Why slices speed things up:** a reindex is single-threaded *per shard*.
+`slices: "auto"` (or a fixed integer) splits the source scroll into N parallel
+sub-tasks, typically one per source shard, so the work spreads across cores
+and nodes. On a multi-million-document copy this is the main lever for
+finishing in a reasonable time.
+
+**Why throttle:** `requests_per_second` caps the indexing rate so a giant
+reindex does not saturate the cluster and starve live traffic. Use `-1` for
+unlimited or a number like `2000` to leave headroom. You can even re-throttle
+a running job without restarting it via
+`POST /_reindex/<task_id>/_rethrottle`. The DBA instinct: start throttled on a
+busy cluster, watch the impact, then raise it.
+
 See [`05_reindex_conflicts_slices.sh`](./05_reindex_conflicts_slices.sh)
 
 ## Part 6: Remote Reindex

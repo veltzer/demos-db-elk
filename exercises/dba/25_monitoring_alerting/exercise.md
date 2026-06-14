@@ -181,6 +181,21 @@ Stamp the collector output with a UTC `@timestamp` and index one document per
 run. Accumulate these and chart them in Kibana (see
 [`07_kibana`](../../shared/07_kibana/exercise.md)).
 
+**Why UTC, and why `@timestamp`?** Kibana's time-based views need a date
+field to plot against, and the de facto convention across the Elastic Stack
+is to name it `@timestamp`. Stamping in UTC avoids the classic bug where
+metrics collected in different time zones (or across a daylight-saving change)
+appear out of order or shifted on the chart. Kibana converts UTC to the
+viewer's local time for display, so storing UTC is always the safe choice.
+
+**What's happening: one document per run.** Each invocation produces a single
+self-contained snapshot document. The script uses the bulk helper even for
+that one document, on purpose: it is the exact same code path the sampling
+loop uses for many documents, so there is one indexing routine to understand
+and maintain. It also indexes with `refresh="wait_for"` so the document is
+searchable as soon as the call returns, which matters when you immediately
+open Kibana to confirm the data arrived.
+
 See [`05_index_metrics.py`](./05_index_metrics.py)
 
 ### 4.3 Generate a Quick Time Series

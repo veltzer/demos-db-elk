@@ -174,6 +174,18 @@ An alias is a second name pointing at one or more indices. Clients talk to
 the alias, so the DBA can repoint it later without touching client config.
 The `_aliases` API applies a list of actions atomically.
 
+Think of an alias as a layer of indirection, the same idea as a symbolic
+link in a filesystem or a stable hostname in front of changing servers.
+A query against an alias is resolved to its backing index or indices and
+runs exactly as if you had named the index directly, so clients need no
+special handling. The atomicity of `_aliases` is the load-bearing detail:
+the API takes a list of `add` and `remove` actions and applies them as one
+all-or-nothing transaction. That guarantee is what lets you remove the old
+index and add the new one in the same instant, with no window in between
+where the alias points at nothing. The script demonstrates this by
+repointing `logs-current` from one index to another and back, both as
+single atomic calls.
+
 See [`05_aliases_basics.sh`](./05_aliases_basics.sh)
 
 ## Part 6: Filtered and Routing Aliases

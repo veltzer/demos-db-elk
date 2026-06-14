@@ -189,6 +189,14 @@ See [`03b_clear_cache.sh`](./03b_clear_cache.sh)
 This calls `POST /<index>/_cache/clear` so you can compare cold vs warm
 behaviour. Re-run `03_caches.py` afterwards to watch the caches warm up.
 
+Why this matters: clearing caches is a measurement trick, not
+maintenance. In normal operation Elasticsearch manages eviction itself,
+and clearing a warm cache only throws away work and makes the next
+queries slow. The value here is experimental: clear, run a query once
+(a cold miss), run it again (a warm hit), and watch the hit ratio climb
+in `03_caches.py`. That before-and-after contrast is what teaches you
+how much a given workload actually benefits from caching.
+
 ## Part 4: Circuit Breakers
 
 See [`04_circuit_breakers.py`](./04_circuit_breakers.py)

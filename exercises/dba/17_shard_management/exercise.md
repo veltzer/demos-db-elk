@@ -170,6 +170,26 @@ Merge the 4-primary `logs_sharded` into a 2-primary `logs_shrunk`, showing
 the full correct procedure: pin shards to one node, make the source
 read-only, shrink, then restore write access.
 
+Why this matters: shrink is how you repair an oversharded index without the
+cost of a full reindex. The trick that makes it fast is hard-linking. When
+all the source primaries already sit on one node, Elasticsearch can build
+the new, fewer shards by linking to the existing Lucene segment files on
+disk rather than copying every document. That is why the procedure has three
+non-negotiable preconditions, each addressed by a step in the script:
+
+- The target primary count must be a factor of the source (4 to 2 or 4 to
+  1, never 4 to 3), so the old shards map cleanly onto the new ones.
+- The index must be made read-only first, because new writes during the
+  operation would have no consistent place to land.
+- Every primary must be gathered onto a single node, achieved here with an
+  allocation requirement that pins all shards by node name, so the
+  hard-linking can happen locally.
+
+The common pitfall is forgetting step five. Shrink leaves the source index
+read-only; if you do not lift that write block, the original index silently
+rejects new documents afterward. The script restores write access and clears
+the allocation pin on both indices so they behave normally.
+
 See [`06_shrink_index.sh`](./06_shrink_index.sh)
 
 ## Part 7: Split an Index (More Primaries)

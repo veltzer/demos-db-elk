@@ -166,6 +166,30 @@ See [`04_simulate_flood_stage.sh`](./04_simulate_flood_stage.sh)
 The step-by-step runbook for "my indices have gone read-only and writes are
 failing": confirm the cause, free disk *first*, then clear the block.
 
+**Why the order matters:** the single most common mistake during this
+incident is to clear the read-only block first because it looks like the
+problem. But the block is a *symptom*; the cause is a full disk. Clear the
+block before freeing space and writes resume, the disk fills again within
+minutes, and the node re-triggers flood stage — you have made the outage
+longer. The runbook therefore enforces the order: detect, free disk, then
+unblock.
+
+Reading the steps in order:
+
+- **Step 1 (detect)** queries the per-index block setting and then sweeps
+  the whole cluster for any index showing `read_only`, because in a real
+  flood every index with a shard on the full node is blocked at once, not
+  just the one you noticed.
+- **Step 2 (free disk)** is the actual fix. In production this means
+  deleting old indices, moving data to a cheaper tier, or adding capacity.
+  The demo illustrates the cheapest win, a force merge that expunges
+  deleted documents (see Part 6 for what that reclaims).
+- **Step 3 (clear the block)** sets the flag back to `null` only after disk
+  is recovered. On older Elasticsearch versions this block does not lift
+  itself automatically, which is exactly why a manual clear step exists.
+- **Step 4 (verify)** writes a document to confirm the index accepts writes
+  again, closing the loop.
+
 See [`05_flood_stage_runbook.sh`](./05_flood_stage_runbook.sh)
 
 ## Part 5: Find the Expensive Fields

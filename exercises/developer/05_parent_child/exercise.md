@@ -171,6 +171,18 @@ See [`08_children_aggregation.py`](./08_children_aggregation.py)
 
 **Task:** Calculate the average number of likes on comments per blog post.
 
+**What's happening:** The `children` aggregation is a bucket aggregation that
+shifts the context from parents to their children. After selecting blog posts
+with a `term` query, the `children` aggregation drops into the matching comment
+documents, then nested sub-aggregations (like `terms` on the comment author)
+run over those children.
+
+**Why this matters:** Regular aggregations only see the documents matched by
+the query. The `children` aggregation is what lets you summarize the *other*
+side of the relationship without a separate query. It is the join-aware cousin
+of the `nested` aggregation, which does the same thing for embedded nested
+objects.
+
 ## Part 3: Advanced Parent-Child Patterns
 
 ### Exercise 3.1: Inner Hits - Getting Related Documents

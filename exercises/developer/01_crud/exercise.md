@@ -176,6 +176,13 @@ See [`10_insert_document.sh`](./10_insert_document.sh)
 
 See [`11_bulk_insert.sh`](./11_bulk_insert.sh)
 
+Two details matter here. The content type is `application/x-ndjson` (newline
+delimited JSON), not plain JSON, because the bulk body is a sequence of
+separate JSON lines rather than one object. And curl uses `--data-binary`
+rather than `-d`, because `-d` would strip the newlines that separate the
+operations, corrupting the request. The trailing blank line at the end of
+the file is also required by the bulk format.
+
 ### 2.4 Search/Read Documents
 
 See [`12_search_documents.sh`](./12_search_documents.sh)
