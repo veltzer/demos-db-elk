@@ -19,6 +19,19 @@ ever-growing index. Instead you let Elasticsearch:
 
 ILM is the engine that drives all of this from a single declarative policy.
 
+Why does this matter? An index is not free. Every shard holds open file
+handles, consumes heap for its data structures, and is scanned by the cluster
+on every recovery. A single index that grows without bound eventually has
+shards too large to relocate, too slow to query, and impossible to delete in
+part. The whole point of ILM is to keep individual indices small, predictable
+and disposable, and to let Elasticsearch — not a human with a calendar — decide
+when each one has done its job.
+
+The mental model to hold onto: you do not manage one index, you manage a
+*series* of indices behind a single stable name. New data always lands in the
+youngest one; the older ones quietly age, get optimised, and are eventually
+dropped.
+
 The exercise includes:
 
 - An ILM policy with hot / warm / cold / delete phases (shell and Python)
@@ -74,6 +87,18 @@ index templates).
 
 ### Step 1: Create the ILM Policy
 
+The policy is the heart of everything else. It is a declarative document that
+names the phases an index passes through and the actions to take in each one.
+Critically, the policy is just stored configuration: creating it changes
+nothing on its own. Nothing happens until an index is *attached* to the policy
+(in Step 2 via a template). Think of the policy as a recipe and the template
+as the thing that hands that recipe to every new index.
+
+The script defines four phases (hot, warm, cold, delete) with the rollover
+trigger in hot and a `min_age` on each later phase. Read the inline comments:
+they explain that `min_age` is counted from rollover, not creation, so a `7d`
+warm age means "seven days after this index stopped being written".
+
 See [`01_create_ilm_policy.sh`](./01_create_ilm_policy.sh)
 
 The Python equivalent builds the identical policy from a dictionary, which is
@@ -87,12 +112,38 @@ A composable index template is assembled from reusable component templates and
 is what actually attaches the ILM policy and rollover alias to any index whose
 name matches the pattern:
 
+What is happening under the hood: an index template never touches any existing
+index. It is a standing instruction that says "when an index whose name matches
+`logs-*` is created, give it these settings and mappings". The two settings
+that do the real work here are `index.lifecycle.name` (which policy governs
+this index) and `index.lifecycle.rollover_alias` (which alias the rollover
+action should advance). Because both are baked into the template, every new
+backing index inherits them automatically — you never have to remember to set
+them by hand.
+
+The split into *component* templates plus one *composable* template is about
+reuse: settings and mappings live in their own fragments so several index
+templates can share them. The `priority` field matters because several
+templates can match the same name; Elasticsearch picks the highest priority.
+This is why Step 3b uses a higher priority to override this one for its more
+specific pattern — a common source of confusion when a new index silently picks
+up the "wrong" settings.
+
 See [`03_create_templates.sh`](./03_create_templates.sh)
 
 ### Step 3a: Bootstrap a Managed Index (Classic Rollover Alias)
 
 With a rollover alias you create the first index yourself, suffixed `-000001`,
 and mark it as the write index for the alias:
+
+Two details here are easy to get wrong and worth understanding. First, the
+`-000001` suffix is not cosmetic: rollover works by parsing the trailing number
+and incrementing it, so the very first index must end in a zero-padded integer
+or rollover has nothing to count from. Second, `is_write_index: true` tells the
+alias which of its (eventually many) indices should receive new writes. An
+alias can point at several indices for reads, but exactly one must be the write
+target — forgetting this flag is the classic rollover-alias mistake, and writes
+will be rejected as ambiguous.
 
 See [`04_bootstrap_rollover_alias.sh`](./04_bootstrap_rollover_alias.sh)
 

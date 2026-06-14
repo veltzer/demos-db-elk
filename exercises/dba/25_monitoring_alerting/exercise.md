@@ -16,6 +16,13 @@ them: periodic checks with thresholds, alert routing, a self-monitoring index
 so you can chart cluster health over time, and the golden signals a DBA should
 actually alert on (without drowning in noise).
 
+The mental model to carry through the exercise is the classic monitoring
+pipeline: *collect* raw numbers, *evaluate* them against thresholds, *route*
+an alert when something is wrong, and *store* the numbers so you can see
+trends. Each part below maps to one of those stages, and the scripts are
+layered so later ones reuse earlier ones rather than re-polling the cluster
+in their own way.
+
 This exercise covers:
 
 - A reusable Python metrics collector other scripts build on
@@ -47,6 +54,30 @@ A reusable module that polls `_cluster/health`, `_nodes/stats` and
 thread-pool rejections, unassigned shards, store size) into a single dict.
 Other scripts import `collect_metrics()`.
 
+**Why a separate collector?** Polling the cluster is the one piece of work
+every later script needs. By isolating it in `collect_metrics()`, the
+threshold check, the self-monitoring indexer, and the sampling loop all share
+exactly the same view of the cluster. There is no risk of one script
+measuring heap differently from another, and a fix in one place benefits all
+of them. This is just the single-responsibility idea applied to monitoring.
+
+**Why a flat dict?** The collector deliberately returns a flat (non-nested)
+dictionary. Each cluster API answers in its own deeply nested JSON shape, but
+a flat key/value map is trivial to print, to compare against a threshold, and
+to index as one Elasticsearch document where every key becomes a top-level
+field. Flattening at collection time means downstream code never has to dig
+through nested JSON.
+
+**What's happening under the hood.** Each API answers a different question.
+`_cluster/health` is a cheap, cluster-wide summary computed by the elected
+master: status colour, shard counts, and pending tasks. `_nodes/stats` is
+per-node detail, so the collector loops over every node and keeps the
+*worst* value (for example the fullest disk and the highest heap), because a
+cluster is only as healthy as its most stressed node. `_cat/indices` lists
+the indices so the collector can sum total store size. Reporting the worst
+case rather than an average is intentional: an average hides the one node
+that is about to hit a disk watermark.
+
 See [`01_metrics_collector.py`](./01_metrics_collector.py)
 
 ## Part 2: Threshold Check (Nagios-Style)
@@ -54,6 +85,30 @@ See [`01_metrics_collector.py`](./01_metrics_collector.py)
 Runs the collector, evaluates each metric against a configurable threshold,
 prints one OK/WARN/CRITICAL line per check, and exits `0`/`1`/`2` so it can be
 wired into any monitoring system.
+
+**Why the exit code matters.** Nagios, Icinga, cron, and most CI systems
+judge a command by its exit code, not by parsing its text output. The Nagios
+convention is fixed: `0` means OK, `1` means WARNING, `2` means CRITICAL.
+By following that convention the same script plugs into a real monitoring
+system, a cron job, or a pipeline gate with no glue code. The human-readable
+lines are for the on-call engineer; the exit code is for the machine.
+
+**Why report the worst severity.** The script runs several independent
+checks but must collapse them into a single exit code. It takes the *maximum*
+severity seen: one CRITICAL anywhere makes the whole run CRITICAL. That
+mirrors how an operator thinks, since a green heap does not make up for a red
+cluster.
+
+**Concept: thresholds encode your service-level objectives.** The
+`THRESHOLDS` dict at the top is the only thing you should tune per cluster.
+There is no universal "correct" heap or disk percentage; it depends on your
+hardware and workload. Some checks (cluster status, unassigned shards,
+thread-pool rejections) are categorical rather than numeric, so they are
+hard-coded in their own functions instead of living in the dict. A subtle
+point in the unassigned-shards check: an unassigned shard on a `red` cluster
+is CRITICAL (a missing primary, meaning data is unavailable), but on a
+`yellow` cluster it is only a WARNING (usually a missing replica, so data is
+still served).
 
 See [`02_threshold_check.py`](./02_threshold_check.py)
 

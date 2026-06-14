@@ -16,7 +16,26 @@ have relationships with other documents. Common use cases include:
 - Companies and employees
 - Questions and answers
 
+Elasticsearch is built on Lucene, which stores flat documents and has no
+concept of a SQL-style join across rows. The parent-child (or "join") feature
+simulates a relationship by storing related documents in the same index and
+the same shard, then linking them through a special `join` field. This lets
+you update a child without re-indexing the parent, and query one side of the
+relationship using the other.
+
+Why does this matter? In a denormalized world you would copy parent data into
+every child (or embed children inside the parent as nested objects). That is
+fast to read but expensive to update: changing one comment means re-indexing
+the whole post. Parent-child trades some query speed for the ability to update
+parents and children independently.
+
 ## Part 1: Setting Up Parent-Child Mapping
+
+The relationship is declared once, at the index level, inside the mapping. All
+parents, children, and grandchildren live in the *same* index and share *one*
+`join` field. The mapping lists which document type can be the parent of which
+other type. This shared-index design is what allows Elasticsearch to keep
+related documents on the same shard.
 
 ### Exercise 1.1: Create Index with Join Field
 
@@ -24,11 +43,34 @@ See [`01_create_join_index.py`](./01_create_join_index.py)
 
 **Task:** Create the index and understand the join field structure.
 
+**What's happening:** The mapping defines a field of `type: join` with a
+`relations` block. Here `blog_post` is declared as a parent of `comment` and
+`author_note`, and `comment` is in turn a parent of `reply`. This creates a
+three-level hierarchy: post, comment, reply. The `relations` map is the
+contract for the whole index; you cannot link two types unless they appear
+here.
+
+**Why this matters:** A join field can only define *one* relationship set per
+index, and you cannot point a child at more than one parent type. The non-join
+fields (`title`, `content`, `likes`, and so on) are shared by every document
+type, so parents and children draw from the same field namespace. Plan your
+field names so they make sense across all the document types in the index.
+
 ### Exercise 1.2: Index Parent Documents (Blog Posts)
 
 See [`02_index_parent_blog_posts.py`](./02_index_parent_blog_posts.py)
 
 **Task:** Index the parent documents and note how the `join_field` is set.
+
+**What's happening:** For a parent document the `join_field` is set to just the
+relation name, for example `"join_field": "blog_post"`. There is no parent to
+point at, so a plain string is enough. The document id you assign (such as
+`post_1`) becomes the anchor that children will reference later.
+
+**Why this matters:** The parent's id is also its routing value by default,
+which is why every child must be sent to that same routing key. Choose stable,
+meaningful parent ids; if a parent id changes you would have to re-index all of
+its descendants.
 
 ### Exercise 1.3: Index Child Documents (Comments)
 
@@ -36,11 +78,36 @@ See [`03_index_child_comments.py`](./03_index_child_comments.py)
 
 **Task:** Index child documents and understand why routing is required.
 
+**What's happening:** A child's `join_field` is an object with two keys: `name`
+(the relation, here `comment`) and `parent` (the id of the parent document,
+here `post_1`). The index call also passes `routing=parent_id`. Routing tells
+Elasticsearch which shard to write the document to.
+
+**Why this matters:** Parent and child *must* live on the same shard, because
+join queries run shard-locally; they never reach across shards. By default a
+document's shard is chosen from a hash of its own id, which would scatter
+children away from their parent. Forcing the routing value to the parent id
+guarantees the child lands on the parent's shard. Forget the routing and the
+child may be unreachable from the parent, or indexing may fail outright.
+
 ### Exercise 1.4: Index Grandchild Documents (Replies to Comments)
 
 See [`04_index_grandchild_replies.py`](./04_index_grandchild_replies.py)
 
 **Task:** Understand the routing requirements for multi-level hierarchies.
+
+**What's happening:** A reply points its `parent` at a *comment* id (such as
+`comment_1`), but its routing value is the *root* parent (`post_1`), not the
+immediate parent. The whole family tree, post plus comments plus replies, must
+share a single shard, so routing always uses the top-level ancestor's id.
+
+**Why this matters:** This is the most common multi-level pitfall. It feels
+natural to route a reply to its comment, but the comment itself was routed to
+the post. Routing to the comment id would compute a different shard and break
+the chain. For any depth of hierarchy, the routing value stays fixed at the
+root ancestor while only the `parent` reference changes per level. This is also
+why the exercises warn you to keep hierarchies shallow: every level forces more
+documents onto the same shard, which can unbalance the cluster.
 
 ## Part 2: Querying Parent-Child Relationships
 

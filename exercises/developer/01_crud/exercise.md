@@ -10,6 +10,15 @@ operations in Elasticsearch using four different methods:
 1. Python with requests library
 1. Python with elasticsearch client
 
+Why teach the same operations four ways? Because Elasticsearch is, at its
+core, just a REST API that speaks JSON over HTTP. Every tool here is sending
+the exact same HTTP requests under the hood. Kibana Dev Tools is the friendly
+front door, curl shows the raw HTTP, the requests library shows that raw HTTP
+expressed in Python, and the official client wraps it all in a convenient,
+Pythonic interface. Seeing one operation expressed four ways makes it clear
+where the real boundary is: the API, not the tool. Once you understand the
+API, you can switch tools freely depending on the job.
+
 ## Prerequisites
 
 - Elasticsearch running on `localhost:9200`
@@ -17,18 +26,43 @@ operations in Elasticsearch using four different methods:
 - Python 3.7+ installed (for Methods 3 & 4)
 - Elasticsearch running with security disabled (plain HTTP, no authentication)
 
+Note that this exercise runs Elasticsearch with security disabled, so there
+is no login and traffic is plain HTTP. This keeps the focus on CRUD concepts.
+In any real deployment you would enable authentication and use HTTPS, because
+an open Elasticsearch endpoint exposes all your data to anyone who can reach
+the port.
+
 ### Setup Test Environment
 
 See [`01_setup_environment.sh`](./01_setup_environment.sh)
+
+The setup script first runs a plain `GET` against the root of the cluster.
+That root response is a health-check handshake: if Elasticsearch is up it
+returns a JSON document with the cluster name, version, and the famous
+tagline. If you instead see "connection refused", nothing else in this
+exercise will work, so this is the first thing to confirm.
 
 ## Sample Data Structure
 
 We'll work with a simple e-commerce product catalog:
 See [`02_sample_document.json`](./02_sample_document.json)
 
+Each document is just a JSON object. Unlike a relational table, there are no
+rows and columns: a document is a self-contained record, and the field names
+inside it become the schema. Notice that `tags` is an array and `price` is a
+decimal. Elasticsearch handles both naturally, which is one reason it suits
+flexible, nested data better than a rigid SQL table.
+
 ---
 
 ## Method 1: Kibana Dev Tools UI
+
+Kibana Dev Tools is a console built into Kibana that lets you type
+Elasticsearch requests in a compact form and run them with a single click.
+It strips away the HTTP boilerplate: you write `PUT /products` instead of a
+full `curl` command. Behind the scenes Kibana sends the very same HTTP
+request to Elasticsearch, so anything you learn here transfers directly to
+the other methods.
 
 ### Access Kibana Dev Tools
 

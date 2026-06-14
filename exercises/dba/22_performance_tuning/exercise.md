@@ -13,6 +13,14 @@ This exercise is operational and complements exercise
 `04_query_performance`, which covers field indexing and per-query
 timing. Here we look at the cluster underneath the queries.
 
+The mental model to carry through this exercise: a query is only as
+fast as the node serving it. Most "slow Elasticsearch" complaints are
+not about a bad query at all, they are about a node that is short on
+heap, thrashing its garbage collector, dropping requests because its
+thread pools are saturated, or being protected by a tripped circuit
+breaker. The scripts here read the same live statistics APIs a real
+DBA watches, so you learn to diagnose the cluster, not just the query.
+
 ## Overview
 
 The exercise covers:
@@ -55,7 +63,33 @@ aggregation) and a `text` field (for search), loads 20,000 documents,
 and runs repeated filter + aggregation queries so the caches and thread
 pools show real activity.
 
+Why this matters: every counter in this exercise (cache hits, thread
+pool activity, GC time) is cumulative and starts at zero. Without
+traffic, the inspection scripts would report a clean but meaningless
+"all zero" picture. The script deliberately runs the *same* filtered
+aggregation twenty times, because a cache only proves itself on the
+second and later runs. The first run is a cache miss that populates the
+cache; the repeats turn into cache hits, which is exactly the warm vs
+cold behaviour you measure in Part 3.
+
+The mapping is the first lesson in disguise. `department` and `city`
+are `keyword`, `bio` is `text`. That choice decides what you can safely
+aggregate on later: keyword fields get on-disk `doc_values` for free,
+while aggregating on a text field would force expensive in-memory
+fielddata. Keep this mapping in mind when you reach the caches and
+breakers below.
+
 ## Part 1: JVM Heap and Garbage Collection
+
+Elasticsearch runs on the Java Virtual Machine, and the JVM heap is the
+single most important resource a DBA watches. Java is a garbage-
+collected language: instead of freeing memory explicitly, it
+periodically pauses to reclaim objects that are no longer referenced.
+The heap is split into a young generation (short-lived objects, cheap
+to collect) and an old generation (long-lived objects, expensive to
+collect). When the old generation fills up, the JVM must do a slow,
+sometimes stop-the-world collection that freezes the node. Watching
+heap usage and GC time tells you how close a node is to that cliff.
 
 ### Step 1.1: Inspect Heap and GC per Node
 
@@ -65,6 +99,16 @@ This reads `GET /_nodes/stats/jvm` and prints heap used percent, the
 young/survivor/old memory pool sizes, and the cumulative GC counts and
 times per node, with a heap-pressure flag.
 
+What's happening under the hood: the script flags a node at 75% heap as
+a warning and 85% as an alert. These thresholds matter because the old
+generation does not get collected continuously; it builds up until a
+major collection fires. A node sitting at 85% is doing frequent,
+lengthy old-generation collections just to stay afloat, and a single
+large aggregation can tip it into a circuit-breaker trip (Part 4). The
+GC numbers are cumulative since node start, so what you watch for is the
+*rate of change* between two runs: a fast-climbing old-GC time is the
+clearest early warning of sustained heap pressure.
+
 ### Step 1.2: How to Set the Heap
 
 See [`01b_set_heap_notes.sh`](./01b_set_heap_notes.sh)
@@ -72,6 +116,15 @@ See [`01b_set_heap_notes.sh`](./01b_set_heap_notes.sh)
 This documents the two supported ways to set heap (a
 `jvm.options.d/*.options` drop-in file, or the `ES_JAVA_OPTS`
 environment variable) and shows the heap your node currently runs with.
+
+A common pitfall: bigger heap is not always better. Two rules govern
+the size and the Discussion section below explains why. The short
+version is that the heap should be at most half of physical RAM (the
+other half feeds the operating-system file cache that Lucene depends
+on) and should stay under about 31GB (so the JVM can keep using
+compressed object pointers). The drop-in file is the preferred method
+because it survives upgrades and lives alongside the rest of the JVM
+configuration rather than in a shell environment that is easy to lose.
 
 ## Part 2: Thread Pools
 

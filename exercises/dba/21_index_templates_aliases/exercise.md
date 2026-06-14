@@ -31,6 +31,15 @@ All examples use the modern composable template API
 (`_component_template` and `_index_template`), not the deprecated legacy
 `_template` API.
 
+Why this matters: in production you rarely create indices by hand and spell
+out their settings and mappings each time. New indices appear automatically
+(a daily log index, a rollover, a data stream segment) and each one must be
+configured correctly the moment it is born. Templates are how Elasticsearch
+applies that configuration the instant a matching index is created. Aliases
+are the complementary tool: they let you change which physical index a name
+resolves to without touching any client. Together they are the backbone of
+how a DBA operates a cluster without scheduled downtime.
+
 ## Prerequisites
 
 - Python 3.x with the `elasticsearch` module:
@@ -57,6 +66,24 @@ component template of that exact name ships with x-pack/Kibana and the stack
 restores it periodically, so an exercise component of that name would be
 silently clobbered.
 
+The split into a settings component and a fields component is deliberate.
+Settings (shard count, replicas, refresh interval) tend to be the same
+across many unrelated index families, while mappings differ by data type.
+Keeping them in separate components means you can mix and match: a metrics
+template might reuse `common-settings` but pair it with a `metrics-fields`
+component instead. This is the same single-responsibility idea you apply
+when factoring code into small reusable functions.
+
+The `_meta` block carries no behavior; it is free-form metadata for humans.
+Recording an owner and a description there is good operational hygiene,
+because months later someone needs to know who created a template and why
+before they dare to change it.
+
+A common pitfall worth internalizing now: a component template is inert.
+If you create one and then query a new index, nothing happens, because no
+index template references it yet. Components only contribute configuration
+when pulled in through an index template's `composed_of` list in Part 2.
+
 See [`01_component_templates.sh`](./01_component_templates.sh)
 
 ## Part 2: Composable Index Templates and Precedence
@@ -65,6 +92,17 @@ A composable index template applies to any new index whose name matches one
 of its `index_patterns`. It merges the listed `composed_of` components, then
 applies the inline `template` block (which has the highest precedence), and
 declares a `priority`.
+
+What is happening under the hood: when you create an index, Elasticsearch
+does not consult your create request alone. It scans every registered index
+template, finds the ones whose patterns match the new name, picks the single
+winner by priority, then builds the final configuration by layering the
+matched components and the inline `template` block in order. Only after that
+resolution does the index come into existence. The inline `template` block
+sits on top of the components precisely so a template can override or extend
+what a shared component provides without forking the component itself. Here
+`logs-template` reuses the shared field component but bumps replicas to 1
+and adds a `host` field on top.
 
 We create two templates to demonstrate precedence: `logs-template`
 (pattern `logs-*`, priority 150) and `logs-audit-template` (pattern
@@ -76,6 +114,14 @@ only the higher-priority template applies.
 > register two templates whose patterns can overlap at the same priority, so
 > `logs-*` at priority 100 would be rejected on such a cluster. Using 150 keeps
 > `logs-template` below the audit template (200) while avoiding that clash.
+
+The priority rule and the "patterns may not overlap at the same priority"
+rule together remove ambiguity by design. Elasticsearch never has to guess
+which template wins, and it never silently merges two competing templates.
+This is a deliberate contrast with the deprecated legacy `_template` API,
+where overlapping templates were merged and the result was hard to predict.
+The lesson: priority is not a hint, it is the tie-breaker, and the cluster
+enforces that the tie-breaker is always decisive.
 
 See [`02_composable_template.sh`](./02_composable_template.sh)
 

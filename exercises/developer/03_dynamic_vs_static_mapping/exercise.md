@@ -5,6 +5,15 @@
 Learn the differences between dynamic and static mappings in Elasticsearch
 and understand when to use each approach.
 
+A mapping is the schema of an Elasticsearch index. It describes every field
+in your documents and tells Elasticsearch how to store, index, and search
+each one. Unlike a relational database, where the schema is always declared
+up front, Elasticsearch can either build the schema for you on the fly
+(dynamic mapping) or use one you define yourself (static mapping). The choice
+has lasting consequences: once a field's type is set, it cannot be changed
+without reindexing, so understanding mappings early saves a great deal of
+pain later.
+
 ## Prerequisites
 
 - Python 3.x installed
@@ -15,9 +24,17 @@ and understand when to use each approach.
 
 ### Dynamic Mapping
 
-- Elasticsearch automatically detects and adds new fields when documents are indexed
+- Elasticsearch automatically detects and adds new fields when documents are
+  indexed
 - Field types are inferred from the data
 - Convenient but can lead to mapping conflicts
+
+When a field is seen for the first time, Elasticsearch guesses its type from
+the value: a JSON number becomes `long` or `float`, a JSON boolean becomes
+`boolean`, and a JSON string becomes a `text` field with a `keyword`
+sub-field (or a `date` if it parses as one). This guess is locked in for the
+whole index. The danger is that the very first document silently decides the
+type for every future document, and that decision is hard to undo.
 
 ### Static Mapping
 
@@ -25,25 +42,74 @@ and understand when to use each approach.
 - Provides control over field types and indexing options
 - Prevents mapping conflicts and ensures data consistency
 
+Defining the mapping yourself is the equivalent of writing a `CREATE TABLE`
+statement before inserting rows. You decide whether a string is full-text
+searchable, exactly matchable, or both; whether a number is an `integer` or
+a `float`; and what date format to expect. This control is what makes a
+static mapping the right default for any system you intend to run in
+production.
+
 ## Part 1: Dynamic Mapping
 
 ### Exercise 1.1: Observe Dynamic Mapping Behavior
 
 See [`01_observe_dynamic_mapping.py`](./01_observe_dynamic_mapping.py)
 
-**Task:** Run the code and observe the field types Elasticsearch assigned automatically.
+This script indexes a single document into a fresh `dynamic_test` index
+without any mapping, then asks Elasticsearch to print the mapping it
+generated. Notice that you never told Elasticsearch the schema; it inferred
+one from the values you sent.
+
+**What's happening:** As the document is indexed, Elasticsearch inspects each
+field and records a type for it. Watch how `age` (an integer) becomes `long`,
+`score` (a decimal) becomes `float`, `is_active` becomes `boolean`, and
+`joined_date`, because the string matches a date pattern, becomes `date`. The
+`name` string becomes a `text` field with a `keyword` sub-field underneath
+it. That last pattern is the default for every string and is worth
+remembering.
+
+**Task:** Run the code and observe the field types Elasticsearch assigned
+automatically.
 
 ### Exercise 1.2: Dynamic Mapping Conflicts
 
 See [`02_dynamic_mapping_conflicts.py`](./02_dynamic_mapping_conflicts.py)
 
-**Task:** Run this code and observe the mapping conflict error. Why does it occur?
+This script indexes a second document into the same `dynamic_test` index, but
+this time `age` carries the string value `"thirty"` instead of a number.
+Because the first document already locked `age` to the numeric type `long`,
+Elasticsearch cannot store the word `thirty` there and rejects the document.
+
+**Why this matters:** This is the core risk of dynamic mapping. The type was
+decided by whichever document arrived first, and every later document must
+conform to it. In a real system, a single malformed record early in an
+index's life can dictate the schema, and a later record with a different
+shape will fail to index. There is no automatic coercion across types, and
+you cannot simply change `age` from `long` to `text` afterward; that requires
+creating a new index and reindexing.
+
+**Task:** Run this code and observe the mapping conflict error. Why does it
+occur?
 
 ## Part 2: Static Mapping
 
 ### Exercise 2.1: Create Static Mapping
 
 See [`03_create_static_mapping.py`](./03_create_static_mapping.py)
+
+This script creates a `static_test` index and passes a full mapping in the
+create call, before any document exists. Each field is given an explicit
+type: `name` is `text` with a `keyword` sub-field, `age` is `integer` rather
+than the `long` that dynamic mapping would have chosen, `joined_date` is a
+`date` with an explicit `yyyy-MM-dd` format, and `tags` is a pure `keyword`
+field.
+
+**Why this matters:** Defining the mapping up front removes the guesswork.
+You decide that `age` only needs `integer` range, that dates must arrive in a
+specific format (so a stray value cannot be misread), and that `tags` should
+be exact-match values rather than analyzed prose. Compare the printed mapping
+against the one from Part 1 and note where your choices differ from
+Elasticsearch's defaults.
 
 **Task:** Create the index with static mapping and compare it to the dynamic
 mapping from Part 1.

@@ -27,6 +27,15 @@ This exercise covers:
 - A simple storage forecaster (days-until-full)
 - Allocation filtering and awareness for hot/warm tiering
 
+A useful mental model before you start: Elasticsearch stores data as
+immutable Lucene *segments* grouped into *shards*, and shards are placed
+on *data nodes*. Almost every disk question in this exercise comes back to
+those three layers — how big the segments are, which fields inside them
+cost the most bytes, which node a shard lives on, and how full that node's
+filesystem is. The disk watermarks are simply percentages of a node's
+filesystem, so the unit Elasticsearch actually reacts to is "percent of
+disk used on one node", not "total cluster storage".
+
 ## Prerequisites
 
 - Python 3.x with modules: `elasticsearch`, `faker`
@@ -44,12 +53,45 @@ pip install elasticsearch faker
 Load an index with enough data that the disk and forecast scripts have real
 numbers to report.
 
+**Why this matters:** disk and capacity tooling is only meaningful against
+a real store size. An empty index reports a few kilobytes of overhead, so
+the watermark, `_disk_usage`, and forecast numbers would all be noise. The
+loader generates around 100,000 fake event documents (timestamps, log
+levels, hostnames, IPs, free-text messages) so the index reaches tens of
+megabytes — large enough that per-field byte costs and growth rates become
+visible. Note the variety of field types: the free-text `message` field
+and high-cardinality strings like `user_agent` are deliberately included
+because, as you will see in Part 5, those are usually the fields that
+dominate disk usage.
+
+After the bulk load the script calls a *refresh*. A refresh flushes the
+in-memory buffer into a searchable segment; until that happens the new
+documents are indexed but not yet visible to the `_cat` and `_stats` APIs
+the later parts rely on. This is the same refresh mechanism that produces
+new segments in Part 6.
+
 See [`01_load_sample_data.py`](./01_load_sample_data.py)
 
 ## Part 2: Where Is My Disk Going
 
 The first thing a DBA looks at during a capacity review or a "disk full"
 incident: usage per data node, the largest indices, and per-index store size.
+
+**What's happening:** the script moves from coarse to fine. It starts with
+`_cat/allocation`, which reports per data node how many shards a node holds
+and how much of its filesystem is used. The `disk.percent` column is the
+exact number the watermarks are compared against, so this is your early
+warning gauge. It then lists indices by store size with `_cat/indices` so
+you know *which* index to act on, and finally drills into one index with
+`_stats/store`.
+
+A subtle but important distinction appears in that last view: the total
+`store.size` includes replica copies, while `pri.store.size` counts only
+the primaries. The gap between them is the price you pay for your
+replication factor — a one-replica index uses roughly twice the disk of
+its raw data. The script also passes `bytes=gb` so every index reports in
+the same unit; without a fixed unit a text sort would place "9mb" after
+"10gb" and mislead you about what is actually largest.
 
 See [`02_disk_usage_overview.sh`](./02_disk_usage_overview.sh)
 
@@ -59,6 +101,28 @@ The three thresholds that govern how Elasticsearch reacts as a node fills up.
 This script shows how to view the current (and default) values and how to
 change them with a cluster settings update.
 
+**Why the watermarks exist:** Elasticsearch never wants a node to actually
+run out of disk, because a full disk corrupts in-flight writes and can
+crash the node. The watermarks are a graduated defence that kicks in
+earlier and earlier as a node fills, each stage more aggressive than the
+last, ending in a hard write block that keeps the node alive at the cost of
+rejecting writes.
+
+When you read the settings, notice the script passes
+`include_defaults=true`. Most Elasticsearch settings are invisible until
+you override them, so without this flag you would only see watermarks you
+have explicitly changed — and on a fresh cluster that is nothing. The flag
+makes the built-in defaults visible so you can confirm what is actually in
+force.
+
+The script then sets the watermarks as *transient* settings. Transient
+settings are held only in cluster state and are lost on a full cluster
+restart; *persistent* settings survive restarts and are written to disk.
+For a real, lasting policy change you would use persistent; transient is
+fine for a temporary tweak or a rehearsal like this one. Reverting a
+setting to `null` removes your override and restores the default — this is
+the standard pattern for "undo" throughout these scripts.
+
 See [`03_disk_watermarks.sh`](./03_disk_watermarks.sh)
 
 The defaults are:
@@ -66,6 +130,13 @@ The defaults are:
 - **low** (85%) — stop allocating *new* shards to this node
 - **high** (90%) — actively relocate shards *away* from this node
 - **flood_stage** (95%) — mark indices with a shard on this node read-only
+
+You can express each threshold either as a percentage of disk used (as
+above) or as an absolute amount of free space, such as `50gb`. On very
+large disks the percentage form can be dangerous: 5% of a 4 TB disk is
+200 GB still free at flood stage, which may be far more headroom than you
+need, while 5% of a small disk is almost nothing. Big-disk clusters often
+switch to absolute values for exactly this reason.
 
 ## Part 4: The Flood-Stage Incident
 

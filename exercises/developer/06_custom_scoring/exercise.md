@@ -16,6 +16,30 @@ but often you need to incorporate business metrics like:
 - User preferences
 - Stock levels or availability
 
+When you run a plain `match` query, Elasticsearch computes a relevance score
+(`_score`) for each document based only on the words in the text. BM25, the
+default algorithm, rewards documents where the query terms are frequent in
+the field but rare across the whole index. That is great for "find documents
+about X" but it knows nothing about whether a product is in stock, highly
+rated, or profitable. A perfectly relevant match for a discontinued, badly
+reviewed item would still rank at the top.
+
+The `function_score` query solves this by letting you take the text relevance
+score and adjust it with one or more scoring functions that read your own
+fields. The key idea is the two-stage pipeline: first the inner `query`
+decides which documents match and gives each a base `_score`, then the
+functions transform that base score using business data. Two settings control
+how the pieces combine:
+
+- `score_mode` decides how multiple functions are combined with each other
+  (for example `sum`, `multiply`, `max`).
+- `boost_mode` decides how the combined function result is merged with the
+  original query `_score` (for example `multiply`, `sum`, `replace`).
+
+Keeping these two stages separate in your mind is the single most important
+concept in this whole exercise. Almost every confusing result comes from
+mixing them up.
+
 ## Part 1: Basic Function Score
 
 ### Exercise 1.1: Setup Sample E-commerce Data
@@ -24,17 +48,49 @@ See [`01_setup_sample_products.py`](./01_setup_sample_products.py)
 
 **Task:** Create the index and load sample data.
 
+This script first defines an explicit mapping before indexing anything. That
+matters for scoring: every field you plan to use in a function needs the right
+type. Numeric fields like `rating` and `view_count` must be numbers so they
+can be multiplied, `created_date` must be a `date` so decay can measure age,
+and `location` must be a `geo_point` so distance can be calculated. If you let
+Elasticsearch guess the mapping, a number could be detected as `text` and
+your function would fail or behave oddly. The script generates 100 random
+products so that later queries have a realistic spread of ratings, prices,
+ages, and locations to sort between.
+
 ### Exercise 1.2: Simple Field Value Factor
 
 See [`02_popularity_boost.py`](./02_popularity_boost.py)
 
 **Task:** Modify to boost by rating instead of view_count.
 
+This is the simplest `function_score`: a single `field_value_factor` that
+turns a numeric field directly into a score multiplier. The interesting part
+is the `modifier`. A raw `view_count` of 10000 would utterly swamp the text
+score, so `log1p` (log of one plus the value) compresses large numbers,
+meaning the difference between 100 and 1000 views matters more than the
+difference between 9000 and 10000. This reflects how popularity actually
+works: the first thousand views tell you a lot, the ten-thousandth tells you
+little. The `factor` scales the field before the modifier, and `missing`
+supplies a default so documents without the field do not break scoring. With
+`boost_mode: multiply`, a relevant-but-unpopular item can still beat a
+popular-but-irrelevant one, because both signals contribute.
+
 ### Exercise 1.3: Multiple Scoring Functions
 
 See [`03_multi_factor_score.py`](./03_multi_factor_score.py)
 
 **Task:** Add a decay function for products created recently.
+
+Here the single function becomes a `functions` array, which is where
+`score_mode` and `boost_mode` finally do different jobs. Each function has its
+own `weight` (its relative importance), and `score_mode: sum` adds the
+weighted functions together. Note two new tools: a function can carry a
+`filter` so it only applies to matching documents (here, a flat `weight: 5`
+boost for featured items and `weight: 2` for in-stock items), and `max_boost`
+caps the combined function result so no single runaway factor can dominate.
+The featured and in-stock filters show a common pattern: use filters for
+yes/no business rules and `field_value_factor` for continuous signals.
 
 ## Part 2: Decay Functions
 

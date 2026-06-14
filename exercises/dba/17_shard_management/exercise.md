@@ -22,6 +22,15 @@ important and most permanent sizing decisions a DBA makes:
 
 This exercise walks through the full lifecycle on a sample log index.
 
+Why this matters: an Elasticsearch index is not stored as one big file.
+The cluster splits the index into primary shards and scatters them across
+the data nodes. Each shard is searched in parallel, so the shard count
+directly shapes how query work is divided. It also shapes recovery (each
+shard recovers as a unit), memory use (each shard holds open file handles
+and field-data structures in the JVM heap), and how evenly the cluster can
+balance load. Because the primary count is locked in at creation, this is
+one of the few decisions you cannot quietly fix later with a setting change.
+
 ## Prerequisites
 
 - Python 3.x with modules: `elasticsearch`, `faker`
@@ -43,11 +52,40 @@ the scripts handle it.
 Create the `logs_sharded` index with 4 primary shards, 1 replica, and a
 routing-shard count of 32 (which leaves room to split later).
 
+What is happening: the `PUT` request defines the index settings and mapping
+up front. A real DBA sets `number_of_shards` explicitly rather than trusting
+the default, because the default has changed across versions and because
+the right value depends on how much data the index will eventually hold. We
+pick 4 primaries on purpose so later steps have something a factor (shrink to
+2 or 1) and a multiple (split to 8) of 4.
+
+The `number_of_routing_shards` setting deserves attention. Elasticsearch
+decides which shard a document lands on by hashing its routing value and
+taking it modulo a number derived from the routing-shard count. By setting
+this to 32 at creation, we pre-commit to a hashing scheme that can later be
+re-divided into any power-of-two factor up to 32. This is the hidden reason
+`_split` is even possible: the routing math was reserved in advance. You
+cannot raise this number after the index exists, so a low default would
+quietly cap how far you can ever split.
+
 See [`01_create_index.sh`](./01_create_index.sh)
 
 ## Part 2: Load Sample Data
 
 Bulk load fake log documents so the shards have real store size to inspect.
+
+Why this matters: shard sizing only means anything once shards hold data.
+The script uses the bulk helper, which batches many documents into a single
+request instead of one request per document. Each round trip to the cluster
+has fixed overhead, so batching is the single biggest lever for indexing
+throughput. As documents arrive, the cluster routes each one to a primary
+shard by hashing a routing value (by default the document id), which is why
+the load spreads roughly evenly across all four primaries.
+
+The script also calls a refresh at the end. Newly indexed documents live in
+an in-memory buffer and are not searchable until a refresh turns that buffer
+into a searchable Lucene segment. Without the explicit refresh, the document
+count and the `_cat` views might lag behind what was actually indexed.
 
 See [`02_load_sample_data.py`](./02_load_sample_data.py)
 
@@ -58,6 +96,24 @@ You can pass a document count, for example
 
 Use the `_cat` APIs to see every shard, its primary/replica role, doc count,
 store size, and which node holds it, plus per-node allocation.
+
+What is happening: the `_cat` family returns compact, column-oriented text
+meant for humans and quick scripts rather than the verbose JSON of the full
+APIs. The `prirep` column marks each shard as a primary (`p`) or replica
+(`r`). With one replica configured you would expect to see every shard
+number twice on a healthy multi-node cluster, once as a primary and once as
+a replica, and never both copies on the same node. Placing a replica on the
+same node as its primary would defeat the entire point of a replica, so
+Elasticsearch refuses to do it.
+
+This is the key pitfall to understand on a single-node box: with nowhere
+else to put the replica, it stays UNASSIGNED and the index sits at yellow
+health. Yellow is not an error. It means all primaries are available (no
+data loss risk) but at least one replica could not be placed. Red, by
+contrast, means a primary is missing and some data is unreachable. The
+`_cat/allocation` view rounds out the picture by showing per-node shard
+counts and disk usage, which is how you spot an unbalanced or nearly full
+node before it causes trouble.
 
 See [`03_inspect_shards.sh`](./03_inspect_shards.sh)
 

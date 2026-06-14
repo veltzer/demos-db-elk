@@ -17,6 +17,15 @@ data in with `_reindex`. The same `_reindex` machinery (especially its remote
 form) is how you migrate data into a freshly built cluster during a major
 upgrade.
 
+Why is `_reindex` a server-side operation at all? Elasticsearch could have
+left copying to client tools, but doing it inside the cluster means the data
+never leaves the nodes: it reads from the source shards and writes to the
+destination shards using the same scroll-and-bulk machinery the engine uses
+internally. That is faster and avoids the network round-trip of pulling every
+document out to a client and pushing it back. The cost is that a large
+reindex consumes cluster resources, which is why throttling and parallelism
+(Parts 5) exist as explicit controls.
+
 This exercise covers:
 
 - Basic server-side `_reindex` (a plain copy)
@@ -45,6 +54,21 @@ pip install elasticsearch
 Copy every document from a source index into a new destination index — no
 mapping change, no transformation, just a server-side copy.
 
+**What's happening:** `_reindex` opens a scroll over the source index, reads
+documents in batches, and bulk-indexes them into the destination. With the
+default `wait_for_completion=true` the HTTP call blocks and returns a summary
+once finished: how many documents were `created`, how long it `took`, and
+whether there were `failures`. The destination index must already accept the
+documents; if it does not exist, Elasticsearch creates it with dynamically
+guessed mappings, which is rarely what you want — that is exactly why the
+mapping-change pattern in Part 3 creates the target index first.
+
+**Why this matters:** every other reindex variant in this exercise is this
+same copy with one extra ingredient (a query, a script, slices, a remote
+source). Getting the plain case right is the foundation. Note the script
+seeds `products_v1` with `created` stored as `text`, a deliberately wrong
+type that motivates the mapping fix later.
+
 See [`01_basic_reindex.sh`](./01_basic_reindex.sh)
 
 ## Part 2: Asynchronous Reindex with Task Tracking
@@ -53,12 +77,47 @@ For a large index you do not want to hold the HTTP connection open. Passing
 `wait_for_completion=false` returns a task id immediately; poll the Tasks API
 to watch progress.
 
+**What's happening:** the reindex still runs server-side, but now in the
+background as a tracked task. The response is just `{ "task": "node:number" }`.
+You then `GET /_tasks/<id>` to read a live `status` block (counters for
+`created`, `total`, `batches`) and a `completed` flag. On a real
+multi-million-document copy you would loop on that flag rather than guess when
+it is done. The completed task result is stored in a hidden `.tasks` index so
+you can fetch the outcome even after the job ends.
+
+**Why this matters:** a blocking reindex that runs for an hour is fragile — a
+dropped connection, a proxy timeout, or a closed laptop leaves you unsure
+whether it finished. The async form decouples "start the job" from "wait for
+the job." It also gives a DBA a way to find work someone else started:
+`GET /_tasks?actions=*reindex` lists every running reindex in the cluster, and
+a runaway one can be stopped with `POST /_tasks/<id>/_cancel`.
+
 See [`02_async_reindex_task.sh`](./02_async_reindex_task.sh)
 
 ## Part 3: Reindex to Change a Field Type
 
 The canonical reason `_reindex` exists. You cannot remap a field in place, so
 create a new index with the corrected mapping and reindex into it.
+
+**Why mappings are immutable:** a field's type decides how its values are
+turned into the inverted index and other on-disk data structures at index
+time. A `text` value is analyzed into tokens; a `date` is stored as a number;
+a `keyword` is stored verbatim. Changing the type would invalidate everything
+already written, so Elasticsearch refuses. Adding a brand-new field is fine
+(nothing on disk to invalidate), but changing an existing one is not.
+
+**What's happening:** the script creates `products_v2` with the corrected
+mapping *first* (`created` as `date`, `category` as `keyword`), then reindexes
+into it. The destination mapping wins: because the source strings like
+`"2024-01-15"` are valid dates, Elasticsearch parses them into the date field
+during the copy. The script then proves the change worked by running a date
+`range` query — something that only behaves correctly against a real date
+field, not a text one.
+
+**Common pitfall:** if a source value cannot be coerced into the new type (a
+non-date string going into a `date` field), that document fails and is
+reported under `failures`. Validate or clean such values before reindexing, or
+handle them with a script (Part 4).
 
 See [`03_reindex_mapping_change.sh`](./03_reindex_mapping_change.sh)
 

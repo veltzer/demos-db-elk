@@ -124,12 +124,31 @@ interpreted **relative to the first `path.repo` entry**. So with
 After `path.repo` is configured and Elasticsearch is restarted, register
 the filesystem repository and verify every node can reach it.
 
+A repository is just named configuration: it tells Elasticsearch *where*
+and *how* to store snapshot blobs. Registering it with `PUT
+_snapshot/<repo>` does not copy any data yet; it only records the type
+(`fs`) and settings (the `location`, and `compress` which gzip-compresses
+the small metadata files, not the already-compressed Lucene segments).
+The final `_verify` call is the important habit: it asks every node to
+write and read a test blob in the location, which catches the classic
+mistake of a shared filesystem mounted on only some nodes before that
+mistake silently breaks a real snapshot.
+
 See [`01_register_repository.sh`](./01_register_repository.sh)
 
 ### Step 2: Create sample data
 
 Create two small indices so we have something worth backing up, and so
 later steps can show selective snapshots and restores.
+
+Both indices are created with a single shard and zero replicas to keep
+the demo fast and deterministic on a single node. The mappings are
+explicit so the snapshot captures real field definitions, not just
+documents: a snapshot stores each index's settings and mappings
+alongside its data, so a restore rebuilds the index exactly as it was.
+Having two separate indices (`customers` and `orders`) is what lets
+later steps demonstrate backing up or restoring one index without
+touching the other.
 
 See [`02_create_sample_data.sh`](./02_create_sample_data.sh)
 
@@ -138,11 +157,30 @@ See [`02_create_sample_data.sh`](./02_create_sample_data.sh)
 Take a full snapshot of all indices and a selective snapshot of just
 `customers`, then inspect the detailed per-shard status.
 
+The full snapshot uses `include_global_state: true` so it also captures
+cluster-level configuration (templates, persistent settings, ILM
+policies, ingest pipelines), while the selective one sets it to `false`
+to stay focused on a single index. The `wait_for_completion=true`
+parameter makes the API block until the snapshot finishes; in real
+automation you usually leave it off so the call returns immediately and
+you poll `_status` instead. The custom `metadata` block (who took it and
+why) is free-form annotation that travels with the snapshot, which helps
+when you are staring at a list of backups months later. The `_status`
+call breaks the work down per shard and reports `STARTED` while copying
+and `SUCCESS` once done.
+
 See [`03_take_snapshot.sh`](./03_take_snapshot.sh)
 
 ### Step 4: List and inspect snapshots
 
 See what backups exist, in full JSON and as a compact `_cat` table.
+
+The `_all` form returns rich JSON (state, start and end times, the list
+of indices, any failures) and is what monitoring tools parse, while the
+`_cat/snapshots` table is the human-friendly view for a quick glance.
+Knowing what is in the repository before a crisis is half the battle:
+under pressure you want to pick the right snapshot quickly, not discover
+its contents during the restore.
 
 See [`04_list_snapshots.sh`](./04_list_snapshots.sh)
 
@@ -152,6 +190,20 @@ Simulate losing the `orders` index and restore it, then restore
 `customers` under the new name `restored_customers` using
 `rename_pattern` / `rename_replacement` so production is never touched.
 
+The key rule is that you cannot restore over an open index of the same
+name; Elasticsearch refuses rather than risk corrupting live data. So
+the first restore deletes `orders` first (simulating real data loss),
+then restores it cleanly. The second restore shows the safer pattern:
+`rename_pattern` is a regular expression matched against each restored
+index name, and its capture groups are substituted into
+`rename_replacement`. Here `(.+)` captures the whole name and
+`restored_$1` turns `customers` into `restored_customers`, so the live
+index is never overwritten. This rename trick is how you inspect a
+backup, or recover a single corrupted document, without disturbing
+production. The restore also overrides `number_of_replicas` to show that
+you can change index settings at restore time, which is handy when
+recovering into a smaller cluster.
+
 See [`05_restore_snapshot.sh`](./05_restore_snapshot.sh)
 
 ### Step 6: Run a disaster-recovery drill
@@ -160,6 +212,18 @@ This is the most important step. A backup you have never restored is not a
 backup. This script loads known data, snapshots it, deletes the index,
 restores it, and compares document counts, printing PASS or FAIL. It is
 genuinely runnable end to end once `path.repo` is configured.
+
+The drill works against a throwaway index with a *known* document count,
+so the verification is unambiguous: if the restored count does not match
+exactly, something is wrong and it fails loudly. One subtlety worth
+noting is that the restore call returns as soon as shards begin
+recovering, not when they are searchable, so the script waits for
+cluster health to reach `yellow` and then refreshes before counting.
+Skipping that wait is a common cause of a "passing" backup that actually
+counted zero documents. The script also times the whole loop, which is
+exactly how you measure a real RTO. Because every step is idempotent
+(it deletes leftovers from prior runs), you can safely run it on a
+schedule.
 
 See [`06_dr_drill.py`](./06_dr_drill.py)
 
@@ -172,6 +236,17 @@ See [`06_dr_drill.py`](./06_dr_drill.py)
 Create a Snapshot Lifecycle Management policy that snapshots on a schedule
 and prunes old snapshots automatically, run it once on demand, and inspect
 the policy state and cluster-wide SLM stats.
+
+The policy bundles a cron schedule (`0 30 1 * * ?` is 01:30 daily), a
+name template using date math (`<daily-snap-{now/d}>` so each run gets a
+unique timestamped name and they never collide), the target repository,
+the snapshot config, and a retention rule. The `_execute` call fires the
+policy immediately rather than waiting for the schedule, which is how you
+smoke-test a new policy without waiting a day. Reading the policy back
+shows `last_success`, `last_failure`, and the next scheduled run, and
+`_slm/stats` aggregates taken, failed, and deleted counts across all
+policies; together they are what you alert on so a silently failing
+backup job cannot go unnoticed.
 
 See [`07_slm_policy.sh`](./07_slm_policy.sh)
 

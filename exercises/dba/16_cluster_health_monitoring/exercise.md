@@ -15,6 +15,24 @@ paged about most often:
 1. Which node or shard is the problem?
 1. Is the cluster under resource pressure (heap, CPU, disk, rejections)?
 
+## Why monitoring matters
+
+Elasticsearch is a distributed system: your data is split into shards,
+each shard is copied into replicas, and those pieces are spread across
+nodes. This design buys scalability and fault tolerance, but it also
+means failures are partial and quiet. A node can drop out, a disk can
+fill up, or a shard can fail to allocate while the rest of the cluster
+keeps answering queries. Nothing crashes loudly; the cluster simply
+becomes less safe or slower. Monitoring is how you make these partial,
+silent failures visible before they turn into data loss or an outage.
+
+Every tool in this exercise is a different lens on the same underlying
+cluster state. The cluster status tells you whether shards are placed;
+node stats tell you whether the machines are healthy; hot threads tell
+you what work is consuming a node; tasks tell you what the cluster is
+busy doing. A skilled DBA learns to move quickly from the high-level
+signal (the status color) down to the specific root cause.
+
 ## Overview
 
 The scripts in this exercise wrap the core Elasticsearch monitoring
@@ -57,10 +75,30 @@ Check the cluster status and break it down per index and per shard.
 
 See [`01_cluster_health.sh`](./01_cluster_health.sh)
 
+Why this matters: `GET /_cluster/health` is the first call any DBA
+makes. It returns a single status color plus a set of counters that
+summarize the whole cluster. Under the hood the master node tracks the
+state of every shard; this endpoint aggregates that state into one
+answer. The `level` parameter controls how far down you drill: the
+default gives the cluster-wide color, `level=indices` shows which index
+is unhealthy, and `level=shards` pinpoints the exact shard. The habit
+to build is starting broad and narrowing only as far as you need to.
+
 Then get a human-readable interpretation of the status, including the
 plain-English meaning of green/yellow/red and simple alert heuristics.
 
 See [`02_interpret_health.py`](./02_interpret_health.py)
+
+What is happening: this script reads the same health document but
+translates the raw counters into a short report. The fields worth
+understanding are `active_primary_shards` (how many primaries are
+placed), `active_shards` (primaries plus replicas), and
+`unassigned_shards` (the count that explains a yellow or red color).
+The `active_shards_percent_as_number` field is the quickest gauge of
+all: it is 100% on a fully placed cluster and dips while shards are
+initializing or relocating. Building a human summary on top of a raw
+API is itself a useful pattern, because it forces you to decide which
+numbers actually drive a decision.
 
 ### Step 2: Nodes and compact health views
 
@@ -68,12 +106,36 @@ Use the `_cat` APIs to see roles, heap, CPU, load and disk per node.
 
 See [`03_cat_nodes_and_health.sh`](./03_cat_nodes_and_health.sh)
 
+Why this matters: the `_cat` APIs return plain tabular text instead of
+JSON, which makes them perfect for a quick human glance in a terminal.
+They expose the same data as the JSON stats APIs but pre-formatted into
+columns. Add `?v` to get a header row and `?h=col1,col2` to choose
+exactly the columns you care about. The status color tells you a shard
+is misplaced; `_cat/nodes` tells you whether a machine is the reason,
+by showing each node's roles, heap, CPU, OS load, and disk usage side
+by side. The `master` column marks the one elected master node with an
+asterisk, which matters because cluster-state changes flow through it.
+The `_cat/allocation` view adds shard count and disk usage per node,
+which is exactly what you need when chasing a disk-watermark problem.
+
 ### Step 3: Shards and unassigned shards
 
 List every shard and filter down to UNASSIGNED ones - the shards that
 make a cluster yellow or red.
 
 See [`04_cat_shards.sh`](./04_cat_shards.sh)
+
+What is happening: a shard is the unit Elasticsearch actually places on
+a node, so the shard list is the ground truth behind the status color.
+Each row shows whether the shard is a primary (`p`) or replica (`r`)
+and its `state`. A healthy shard is STARTED; INITIALIZING and
+RELOCATING mean the cluster is in transition and usually recovers on
+its own; UNASSIGNED means the shard has nowhere to live. The script
+filters down to UNASSIGNED shards and shows their `unassigned.reason`,
+because those are the shards that explain a yellow or red color and the
+ones you must act on. Seeing transition states is also useful: a few
+INITIALIZING shards after a restart are normal, but shards stuck in
+transition for a long time are a signal that something is wrong.
 
 ### Step 4: Explain an unassigned shard
 
