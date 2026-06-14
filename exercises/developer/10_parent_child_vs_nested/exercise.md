@@ -11,6 +11,22 @@ scenario both ways.
 **Parent-Child**: Store related data as separate documents with join
 relationships
 
+Why does this choice exist at all? Elasticsearch is built on Lucene,
+which stores flat documents. There are no real "tables" to join like in a
+relational database. If you simply put an array of objects in a normal
+field, Lucene flattens it: the values of all objects get mixed together,
+so a search for "comment by Alice that says helpful" could match a
+document where Alice said something else and Bob said "helpful". Both
+nested fields and parent-child relations are mechanisms that restore the
+ability to keep the boundaries between related objects intact, but they
+do it in very different ways with very different costs.
+
+The core trade-off you will feel in this exercise is **read speed versus
+write flexibility**. Nested keeps everything in one document, so reads
+are fast but any change means rewriting the whole document. Parent-child
+keeps documents separate, so each child can change on its own, but
+queries must perform a join at search time, which costs CPU and memory.
+
 ---
 
 ## Exercise: Blog Posts and Comments (Both Approaches)

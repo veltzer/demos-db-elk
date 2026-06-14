@@ -203,6 +203,17 @@ See [`09_random_score_ab_test.py`](./09_random_score_ab_test.py)
 
 **Task:** Implement an A/B test with 50/50 split using random scoring.
 
+`random_score` deliberately injects controlled randomness, which sounds odd in
+a search engine until you see the use case: showing every user the exact same
+ranking starves lower-ranked items of any chance to be seen. The crucial
+feature is the `seed`. Using the user's id as the seed makes the randomness
+deterministic per user, so the same person sees a stable order across page
+reloads while different people see different orders. The example proves this
+by running the same user id twice (identical results) and a third user
+(different results). Here random scoring is mixed with a rating boost using
+`weight` values (0.3 random, 0.7 rating), so results vary without becoming
+chaotic, which is the essence of an A/B or exploration test.
+
 ## Part 5: Advanced Scoring Strategies
 
 ### Exercise 5.1: E-commerce Recommendation Score

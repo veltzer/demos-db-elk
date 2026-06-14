@@ -231,6 +231,29 @@ Too many small segments waste disk and RAM and slow search. Inspect segment
 counts and decide whether a force merge is worthwhile (usually only on
 read-only or old time-based indices).
 
+**What a segment is:** a shard is not one file but a collection of
+immutable Lucene segments. Every refresh can create a new small segment,
+and Elasticsearch merges them together in the background over time. Two
+things make segments waste space. First, each segment carries fixed
+overhead, so many tiny segments cost more disk and heap than a few large
+ones. Second, when a document is updated or deleted it is not removed in
+place — it is marked as deleted in its segment and continues to occupy disk
+until a merge rewrites that segment without it. The `docs.deleted` column
+shows exactly this dead weight.
+
+A *force merge* rewrites a shard's segments into fewer (or one), dropping
+deleted documents and the per-segment overhead along the way. The script
+demonstrates two forms: `only_expunge_deletes` (cheaper, just removes the
+tombstoned documents) and `max_num_segments=1` (collapses everything into a
+single segment, the smallest and fastest-to-search result).
+
+**The critical pitfall:** force merge is expensive and one-directional in
+intent. Run `max_num_segments=1` only on an index that will no longer be
+written to — such as a previous day's time-based index. On a hot,
+still-ingesting index the merge fights a losing battle as new segments keep
+appearing, wasting large amounts of I/O. The segment-count checks before
+and after the merge let you confirm the effect.
+
 See [`07_segments_and_forcemerge.sh`](./07_segments_and_forcemerge.sh)
 
 ## Part 7: Forecast Days Until Full

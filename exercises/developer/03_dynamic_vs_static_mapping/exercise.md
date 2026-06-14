@@ -197,6 +197,19 @@ by default.
 
 See [`08_disable_dynamic_mapping.py`](./08_disable_dynamic_mapping.py)
 
+This script creates a `strict_test` index with `dynamic: strict` and only two
+mapped fields, then tries to index a document that also carries an unmapped
+`category` field. The indexing call is rejected.
+
+**Why this matters:** The `dynamic` setting controls what happens when a new,
+unmapped field appears. The default, `true`, adds it automatically. Setting
+it to `false` keeps the field in the stored document but does not index it,
+so you cannot search on it. Setting it to `strict`, as here, rejects the
+whole document outright. Strict mapping is a guard against two real problems:
+typos in field names that would otherwise create junk fields, and "mapping
+explosions," where uncontrolled dynamic fields create thousands of mappings
+and degrade cluster performance.
+
 **Task:** Observe what happens when trying to index a document with unmapped
 fields when dynamic mapping is set to "strict".
 
@@ -216,6 +229,11 @@ the following requirements:
 - Rating (1-5 scale)
 
 ### Challenge 2: Migration Strategy
+
+Because a field's type cannot be changed in place, the only way to alter an
+existing mapping is to build a new index with the corrected mapping and copy
+the data across. This reindex-and-swap pattern is how mapping changes reach
+production safely.
 
 Write a Python script that:
 

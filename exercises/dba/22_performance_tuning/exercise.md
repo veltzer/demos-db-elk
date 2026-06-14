@@ -226,11 +226,29 @@ back to Part 1.
 
 ## Part 5: Slow Logs
 
+The statistics in Parts 1 to 4 tell you a node is unhealthy but not
+*which requests* are causing the pain. Slow logs close that gap. When a
+query or an index operation takes longer than a threshold you set,
+Elasticsearch writes the full request source to a dedicated log file.
+This is the only built-in way to catch the specific offending requests,
+complete with the query that produced them.
+
 See [`05_enable_slowlogs.sh`](./05_enable_slowlogs.sh)
 
 This issues `PUT /<index>/_settings` to enable the search and indexing
 slow logs with sensible warn/info/debug/trace thresholds, and documents
 where the slow-log files land.
+
+What's happening: the thresholds are tiered (warn, info, debug, trace)
+so you can keep the warn tier quiet for genuine emergencies while a
+lower tier captures merely-sluggish requests. They are dynamic index
+settings, meaning they take effect immediately with no restart, and
+they apply at the shard level. Note the two search phases: the "query"
+phase is the per-shard search that finds matching documents, while the
+"fetch" phase loads the matched documents' contents, so they get
+separate thresholds. Setting any tier to `-1` turns it off. The lines
+land in `*_search_slowlog.json` and `*_indexing_slowlog.json` in the
+Elasticsearch logs directory.
 
 ## Part 6: Profile a Slow Query
 

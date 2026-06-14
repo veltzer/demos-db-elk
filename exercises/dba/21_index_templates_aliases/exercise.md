@@ -226,6 +226,20 @@ at zero indices.
 This Python script performs the whole swap and verifies counts before and
 after to prove no documents were lost.
 
+The reason a new index is unavoidable is that a field's type is fixed at
+creation. The script starts v1 with `status_code` mapped as a `keyword`,
+which means range queries and numeric aggregations cannot work on it, then
+fixes it to `integer` in v2. You cannot edit that type in place; the only
+way forward is a fresh index plus `_reindex`, which re-reads every source
+document and writes it through the new mapping. Splitting the alias into a
+read name and a write name lets reads keep flowing from v1 throughout the
+copy, since only after the copy completes does the single atomic swap move
+both names to v2. The script then asserts that the before and after counts
+match and runs the previously impossible range query to prove the new
+mapping is live. The numbered v1 and v2 names (`app-000001`, `app-000002`)
+mirror the convention the rollover API uses, which is why this same pattern
+generalizes to automated index management.
+
 See [`07_zero_downtime_swap.py`](./07_zero_downtime_swap.py)
 
 ## Part 8: Cleanup
@@ -234,6 +248,14 @@ Remove the indices, index templates, and component templates created above.
 Note the deletion order: index templates must go before the component
 templates they reference, because a component template that is in use
 cannot be deleted.
+
+This ordering is a small lesson in dependency management. The reference goes
+from index template to component, so teardown runs in the opposite direction
+to setup. Elasticsearch enforces it: it refuses to delete a component while
+any index template still composes it, exactly as a database refuses to drop
+a table another table still references. Deleting templates does not touch
+indices that were already created from them, since a template only shapes an
+index at birth and has no further hold over it afterward.
 
 See [`08_cleanup.sh`](./08_cleanup.sh)
 

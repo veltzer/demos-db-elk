@@ -220,6 +220,24 @@ See [`07_split_index.sh`](./07_split_index.sh)
 Merge a finished index down to one segment per shard to reclaim disk and
 speed up searches, with before/after segment counts.
 
+Why this matters: each shard is internally a stack of immutable Lucene
+segments. Every refresh creates a new small segment, and a delete or update
+does not erase anything immediately; it only marks the old document as
+deleted and leaves the space occupied until a merge removes it. Background
+merges keep this under control on a live index, but a finished index (last
+week's logs, a closed time slice) can be merged down to a single segment per
+shard on demand. Fewer segments mean fewer structures to search and less
+metadata on the heap, and the merge finally reclaims the disk space tied up
+by deleted documents.
+
+The critical pitfall is in the name `max_num_segments=1`. Forcing a single
+giant segment is only safe on an index that will never be written again.
+Once a segment is that large, ordinary background merges can no longer fold
+it into anything, so on a still-active index it becomes a permanent
+liability that defeats future merging. That is exactly why the script marks
+the index read-only first: read-only is the signal that the index is done,
+which is the precondition for a safe one-segment merge.
+
 See [`08_forcemerge.sh`](./08_forcemerge.sh)
 
 ## Part 9: Investigate Allocation

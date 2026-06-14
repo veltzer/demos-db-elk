@@ -226,6 +226,17 @@ See [`11_multi_level_has_child.py`](./11_multi_level_has_child.py)
 
 **Task:** Find comments that have replies from the original post author.
 
+**What's happening:** This query spans two levels of the hierarchy at once. It
+looks at comments (`has_child` of type `reply`) whose replies match a condition
+on the reply author. The three-level mapping from Exercise 1.1 is what makes
+this possible.
+
+**Why this matters:** Each additional join level multiplies the work, because
+the engine resolves the relationship one level at a time. Multi-level join
+queries are powerful but the slowest pattern here. If you find yourself
+reaching across several levels frequently, that is a strong signal to
+reconsider the data model, which is exactly what Part 4 explores.
+
 ## Part 4: Performance Considerations
 
 ### Exercise 4.1: Compare Parent-Child vs Nested Performance

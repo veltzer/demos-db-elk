@@ -224,6 +224,17 @@ report. Pass an interval in seconds for a live, refreshing view.
 
 See [`09_health_dashboard.py`](./09_health_dashboard.py)
 
+What is happening: the previous steps each query one API; real
+monitoring means watching several at once and noticing how they move
+together. This dashboard polls cluster health, per-node stats, and
+pending tasks in a single pass and prints them as one screen, applying
+the warning thresholds a DBA cares about so problems jump out without
+reading raw numbers. Passing an interval turns it into a live view that
+clears the screen and refreshes, which is invaluable while you make a
+change in another terminal and watch the cluster react. The real lesson
+here is correlation: a yellow status next to a node at high heap and
+rising rejections tells a fuller story than any single metric alone.
+
 ## Discussion: What Each Metric Means
 
 ### Cluster status (green / yellow / red)

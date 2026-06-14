@@ -245,6 +245,13 @@ call inherits it.
 
 See [`16_requests_create_index.py`](./16_requests_create_index.py)
 
+Notice the same mappings from Method 1 appear here as a Python dictionary
+that is serialized with `json.dumps`. This drives home that the tool changed
+but the request did not. The code also prints `response.status_code`:
+checking the HTTP status (for example 200 for success versus 400 for a bad
+request) is how you detect failures when there is no friendly UI to show
+you a red error.
+
 ### 3.3 Insert Documents
 
 See [`17_requests_insert_documents.py`](./17_requests_insert_documents.py)
@@ -265,9 +272,20 @@ See [`20_requests_delete_documents.py`](./20_requests_delete_documents.py)
 
 ## Method 4: Python with elasticsearch Client
 
+This is the official Elasticsearch client for Python. Instead of building
+URLs, you call methods like `es.index(...)` and `es.search(...)`. The client
+handles JSON serialization, connection pooling, retries, and version
+compatibility for you, and it exposes dedicated helpers for bulk loads and
+scrolling. This is what you would normally reach for in a real application.
+
 ### 4.1 Setup and Configuration
 
 See [`21_client_setup.py`](./21_client_setup.py)
+
+The setup calls `es.ping()` to confirm the cluster is reachable before doing
+real work, then prints `es.info()`. Validating the connection early gives a
+clear, immediate failure rather than a confusing error several operations
+later.
 
 ### 4.2 Create Index
 

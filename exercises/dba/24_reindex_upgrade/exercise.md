@@ -217,6 +217,27 @@ The full pattern you reach for in production: applications read and write
 through an **alias**, so you can build a corrected index, reindex into it, and
 atomically repoint the alias with no downtime for readers.
 
+**Why an alias is the key:** an alias is a stable name that points at one (or
+more) real indices. If applications query `orders` (the alias) instead of
+`orders_v1` (the concrete index), the DBA can change which index that name
+resolves to without touching any application config. The script builds the
+flawed `orders_v1`, points the alias at it from day one, builds a corrected
+`orders_v2`, reindexes across with a script that derives a `total` field, and
+then moves the alias.
+
+**Why the swap is atomic:** the cutover does the `remove` and `add` in a
+single `_aliases` call. Because Elasticsearch applies the actions in one
+cluster-state update, there is never a moment where `orders` points at nothing
+or at both indices — readers go straight from old to new with no gap. Doing
+two separate calls would open exactly such a window.
+
+**Verify before you swap:** notice the script confirms document counts match
+and spot-checks a sample document *before* repointing the alias, exiting
+non-zero if anything is wrong. The discipline is: never cut traffic over to an
+index you have not validated. (The script also namespaces the alias as
+`orders_alias` so it cannot collide with a real index named `orders` —
+Elasticsearch forbids an alias and an index sharing a name.)
+
 See [`07_migrate_index.py`](./07_migrate_index.py)
 
 ## Part 8: Rolling Upgrade Runbook

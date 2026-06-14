@@ -220,11 +220,32 @@ See [`06_sample_loop.py`](./06_sample_loop.py)
 
 ## Part 5: Built-In Alerting
 
+Everything so far has been *pull-based*: an external scheduler reaches in,
+asks the cluster how it is doing, and decides what to do. Elasticsearch also
+offers *push-based* alerting that runs inside the cluster itself. The trade-off
+is licensing, which the next two sections make concrete.
+
 ### 5.1 Watcher (Reference)
 
 A sample Watcher watch that checks cluster health and would notify. Requires a
 commercial or trial license, so it is presented as a reference for what
 push-based alerting looks like in production.
+
+**Concept: how a watch is structured.** Every Watcher watch is the same four
+parts, which is a useful template even outside Elasticsearch: a *trigger*
+(when to run, here every minute), an *input* (what data to fetch, here
+`_cluster/health`), a *condition* (a test on that data, here status equals
+`red`), and *actions* (what to do when the condition is true). The sample uses
+a `logging` action so it is harmless to run, but the action slot is exactly
+where you would put email, Slack, a webhook, or a pager in production. Because
+the watch lives in the cluster and runs on its own schedule, no external cron
+is involved.
+
+**Pitfall: the license wall.** On the free Basic license the `PUT` will
+return a 403 saying the license is non-compliant for Watcher. That is
+expected. You can start a 30-day trial to try it for real (the script shows
+the commands), but on Basic the pull-based check from Part 2 is the practical
+path.
 
 See [`07_watcher_example.sh`](./07_watcher_example.sh)
 
