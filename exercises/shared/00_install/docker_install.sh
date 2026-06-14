@@ -12,6 +12,15 @@
 
 PROJECT_DIR=~/elastic-docker
 
+# Run every docker command via sudo. The "usermod -aG docker" below only takes
+# effect on the next login, so within this run the user is not yet in the docker
+# group; sudo sidesteps that. (We must NOT use "newgrp docker" instead: in a
+# non-interactive script it replaces the shell with one that reads the empty
+# stdin and exits, silently skipping every command that follows it.)
+docker() {
+	sudo docker "$@"
+}
+
 uninstall_previous_docker() {
 	# Remove Docker CE / Docker Desktop if present. These exercises use the
 	# distro's docker.io package, not Docker CE or Docker Desktop.
@@ -35,9 +44,9 @@ install_docker() {
 	# Ensure the system (root) Docker daemon is running and enabled.
 	sudo systemctl enable --now docker
 
-	# Add user to docker group
+	# Add user to docker group for convenience after next login. Within this run
+	# we still go through sudo (see the docker wrapper above).
 	sudo usermod -aG docker "$USER"
-	newgrp docker
 
 	# Verify Docker Compose is installed
 	docker compose version
