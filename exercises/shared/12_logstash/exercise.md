@@ -154,13 +154,28 @@ at a fresh file) makes `start_position => "beginning"` take effect again.
 
 See [`09_list_indices.sh`](./09_list_indices.sh)
 
+**What to look for:** The first time an event arrives with a new daily
+index name (`system-logs-YYYY.MM.dd`), Elasticsearch creates that index
+automatically and infers a mapping (the data type of each field) from the
+first documents it sees. Seeing the index appear is the clearest sign that
+data is actually landing, not just being read by Logstash.
+
 **Search for log data:**
 
 See [`10_search_recent_logs.sh`](./10_search_recent_logs.sh)
 
+This query asks Elasticsearch to return the most recent documents by
+sorting on `@timestamp` in descending order. Because that field was set by
+the `date` filter, the newest *events* come first rather than the most
+recently *indexed* documents, which is what you usually want for logs.
+
 **Search for specific log types:**
 
 See [`11_search_auth_logs.sh`](./11_search_auth_logs.sh)
+
+This is where the `type` tag pays off: a single field lets you carve out
+just the authentication events from everything else flowing through the
+same pipeline and indices.
 
 ### Step 8: View Data in Kibana
 

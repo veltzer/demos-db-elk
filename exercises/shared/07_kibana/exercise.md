@@ -203,7 +203,20 @@ show nothing.
 
 ## Part 2: Visualizations
 
+A visualization in Kibana is built from two ideas: a metric (the number you
+want, such as a count, a sum, or an average) and one or more buckets (how you
+want that number grouped, such as by status code, by country, or by time).
+Elasticsearch computes these with aggregations, which are far more efficient
+than fetching every document and counting in the browser, because the work
+happens close to the data. Choosing the right chart type is mostly about
+matching the shape of the answer: pies and donuts for parts of a whole, bars
+for comparing categories, lines and areas for change over time, and tables when
+you want exact numbers.
+
 ### Exercise 2.1: Web Analytics Dashboard
+
+Each visualization below should keep the `data_type: "web_log"` filter so it
+only counts web traffic, not the other three record types sharing the index.
 
 Create the following visualizations:
 

@@ -171,9 +171,23 @@ sort, or aggregate on it.
 
 ## Part 4: Best Practices and Optimization
 
+Knowing *how* to disable indexing is only half the skill. The harder, more
+valuable half is deciding *which* fields should give up their index. The rule of
+thumb is simple: index a field only if you will search, filter, sort, or
+aggregate on it. Everything else is a candidate for `index: false`. The payoff is
+real: a smaller index, faster indexing of new documents, less memory pressure,
+and lighter cluster-state and disk activity.
+
 ### Exercise 4.1: Identify Fields to Not Index
 
 See [`09_identify_fields_to_not_index.py`](./09_identify_fields_to_not_index.py)
+
+**What this teaches:** unlike the earlier scripts, this one does not call
+Elasticsearch at all. It prints a decision guide that sorts the example user
+fields into "keep indexed", "consider disabling", and "definitely disable", then
+lists the concrete benefits of disabling. Treat it as a checklist for reviewing a
+mapping. The judgment it encodes is exactly what you will be asked to apply in
+the challenge exercises below.
 
 ## Summary and Key Takeaways
 
