@@ -74,25 +74,84 @@ the other methods.
 
 See [`03_create_index.js`](./03_create_index.js)
 
+An index is the rough equivalent of a table: it is a named collection of
+documents. The `mappings` section defines the type of each field, and this
+is where a critical Elasticsearch concept appears. Notice that `name` and
+`description` are `text`, while `category`, `tags`, and `product_id` are
+`keyword`. A `text` field is broken into individual words (analyzed) so it
+can support full-text search such as matching "wireless" inside a longer
+title. A `keyword` field is stored whole, exactly as given, so it is right
+for filtering, sorting, and aggregations on exact values like a category
+name. Choosing `text` versus `keyword` is one of the most consequential
+decisions in Elasticsearch, because mappings cannot be changed in place once
+data exists.
+
+You can let Elasticsearch guess types automatically (dynamic mapping), but
+defining mappings explicitly up front, as done here, avoids surprises like a
+date being treated as a plain string.
+
 ### 1.2 Insert Single Document
 
 See [`04_insert_document.js`](./04_insert_document.js)
+
+This step shows the two ways to create a document. `POST /products/_doc`
+lets Elasticsearch generate a random unique ID for you, which is ideal for
+log-like data where you never need to address a specific record again.
+`PUT /products/_doc/1` assigns the ID `1` yourself, which you want when the
+document corresponds to a known entity you will later read or update by ID.
+A subtle but important consequence: repeating the same `PUT` with the same
+ID overwrites the existing document, while repeated `POST` calls keep
+creating new ones.
 
 ### 1.3 Bulk Insert Documents
 
 See [`05_bulk_insert.js`](./05_bulk_insert.js)
 
+The `_bulk` API packs many operations into a single request. Each operation
+is two lines: an action line saying what to do (here `index` with an `_id`)
+followed by the document itself. This newline-delimited format exists for
+performance: sending one thousand documents in one bulk request is far
+faster than one thousand separate requests, because it avoids the network
+round-trip and request overhead of each individual call. This is why bulk
+loading is the standard way to ingest data at scale.
+
 ### 1.4 Search/Read Documents
 
 See [`06_search_documents.js`](./06_search_documents.js)
+
+Reading comes in two flavors. Fetching by ID with `GET /products/_doc/1` is
+a direct lookup and always returns the current document. The `_search`
+endpoint is the real power of Elasticsearch: `match_all` returns everything,
+a `bool` query with `must` clauses combines conditions (here an exact
+category match plus a price range), and the final example sets `size: 0` and
+uses `aggs` to compute analytics. Setting `size` to zero tells Elasticsearch
+you want only the aggregated numbers, not the matching documents themselves,
+which makes dashboards and summaries efficient.
 
 ### 1.5 Update Documents
 
 See [`07_update_documents.js`](./07_update_documents.js)
 
+Updates reveal an important truth: Elasticsearch documents are immutable
+under the hood. There is no in-place edit. A full `PUT` to an existing ID
+actually replaces the whole document and silently drops any field you omit.
+A partial update via `_update` with a `doc` block is more convenient, but
+internally Elasticsearch still fetches the old document, merges your
+changes, deletes the old version, and indexes a new one. The script-based
+update lets you compute the new value from the old (incrementing stock), and
+`_update_by_query` applies a change to every matching document at once, such
+as discounting all electronics. Use the last one with care, since it can
+touch a large number of documents in a single call.
+
 ### 1.6 Delete Documents
 
 See [`08_delete_documents.js`](./08_delete_documents.js)
+
+Deletion mirrors the read operations. `DELETE /products/_doc/1` removes one
+document by ID, `_delete_by_query` removes everything matching a condition,
+and `DELETE /products` removes the entire index along with all its documents
+and its mappings. Be careful with the last form: dropping the index is
+instant and there is no recycle bin.
 
 ---
 

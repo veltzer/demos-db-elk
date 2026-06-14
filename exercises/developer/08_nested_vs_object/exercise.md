@@ -160,4 +160,11 @@ See [`07_nested_range_query.sh`](./07_nested_range_query.sh)
 To run this exercise, copy and paste these commands one by one into your
 terminal (assumes Elasticsearch is running on localhost:9200):
 
+Start by running the delete script below to remove any leftover indices
+from a previous run. Mappings cannot be changed after an index is
+created, so if `students_object` or `students_nested` already exist with
+old mappings, re-creating them would fail. Deleting first guarantees you
+begin from a clean state. Then run the numbered scripts in order and
+compare the two search results to see the difference for yourself.
+
 See [`08_delete_indices.sh`](./08_delete_indices.sh)

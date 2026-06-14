@@ -255,6 +255,14 @@ See [`07_slm_policy.sh`](./07_slm_policy.sh)
 Delete the snapshots, the SLM policy, the repository registration and the
 sample indices.
 
+Note the distinction between unregistering a repository and deleting its
+data. Deleting the snapshots (`DELETE _snapshot/<repo>/<snap>`) actually
+frees blobs in the repository, while removing the repository
+registration only detaches Elasticsearch from the location and leaves any
+remaining files on disk. That asymmetry is deliberate: it lets you
+re-register a repository elsewhere, or hand it to another cluster,
+without losing the backups.
+
 See [`08_cleanup.sh`](./08_cleanup.sh)
 
 ## Discussion

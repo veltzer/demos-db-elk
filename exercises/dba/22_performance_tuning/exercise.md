@@ -128,11 +128,30 @@ configuration rather than in a shell environment that is easy to lose.
 
 ## Part 2: Thread Pools
 
+Elasticsearch does not spawn a new thread for every request. Instead it
+routes work to a small set of fixed-size thread pools, one per kind of
+operation (`write` for indexing, `search` for queries, `get` for
+single-document fetches, and so on). Each pool has a bounded queue in
+front of it. This design protects the node: a fixed number of threads
+means CPU and memory use stay predictable no matter how many clients
+pile on at once.
+
 See [`02_thread_pools.py`](./02_thread_pools.py)
 
 This reads the data behind
 `GET /_cat/thread_pool?v&h=node_name,name,active,queue,rejected` and
 flags any pool with rejections, focusing on `write` and `search`.
+
+What's happening: the script reports `active` (threads currently
+working), `queue` (tasks waiting), and `rejected` (tasks dropped). The
+key concept is what a rejection means. When every thread is busy *and*
+the queue is full, Elasticsearch does not slow the request down, it
+refuses it outright with an `es_rejected_execution_exception` (HTTP
+429). The work is dropped, not delayed. The instinct to "just make the
+queue bigger" is the classic trap: a longer queue only buries the
+latency and delays the moment you notice the cluster is overloaded. The
+real fixes are to reduce client concurrency, batch more sensibly with
+retry-and-backoff, or scale out across more nodes and shards.
 
 ## Part 3: Caches
 

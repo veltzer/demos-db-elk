@@ -123,6 +123,22 @@ Report shard count vs data size for every index and flag shards that are too
 small (oversharded) or too large (undersharded) against the 10-50GB target
 band.
 
+Why this matters: oversharding is the failure mode that quietly degrades
+real clusters. Every shard, no matter how little data it holds, carries a
+fixed cost on the master node and on each data node's heap: cluster-state
+entries, open file handles, and cached metadata. A thousand near-empty
+shards can exhaust the heap and slow cluster updates even though the actual
+data would fit in a handful of well-sized shards. The report reads per-shard
+store sizes and counts only primaries, because counting replicas too would
+double the apparent data and hide the real average shard size.
+
+The script flags any average shard well under one gigabyte as oversharded
+and anything over the upper band as undersharded. Note that this counts
+bytes on disk, which can differ from the live document count after deletes:
+deleted documents still occupy space until a merge reclaims it, which is
+exactly why force-merge (Part 8) can shrink an index that has not lost any
+live data.
+
 See [`04_shard_sizing_report.py`](./04_shard_sizing_report.py)
 
 ## Part 5: Change Replica Count at Runtime

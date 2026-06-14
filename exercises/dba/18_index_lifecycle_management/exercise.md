@@ -153,6 +153,19 @@ A data stream hides the backing indices entirely and needs no
 `is_write_index`. It requires a template containing a `data_stream` object and
 documents that carry an `@timestamp`:
 
+Why is the bootstrap step gone? A data stream manages its own write index, so
+there is no manual `-000001` to create and no write flag to set. Elasticsearch
+generates hidden backing indices named `.ds-...` and always writes to the
+newest one. The trade-off is that data streams are strictly append-only: you
+can add documents but not update or delete individual ones in place, which is
+exactly the right contract for logs and metrics but wrong for mutable data.
+
+Note also the deliberate `priority` of 600 in the script. Its pattern
+`logs-stream*` overlaps the `logs-*` pattern from Step 2, and the higher
+priority guarantees the data-stream template wins for names starting with
+`logs-stream`. The required `@timestamp` is how a data stream orders and
+time-partitions its backing indices, so a document without one is rejected.
+
 See [`05_create_data_stream.sh`](./05_create_data_stream.sh)
 
 ### Step 4: Trigger a Rollover

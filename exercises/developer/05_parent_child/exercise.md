@@ -111,11 +111,27 @@ documents onto the same shard, which can unbalance the cluster.
 
 ## Part 2: Querying Parent-Child Relationships
 
+Now that the data is linked, you can query across the relationship. The three
+core join queries answer different questions. `has_child` returns *parents*
+filtered by their children. `has_parent` returns *children* filtered by their
+parent. `parent_id` returns the direct children of one known parent. Knowing
+which query returns which side of the relationship is the key to using them
+correctly.
+
 ### Exercise 2.1: Has Child Query
 
 See [`05_has_child_query.py`](./05_has_child_query.py)
 
 **Task:** Find all blog posts that have at least one comment.
+
+**What's happening:** `has_child` takes the child `type` and an inner query.
+It matches every parent that has at least one child of that type satisfying the
+inner query. The hits returned are the *parent* documents, not the children.
+
+**Why this matters:** Because the inner query runs against children but the
+result is the parent, `has_child` is heavier than a normal query: the engine
+must evaluate children and then join back to parents on each shard. Use it when
+you genuinely need to filter parents by a property of their children.
 
 ### Exercise 2.2: Has Parent Query
 
