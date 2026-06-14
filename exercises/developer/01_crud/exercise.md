@@ -224,9 +224,22 @@ environment first on your path; deactivating restores your normal shell.
 
 ## Method 3: Python with requests Library
 
+This method uses the general-purpose `requests` HTTP library. There is no
+Elasticsearch-specific code: you build the URL, set the JSON body, and parse
+the response yourself. The advantage is total transparency and only one
+lightweight dependency. The cost is more boilerplate, since you handle the
+JSON encoding and decoding by hand. It is an excellent way to internalize
+that Elasticsearch really is just an HTTP API.
+
 ### 3.1 Setup and Configuration
 
 See [`15_requests_setup.py`](./15_requests_setup.py)
+
+The setup creates a `requests.Session`. A session reuses a single underlying
+network connection across many calls instead of opening a new one each time,
+which is both faster and the right habit for any code that makes repeated
+requests. It also sets the JSON content-type header once, so every later
+call inherits it.
 
 ### 3.2 Create Index
 

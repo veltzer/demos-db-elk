@@ -209,6 +209,17 @@ See [`10_has_child_function_score.py`](./10_has_child_function_score.py)
 
 **Task:** Score blog posts based on the number of comments they have.
 
+**What's happening:** `has_child` accepts a `score_mode` that folds the
+children's scores into the parent's relevance score. Combined with a
+`function_score` inner query, you can turn a child property, such as the number
+of comments, into a ranking signal for the parent.
+
+**Why this matters:** This is how you make engagement influence search ranking,
+for example pushing heavily commented posts higher. By default `has_child`
+ignores child scores (`score_mode: none`); you must opt in with `min`, `max`,
+`sum`, or `avg`. Computing child scores is more work than a simple existence
+check, so only enable it when ranking truly depends on the children.
+
 ### Exercise 3.3: Complex Multi-Level Queries
 
 See [`11_multi_level_has_child.py`](./11_multi_level_has_child.py)
