@@ -26,7 +26,7 @@ through individual phases:
 | Docker Compose | [`docker_install.sh`](./docker_install.sh) |
 | Direct Download (Archive) | [`archive_install.sh`](./archive_install.sh) |
 | Podman | [`podman_install.sh`](./podman_install.sh) |
-| Status / troubleshooting (all methods) | [`check_status.sh`](./check_status.sh) |
+| Status / troubleshooting | [`check_status.sh`](./check_status.sh) |
 
 > **Note:** these exercises run with security **disabled**, so no generated
 > passwords or enrollment tokens are needed for any method.
@@ -56,7 +56,7 @@ each step (dependencies, repository, Elasticsearch, configure/start, Kibana,
 start Kibana) is a separate shell function.
 
 ```bash
-./apt_install.sh install     # dependencies, repo, install, configure and start both
+./apt_install.sh install     # deps, repo, install, configure and start both
 ./apt_install.sh verify      # test Elasticsearch and print the Kibana URL
 ./apt_install.sh uninstall   # stop services, purge packages, remove all data
 ```
@@ -70,8 +70,8 @@ Docker, writes `~/elastic-docker/docker-compose.yml` and starts the stack. No
 Kibana system user setup is required because security is disabled.
 
 ```bash
-./docker_install.sh install     # install Docker, write compose file, start services
-./docker_install.sh verify      # test Elasticsearch, show containers, print Kibana URL
+./docker_install.sh install     # install Docker, write compose file, start
+./docker_install.sh verify      # test Elasticsearch, show containers, Kibana URL
 ./docker_install.sh uninstall   # compose down -v, remove images and project dir
 ```
 
@@ -86,8 +86,8 @@ starts them. Creating systemd services is optional but recommended.
 ```bash
 ./archive_install.sh install     # Java, download, configure and start both
 ./archive_install.sh services    # create and enable systemd services (optional)
-./archive_install.sh verify      # check processes, test Elasticsearch, print Kibana URL
-./archive_install.sh uninstall   # stop processes/services, remove /opt/elastic and PIDs
+./archive_install.sh verify      # check processes, test Elasticsearch, Kibana URL
+./archive_install.sh uninstall   # stop, remove /opt/elastic and PID files
 ```
 
 ---
@@ -100,8 +100,8 @@ through its compose provider, so the steps mirror the Docker Compose method.
 Everything lives in [`podman_install.sh`](./podman_install.sh).
 
 ```bash
-./podman_install.sh install     # install Podman, write compose file, start services
-./podman_install.sh verify      # test Elasticsearch, show containers, print Kibana URL
+./podman_install.sh install     # install Podman, write compose file, start
+./podman_install.sh verify      # test Elasticsearch, show containers, Kibana URL
 ./podman_install.sh uninstall   # compose down -v, remove images and project dir
 ```
 
