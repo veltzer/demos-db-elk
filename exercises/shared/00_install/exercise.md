@@ -178,11 +178,8 @@ On start, `elasticsearch -d -p /tmp/elasticsearch.pid` launches the node as a
 background daemon and records its process id in a file so it can be stopped
 later. Kibana is started with `nohup ... &` and its own PID file. Because no
 service manager is involved yet, these processes will not restart on reboot
-or on failure, which is exactly the gap the optional `services` step fills.
-
-```bash
-./archive_install.sh services    # create systemd units (see below)
-```
+or on failure, which is exactly the gap the optional `services` step (shown
+in the commands below) fills.
 
 The `services` step writes two `systemd` unit files,
 `elasticsearch-archive.service` and `kibana-archive.service`, that run the
@@ -208,6 +205,15 @@ with the same `docker-compose.yml` used in Method 2. It reads the compose file
 through its compose provider, so the steps mirror the Docker Compose method.
 Everything lives in [`podman_install.sh`](./podman_install.sh).
 
+Why prefer Podman? Docker relies on a long-running background daemon that
+runs as root, which some security policies forbid. Podman has no daemon: each
+container is a normal child process, and it can run entirely as an
+unprivileged user. Because Podman implements the same container and compose
+formats, the script writes the identical `docker-compose.yml` (under
+`~/elastic-podman`) and just swaps `docker` for `podman` on the command line.
+This is a good illustration that the compose file is a portable description
+of the stack, independent of which engine runs it.
+
 ```bash
 ./podman_install.sh install     # install Podman, write compose file, start
 ./podman_install.sh verify      # test ES, show containers, print Kibana URL
@@ -220,6 +226,31 @@ Everything lives in [`podman_install.sh`](./podman_install.sh).
 
 Shared status and troubleshooting commands live in
 [`check_status.sh`](./check_status.sh).
+
+Because every method ends with the same two processes on the same two ports,
+one set of checks works for all of them. The key concepts these commands
+exercise:
+
+- Cluster health (`GET /_cluster/health`) returns a colour: green means all
+  shards are assigned, yellow means data is safe but some replica copies are
+  missing (normal on a single node), and red means some primary data is
+  unavailable. A single-node setup is usually yellow, and that is fine.
+- A shard is the unit Elasticsearch splits an index into; replicas are extra
+  copies for redundancy. With only one node there is nowhere to place a
+  replica, which is why yellow is expected here.
+- `GET /_cat/indices?v` lists every index. The `_cat` APIs return compact,
+  human-readable tables instead of JSON, and `?v` adds the column headers.
+- `GET /api/status` on port 5601 is Kibana reporting on itself; it will say
+  it is unavailable until Elasticsearch is reachable, which is a quick way to
+  confirm the two are actually talking.
+- The `troubleshoot` command checks that ports 9200 and 5601 are listening
+  and prints where each method writes its logs, since that is the first thing
+  to read when a service fails to start.
+
+> **Common pitfall:** Elasticsearch and Kibana take time to become ready
+> after starting. A `curl` that fails immediately after `install` usually
+> means the service is still booting, not that it is broken; wait a few
+> seconds and try the health check again.
 
 ```bash
 ./check_status.sh elasticsearch   # cluster health, info and index listing

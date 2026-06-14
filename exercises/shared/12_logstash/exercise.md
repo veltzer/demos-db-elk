@@ -179,6 +179,10 @@ same pipeline and indices.
 
 ### Step 8: View Data in Kibana
 
+Kibana never stores data of its own; it is a window onto Elasticsearch. To
+show you anything, it first needs to know *which* indices to read, which is
+the job of the index pattern below.
+
 1. **Open Kibana:** Go to `http://localhost:5601`
 
 1. **Create Index Pattern:**
@@ -187,6 +191,11 @@ same pipeline and indices.
    - Enter pattern: `system-logs-*`
    - Select `@timestamp` as time field
    - Click "Create index pattern"
+
+   The trailing `*` is what lets one pattern span every daily index at
+   once, so you never have to recreate it as new days roll over. Choosing
+   `@timestamp` as the time field is what powers Kibana's time picker and
+   the time-based histograms in Discover.
 
 1. **View Logs in Discover:**
    - Go to "Discover"
@@ -206,11 +215,28 @@ same pipeline and indices.
 
 See [`12_create_weblog_config.sh`](./12_create_weblog_config.sh)
 
+**Why this is interesting:** Web access logs follow well-known formats, so
+Logstash ships ready-made grok patterns for them: `%{COMMONAPACHELOG}` and
+`%{NGINXACCESS}` unpack a request line into fields like client IP, request
+path, response code, and bytes sent in one step. Notice the extra `mutate`
+that converts `response` and `bytes` to integers. By default every grok
+capture is a string, and Elasticsearch would map them as text. Converting
+them to numbers lets you do numeric work later, such as averaging response
+sizes or counting how many `500` errors occurred. This config writes to its
+own `web-logs-*` indices, keeping web traffic separate from system logs.
+
 ### Step 10: Monitor Multiple Pipelines
 
 **Run multiple Logstash instances:**
 
 See [`13_run_multiple_pipelines.sh`](./13_run_multiple_pipelines.sh)
+
+Here each config runs as a separate Logstash process in its own terminal,
+which is the simplest way to keep two unrelated data flows isolated. In a
+real deployment you would more often run a single Logstash with the
+`pipelines.yml` file defining several named pipelines inside one process,
+which shares the JVM and uses less memory. Running separate processes is
+fine for learning and makes it obvious which pipeline produced which output.
 
 ### Step 11: Verify Data Flow
 

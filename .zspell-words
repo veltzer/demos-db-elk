@@ -241,3 +241,7 @@ gpg
 ndjson
 subnets
 ulimit
+cpus
+openjdk
+pid
+sincedb

@@ -240,7 +240,18 @@ Create the following visualizations:
    - X-axis: `timestamp` (Date histogram)
    - Y-axis: Count of documents
 
+A date histogram buckets documents into fixed time intervals (per hour, per
+day, and so on) and counts how many fall in each. Kibana usually picks the
+interval automatically based on the selected time range, so zooming in or out
+changes the granularity. This is the foundation of nearly every "over time"
+chart you will build.
+
 ### Exercise 2.2: E-commerce Analytics
+
+Notice that these charts switch the metric from a plain count to a sum or
+average of a numeric field. That is only possible because `total_amount` was
+mapped as a numeric type at import time. Summing a field that was accidentally
+stored as text would fail.
 
 1. **Sales by Category**
    - Chart type: Vertical bar chart
@@ -263,6 +274,13 @@ Create the following visualizations:
    - Metric: Count
 
 ### Exercise 2.3: System Monitoring Dashboard
+
+These charts plot two numeric metrics against each other, which is a different
+mindset from counting documents. A scatter-style plot of memory against CPU,
+for example, asks "do these move together?" rather than "how many?" Keep in
+mind the generator produces each metric independently and at random, so you
+should not expect a strong correlation here. The point is to learn the
+mechanics; on real telemetry these same charts reveal genuine relationships.
 
 1. **CPU Usage Gauge**
    - Chart type: Gauge
@@ -287,6 +305,15 @@ Create the following visualizations:
 ## Part 3: Advanced Analytics
 
 ### Exercise 3.1: Creating Calculated Fields
+
+A runtime field is a field that does not exist on disk; it is computed from
+other fields each time it is queried. This is powerful because you can add new
+ways to slice your data without re-importing anything. The trade-off is cost:
+because the value is calculated at query time rather than stored at index time,
+heavy use over large datasets is slower than a real field. For exercises like
+turning a raw `response_time_ms` number into Fast/Medium/Slow labels, a runtime
+field is exactly the right tool: you keep the precise number and gain a tidy
+category to group by.
 
 1. **Response Time Categories**
    - Create a runtime field to categorize response times:

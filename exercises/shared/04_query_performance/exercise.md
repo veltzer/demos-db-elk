@@ -39,16 +39,17 @@ This creates two indices:
 
 **Why two indices?** To compare fairly you need two populations that differ in
 exactly one variable: whether certain fields are indexed. The script defines two
-*mappings* (the schema that tells Elasticsearch the type of each field) and fills
-both indices with the same kind of randomly generated user data. The only
+*mappings* (the schema that tells Elasticsearch the type of each field) and
+fills both indices with the same kind of randomly generated user data. The only
 difference is that in `users_non_indexed` fields such as `email`, `bio`,
 `salary`, `job_title`, `last_login`, `metadata`, and several `location`
 sub-fields are marked `index: false`.
 
 **What's happening under the hood:** the data is loaded with the *bulk* API,
 which sends many documents in a single request instead of one HTTP call per
-document. This is the standard way to index at scale because per-request overhead
-dominates when you index one document at a time. After loading, the script calls
+document. This is the standard way to index at scale because per-request
+overhead dominates when you index one document at a time. After loading, the
+script calls
 a *refresh* on each index. Newly indexed documents are not visible to search
 until a refresh flushes them from the in-memory buffer into a searchable
 *segment*; refreshing explicitly guarantees the test queries can find the data
@@ -104,8 +105,8 @@ See [`04_profile_api.py`](./04_profile_api.py)
 adding `"profile": true` to the request. Instead of a single timing number, you
 get a per-shard breakdown of how long each part of the query took, in
 nanoseconds. This matters because an index is split into *shards* (independent
-sub-indices that run in parallel), and a query runs on each shard separately. The
-script profiles a `bool` query that combines `must`, `should`, and a range
+sub-indices that run in parallel), and a query runs on each shard separately.
+The script profiles a `bool` query that combines `must`, `should`, and a range
 filter, so you can see which clause dominates the cost. Use the Profile API when
 a query is unexpectedly slow and you need to know *why* rather than just *how
 slow*.
@@ -150,8 +151,9 @@ See [`07_concurrent_query_performance.py`](./07_concurrent_query_performance.py)
 **What this teaches:** a single query timed in isolation tells you nothing about
 how the system behaves under load. Real clusters serve many users at once, and
 throughput and latency change as concurrency rises. The script fires many
-queries from several threads at the same time and reports averages along with the
-*median* and the *95th percentile* (the value below which 95 percent of queries
+queries from several threads at the same time and reports averages along with
+the *median* and the *95th percentile* (the value below which 95 percent of
+queries
 fall). Percentiles matter more than averages for user experience: a low average
 can still hide a slow tail that frustrates a minority of users. Throughput in
 queries per second tells you how much work the cluster can absorb before it
@@ -174,8 +176,9 @@ sort, or aggregate on it.
 Knowing *how* to disable indexing is only half the skill. The harder, more
 valuable half is deciding *which* fields should give up their index. The rule of
 thumb is simple: index a field only if you will search, filter, sort, or
-aggregate on it. Everything else is a candidate for `index: false`. The payoff is
-real: a smaller index, faster indexing of new documents, less memory pressure,
+aggregate on it. Everything else is a candidate for `index: false`. The payoff
+is real: a smaller index, faster indexing of new documents, less memory
+pressure,
 and lighter cluster-state and disk activity.
 
 ### Exercise 4.1: Identify Fields to Not Index
@@ -185,8 +188,8 @@ See [`09_identify_fields_to_not_index.py`](./09_identify_fields_to_not_index.py)
 **What this teaches:** unlike the earlier scripts, this one does not call
 Elasticsearch at all. It prints a decision guide that sorts the example user
 fields into "keep indexed", "consider disabling", and "definitely disable", then
-lists the concrete benefits of disabling. Treat it as a checklist for reviewing a
-mapping. The judgment it encodes is exactly what you will be asked to apply in
+lists the concrete benefits of disabling. Treat it as a checklist for reviewing
+a mapping. The judgment it encodes is exactly what you will be asked to apply in
 the challenge exercises below.
 
 ## Summary and Key Takeaways
