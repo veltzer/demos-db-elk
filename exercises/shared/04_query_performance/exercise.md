@@ -5,6 +5,17 @@
 Learn how to measure Elasticsearch query performance and understand the impact
 of field indexing on query speed.
 
+When you store a document in Elasticsearch, each field can be treated very
+differently behind the scenes. By default, Elasticsearch builds an *inverted
+index* for every field: a data structure that maps each term back to the
+documents that contain it, much like the index at the back of a textbook. That
+inverted index is what makes searches fast, but it also costs disk space,
+memory, and time to build during indexing. The central idea of this exercise is
+that you do not always need to pay that cost. Some fields are only ever shown to
+the user and never searched, and for those you can turn indexing off with
+`index: false`. The exercises below let you measure the trade-off for yourself
+rather than just take it on faith.
+
 ## Prerequisites
 
 - Python 3.x with modules: `elasticsearch`, `faker`
@@ -25,6 +36,30 @@ This creates two indices:
 
 - `users_indexed`: All fields are indexed (searchable)
 - `users_non_indexed`: Some fields have `index: false` (stored but not searchable)
+
+**Why two indices?** To compare fairly you need two populations that differ in
+exactly one variable: whether certain fields are indexed. The script defines two
+*mappings* (the schema that tells Elasticsearch the type of each field) and fills
+both indices with the same kind of randomly generated user data. The only
+difference is that in `users_non_indexed` fields such as `email`, `bio`,
+`salary`, `job_title`, `last_login`, `metadata`, and several `location`
+sub-fields are marked `index: false`.
+
+**What's happening under the hood:** the data is loaded with the *bulk* API,
+which sends many documents in a single request instead of one HTTP call per
+document. This is the standard way to index at scale because per-request overhead
+dominates when you index one document at a time. After loading, the script calls
+a *refresh* on each index. Newly indexed documents are not visible to search
+until a refresh flushes them from the in-memory buffer into a searchable
+*segment*; refreshing explicitly guarantees the test queries can find the data
+immediately.
+
+**Concept: keyword vs text.** Notice in the mapping that some fields are
+`keyword` (stored as a single exact token, good for filters, sorting, and
+aggregations) while others are `text` (broken into individual words by an
+*analyzer* so you can do full-text `match` queries). The same raw string is
+indexed very differently depending on which type you choose, and that choice
+drives which queries are even possible.
 
 ## Part 2: Query Performance Measurement
 

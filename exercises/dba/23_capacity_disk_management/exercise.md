@@ -290,6 +290,30 @@ See [`08_capacity_forecast.py`](./08_capacity_forecast.py)
 Allocation filtering and awareness let you control *where* shards land — the
 foundation of hot/warm/cold tiering and of rack/zone fault tolerance.
 
+**Why a DBA cares about placement:** capacity is not only "how much disk"
+but "which disk". You want hot, frequently-searched indices on fast nodes
+and large old indices on cheaper nodes with bigger but slower disks.
+Steering shards to the right hardware is how you get both performance and
+cost control. The script shows the two mechanisms involved.
+
+The first is per-index *allocation filtering*. Nodes are tagged with custom
+attributes (for example `node.attr.data: warm` in `elasticsearch.yml`), and
+an index setting such as `index.routing.allocation.require.data: warm`
+tells Elasticsearch to place that index only on matching nodes. On a
+single-node dev cluster with no such tag this is harmless — the setting is
+recorded but the shard has nowhere else to go, so it stays put. In
+production this same setting is how you migrate an aging index onto the
+warm tier.
+
+The second is cluster-wide allocation *awareness*. Setting
+`cluster.routing.allocation.awareness.attributes` to something like `zone`
+tells Elasticsearch to spread a shard's primary and replicas across
+distinct values of that attribute, so that losing one zone or rack cannot
+take down every copy of a shard. Note this is set with `persistent`, since
+a fault-tolerance policy should survive restarts, whereas the per-index
+filter is a property of the index itself. Every change in the script is
+reverted at the end so the cluster is left as it was found.
+
 See [`09_allocation_filtering.sh`](./09_allocation_filtering.sh)
 
 ## Discussion

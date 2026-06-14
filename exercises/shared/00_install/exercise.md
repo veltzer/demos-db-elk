@@ -10,6 +10,18 @@ Linux using four different methods:
 - Direct Download (Archive)
 - Podman
 
+Why so many methods? Elasticsearch and Kibana are two cooperating
+processes, not a single program. Elasticsearch is the search and storage
+engine: it indexes documents and answers queries over a REST API on port
+9200. Kibana is the web front end: it connects to Elasticsearch and renders
+dashboards, searches, and management screens, served on port 5601. Together
+they form the core of what is often called the Elastic Stack. Every method
+below ends up with the same two processes talking to each other; they differ
+only in how the software gets onto the machine and how its lifecycle is
+managed. Learning several methods teaches you the trade-offs between system
+packages, containers, and self-managed installs so you can pick the right
+one for a given environment.
+
 For each method, you'll learn how to:
 
 - Install both Elasticsearch and Kibana
@@ -31,6 +43,18 @@ through individual phases:
 > **Note:** these exercises run with security **disabled**, so no generated
 > passwords or enrollment tokens are needed for any method.
 
+Why disable security? Since version 8, Elasticsearch turns on security by
+default: on first start it generates a password for the built-in `elastic`
+user and an enrollment token that Kibana uses to connect over encrypted
+HTTPS. That is the right choice for any real deployment, but it adds several
+moving parts (certificates, tokens, password resets) that get in the way
+when you are just learning the query language and the UI. Setting
+`xpack.security.enabled: false` makes Elasticsearch listen on plain HTTP with
+no login, so every example can be a simple `curl http://localhost:9200`. The
+trade-off is that anyone who can reach the port has full access, so this
+configuration is strictly for local learning, never for a shared or
+internet-facing machine.
+
 ## Prerequisites
 
 Before starting, ensure you have:
@@ -40,6 +64,14 @@ Before starting, ensure you have:
 - 20GB free disk space
 - Terminal access with sudo privileges
 - Internet connection
+
+Why these requirements? Elasticsearch runs on the Java Virtual Machine and
+holds much of its working data in memory, so RAM is the resource that
+matters most; the scripts cap the Java heap at 512 MB per node, but the
+operating system and Kibana need room too. The disk space covers the
+downloaded packages plus the indices you will create. Internet access is
+needed because every method pulls software from Elastic's servers (the APT
+repository, the container registry, or the download archives).
 
 Update your system:
 
@@ -54,6 +86,25 @@ sudo apt update && sudo apt upgrade -y
 Everything lives in [`apt_install.sh`](./apt_install.sh). Read it top to bottom:
 each step (dependencies, repository, Elasticsearch, configure/start, Kibana,
 start Kibana) is a separate shell function.
+
+What's happening under the hood: Elastic publishes its own APT repository
+rather than shipping through Ubuntu or Debian, so the script first imports
+Elastic's GPG signing key and adds the repository to your sources list. The
+signing key lets `apt` verify that downloaded packages really came from
+Elastic and were not tampered with in transit. Installing the `elasticsearch`
+package then drops files in the standard Linux locations: the binary and
+modules under `/usr/share`, configuration under `/etc/elasticsearch`, data
+under `/var/lib/elasticsearch`, and a `systemd` unit so the service starts on
+boot. The `configure_and_start_elasticsearch` function appends the
+security-disabling settings to `elasticsearch.yml` before the first start,
+which matters: those options must be in place when the node boots, because
+security mode is decided at startup. After editing a unit or its environment,
+`systemctl daemon-reload` tells `systemd` to re-read the unit files.
+
+> **Common pitfall:** if you install the package and start it before adding
+> the configuration, Elasticsearch comes up in secured mode and you will be
+> prompted for credentials. The script avoids this by configuring first,
+> then starting.
 
 ```bash
 ./apt_install.sh install     # deps, repo, install, configure and start both

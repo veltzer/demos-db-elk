@@ -246,6 +246,23 @@ Use `_cluster/allocation/explain` to find out exactly why a shard is
 unassigned, and use `_cluster/reroute?retry_failed=true` to retry failed
 allocations.
 
+What is happening: when a shard will not assign, guessing is a waste of
+time. The allocation explain API asks the cluster's own allocation decider
+to walk through each candidate node and report, in plain language, why the
+shard cannot be placed there: a disk watermark was crossed, an allocation
+filter excludes the node, the maximum number of retries was reached, or the
+cluster is still recovering. On a single-node cluster the answer for an
+unassigned replica is simply that no other node exists to hold a second
+copy.
+
+Elasticsearch also stops retrying a shard after a number of consecutive
+failed allocation attempts, so it does not loop forever on a broken disk.
+Once you fix the underlying cause, the shard stays stuck until you tell the
+cluster to try again. That is what `_cluster/reroute?retry_failed=true`
+does: it resets the retry counter and asks the cluster to attempt placement
+again. It is a safe nudge, not a forced move, which is why it is the first
+thing to reach for after clearing a transient problem like a full disk.
+
 See [`09_allocation_explain.sh`](./09_allocation_explain.sh)
 
 ## Discussion: Shard Sizing Best Practices

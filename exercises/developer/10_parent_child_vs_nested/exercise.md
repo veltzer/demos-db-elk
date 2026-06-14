@@ -68,57 +68,158 @@ which is why routing becomes mandatory later on.
 **Nested - Everything in One Document:**
 See [`03_add_nested_document.sh`](./03_add_nested_document.sh)
 
+One single `POST` to `_doc/1` writes the post and all its comments at
+once. Even though Lucene will index each comment as a separate hidden
+document internally, from your point of view there is exactly one
+document with id `1`. Indexing and retrieving the whole thing is atomic.
+
 **Parent-Child - Separate Documents:**
 See [`04_add_parent_child_documents.sh`](./04_add_parent_child_documents.sh)
 
+Here the same data takes three separate `POST` requests: one for the post
+(id `1`) and one for each comment (ids `101` and `102`). Two details are
+essential:
+
+- Each comment carries `"relation": { "name": "comment", "parent": "1" }`
+  so Elasticsearch knows which post it belongs to.
+- Each comment request includes `?routing=1`. Routing decides which shard
+  a document lands on. By forcing the children to use the parent's id as
+  the routing value, they are guaranteed to sit on the same shard as the
+  parent. Forget this and the join silently fails, because a child on a
+  different shard is invisible to its parent.
+
 ### Step 3: Compare Query Approaches
+
+Now you will run equivalent searches against both indices. Pay attention
+to how different the query shapes are even though the question is the
+same. The query language reveals where the work happens internally.
 
 #### Test 1: Find posts with comments containing "helpful"
 
 *Nested Query:*
 See [`05_nested_query_comments_helpful.sh`](./05_nested_query_comments_helpful.sh)
 
+The `nested` query needs a `path` (`comments`) so Elasticsearch knows
+which hidden sub-documents to search, and it matches inside that scope.
+The result is the parent blog post. Because everything is in one document
+already, no cross-document join happens; this is why nested reads are
+fast.
+
 *Parent-Child Query:*
 See [`06_has_child_query_comments_helpful.sh`](./06_has_child_query_comments_helpful.sh)
 
+The `has_child` query says "return parents that have at least one child
+of type `comment` matching this inner query". Under the hood
+Elasticsearch must first find matching children, then map them back to
+their parents using global ordinals (an in-memory table linking children
+to parents). That mapping is the join cost, and it grows with the number
+of children.
+
 #### Test 2: Find all comments by Alice
+
+This test exposes a fundamental asymmetry: with nested fields you cannot
+return a comment on its own, only the parent that contains it.
 
 *Nested Query:*
 See [`07_nested_query_comments_by_alice.sh`](./07_nested_query_comments_by_alice.sh)
 
+This query adds `"inner_hits": {}`. Without it, the hit would be the
+whole blog post and you would not know which comment matched. `inner_hits`
+asks Elasticsearch to also return the specific nested objects that
+satisfied the query, so you can see Alice's comment by itself. This is the
+only way to surface individual nested objects.
+
 *Parent-Child Query:*
 See [`08_parent_child_query_comments_by_alice.sh`](./08_parent_child_query_comments_by_alice.sh)
 
+With parent-child, comments are real, independent documents, so you can
+query them directly. This is a plain `bool` query: match documents where
+`relation` is `comment` and `commenter` is `Alice`. No join is needed
+here at all, because you are searching the child documents themselves
+rather than asking about their parents. This direct addressability of
+children is parent-child's biggest advantage.
+
 ### Step 4: Compare Update Scenarios
+
+This is where the trade-off bites hardest. Lucene documents are
+immutable: an "update" in Elasticsearch always means deleting the old
+document and writing a brand new one. The question is how much data you
+have to rewrite each time.
 
 #### Adding a New Comment
 
 *Nested - Requires Full Document Reindex:*
 See [`09_nested_add_comment_reindex.sh`](./09_nested_add_comment_reindex.sh)
 
+To add one comment you must send the entire post again, including the two
+comments that already existed, plus the new third one. Elasticsearch
+deletes document `1` and rewrites all of it. With two existing comments
+this is cheap, but imagine a post with a thousand comments: adding one
+means resending all thousand and one every time.
+
 *Parent-Child - Add Independent Document:*
 See [`10_parent_child_add_comment_document.sh`](./10_parent_child_add_comment_document.sh)
+
+Adding a comment is just one small new document (id `103`) with the right
+`parent` and `routing`. The post and the other comments are untouched.
+The cost of adding a comment stays constant no matter how many comments
+already exist.
 
 #### Updating an Existing Comment
 
 *Nested - Must Update Entire Document:*
 See [`11_nested_update_comment_reindex.sh`](./11_nested_update_comment_reindex.sh)
 
+To change a single word in Alice's comment, you again resend the whole
+post with every comment. There is no way to edit just one nested object
+in place; the unit of writing is always the entire top-level document.
+
 *Parent-Child - Update Individual Comment:*
 See [`12_parent_child_update_comment_document.sh`](./12_parent_child_update_comment_document.sh)
 
+Here you simply rewrite document `101` (Alice's comment). The post and the
+other comments are not even mentioned. Editing or deleting one comment
+touches only that one document, which is exactly why parent-child suits
+data where children change often and independently.
+
 ### Step 5: Compare Storage and Performance
+
+Now make the difference concrete by inspecting what is actually stored.
 
 **Check Document Counts:**
 See [`13_compare_document_counts.sh`](./13_compare_document_counts.sh)
 
+The nested index reports a count of `1`: as far as the public document
+count is concerned, one blog post equals one document regardless of how
+many comments it holds. The parent-child index reports a higher count
+(one parent plus each child), because every comment is a first-class
+document. This count difference is the most direct evidence of the two
+storage models.
+
 **View Actual Storage:**
 See [`14_view_stored_documents.sh`](./14_view_stored_documents.sh)
+
+Fetching `blog_nested/_doc/1` returns the post with its comments array
+embedded. For parent-child you must fetch each document separately, and
+fetching a child (`_doc/101`) requires `?routing=1` because Elasticsearch
+needs the routing value to know which shard the document lives on. This
+is a recurring gotcha: any direct get, update, or delete of a child must
+repeat the same routing value used when it was created.
 
 **Performance Test - Add Many Comments:**
 See [`15_performance_test_instructions.sh`](./15_performance_test_instructions.sh)
 
+The lesson this script points to: nested write cost grows with the number
+of existing children, while parent-child write cost stays flat. Try it
+and feel the difference in effort rather than just reading about it.
+
 ### Key Differences Summary
+
+The table below distills everything you just observed. The two rows worth
+re-reading are query performance and memory: nested wins on read speed
+because there is no join, while parent-child pays for its write
+flexibility with the memory of global ordinals and a slower, join-based
+query path.
 
 | Aspect | Nested | Parent-Child |
 |--------|---------|-------------|

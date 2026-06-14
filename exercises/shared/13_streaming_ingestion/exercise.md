@@ -10,6 +10,15 @@ Unlike the bulk exercise (which loads a fixed dataset in one shot), here a
 producer keeps inserting fresh documents indefinitely. You run the streamer in
 one terminal and observe the index growing in another.
 
+**Why this matters.** A huge fraction of real Elasticsearch workloads are
+streaming, not batch. Application logs, server metrics, click events and
+sensor readings all arrive as an unbounded sequence with no natural end. The
+defining trait of a stream is that you can never "finish loading" — the data
+keeps coming, so your index must absorb writes continuously while it is also
+being read and searched. This exercise gives you the smallest possible version
+of that pattern so the moving parts are easy to see: one writer, one reader,
+one index.
+
 The exercise includes:
 
 - Creating a typed index for the incoming time-series fields
@@ -42,6 +51,22 @@ Elasticsearch should be reachable on `localhost:9200`. See the
 
 ### Step 1: Create the Index
 
+**What's happening.** We create the `wpt` ("web page timings") index up front
+with an explicit mapping that types `day` as `integer` and `speed_of_load` as
+`float`. If you skipped this and let the first streamed document define the
+schema, Elasticsearch would guess the types through *dynamic mapping*. That
+guessing is the common pitfall in streaming pipelines: a value that happens to
+look like a string in the first document locks the field to `text` forever,
+and you cannot change a field's type without reindexing. Declaring the mapping
+before any data arrives removes that risk and guarantees every streamed
+document is stored and queried the same way.
+
+The index is created with a single shard and zero replicas. A *shard* is the
+unit of storage and parallelism in Elasticsearch; a *replica* is a redundant
+copy on another node for fault tolerance. For a single-node training cluster
+one shard and no replicas is ideal — replicas would stay unassigned with
+nowhere to go, leaving the cluster health yellow.
+
 See [`01_create_index.sh`](./01_create_index.sh)
 
 ### Step 2: Start Streaming
@@ -52,6 +77,19 @@ keeps going until you press Ctrl-C:
 ```bash
 ./stream_data.py
 ```
+
+**What's happening.** Each loop builds one small document and sends it with a
+single `index` call. Because no document id is supplied, Elasticsearch
+generates one automatically — this is the right choice for append-only stream
+data, since every event is new and you never want to overwrite a previous one.
+The producer also checks `result["_shards"]["successful"] >= 1`, which
+confirms the write was durably accepted by at least one shard before moving on.
+
+Sending documents one at a time is deliberately the slowest, simplest path.
+Every `index` call is a separate HTTP request with its own round trip, so
+throughput is limited to roughly one document per second here only because we
+sleep on purpose. The point is the mental model, not the speed; the Discussion
+below explains when you would switch to batching.
 
 ### Step 3: Watch the Data Grow
 

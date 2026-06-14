@@ -7,6 +7,22 @@ from multiple sources. You'll work with web logs, e-commerce transactions,
 system metrics, and application logs to create meaningful dashboards and perform
 various queries.
 
+Kibana is the visualization and exploration layer that sits on top of
+Elasticsearch. Elasticsearch stores and indexes your documents and answers
+search and aggregation requests; Kibana turns those answers into tables,
+charts, and dashboards without you having to write raw queries by hand. Every
+chart you build in Kibana is really just a friendly front end for an
+Elasticsearch query running underneath. Understanding that relationship is the
+key to this whole exercise: when a visualization looks wrong, the question to
+ask is "what query is this actually sending, and what does the data look like?"
+
+A useful detail about this dataset is that four very different record shapes
+(web logs, e-commerce transactions, system metrics, and application logs) all
+live in a single index called `sample-data`. They are told apart by a
+`data_type` field. This mirrors a common real-world pattern and is why almost
+every query below starts by filtering on `data_type`: you are first narrowing
+down to one kind of record before you analyze it.
+
 ## Prerequisites
 
 - Elasticsearch and Kibana running locally
@@ -17,6 +33,11 @@ various queries.
 
 ### 1. Install Dependencies
 
+The data generator uses the `faker` library to invent realistic-looking values
+such as IP addresses, country codes, emails, and timestamps. This lets you
+practice on data that behaves like production traffic without exposing any real
+user information.
+
 ```bash
 pip install faker
 ```
@@ -25,17 +46,69 @@ pip install faker
 
 See [`01_generate_sample_data.sh`](./01_generate_sample_data.sh)
 
+This step runs a Python script that creates the four record types and writes
+them out already formatted for Elasticsearch's bulk API. A few things worth
+knowing about what it produces:
+
+- Each e-commerce record's `total_amount` is computed as `quantity * unit_price`
+  rather than stored independently, so the number is always internally
+  consistent.
+- All records are stamped with timestamps spread across the last 30 days, then
+  sorted by time. This is what makes the time-based filtering and date
+  histogram exercises later on meaningful.
+- Every record carries a `data_type` tag so the four shapes can coexist in one
+  index.
+
 ### 3. Import Data into Elasticsearch
 
 See [`02_create_index_and_import.sh`](./02_create_index_and_import.sh)
 
+This step does two distinct things, and the order matters. First it creates the
+`sample-data` index with an explicit mapping, then it bulk-imports the
+documents.
+
+The mapping is the most important part to understand. A mapping is
+Elasticsearch's schema: it declares the data type of each field. Here a handful
+of fields are pinned deliberately:
+
+- `timestamp` is mapped as `date` so Kibana can use it as the time field and
+  build date histograms.
+- `ip_address` is mapped as `ip`, a special type that understands address
+  ranges and subnets.
+- `status_code` and `response_time_ms` are `integer`, and the usage and amount
+  fields are `float`, so numeric range queries and math work correctly.
+- `data_type` is mapped as `keyword`, meaning it is treated as an exact,
+  non-analyzed string. Keyword fields are what you filter and aggregate on;
+  this is why grouping by `data_type` works cleanly.
+
+**Why this matters:** if you skip the mapping and let Elasticsearch guess, it
+often infers the wrong types. A timestamp imported as plain text cannot drive a
+time filter, and a number imported as text cannot be summed or compared with
+`>`. Defining the mapping up front, before any data is imported, avoids having
+to delete the index and start over. The bulk import that follows sends the
+documents in Elasticsearch's bulk format, where each document is preceded by a
+line describing the action to take. That paired-line format is exactly what the
+generator script wrote out, which is why the two scripts fit together.
+
 ## Part 1: Basic Kibana Queries and Filters
+
+Before you can build any chart, Kibana needs to know which index holds your
+data and which field represents time. That is the job of an index pattern (also
+called a data view). It is a saved pointer that tells Kibana "search the
+`sample-data` index, and treat `timestamp` as the time field." Once that
+pattern exists, Discover, visualizations, and dashboards all share it.
 
 ### Exercise 1.1: Discover Data
 
 1. Open Kibana (<http://localhost:5601>)
 1. Go to **Discover** and create an index pattern for `sample-data`
 1. Set the time field to `timestamp`
+
+Discover is your raw exploration view. It shows individual matching documents
+plus a small bar chart of how many documents fall in each time bucket. It is
+the best place to confirm your data actually arrived and to learn what fields
+exist before you commit to a chart. If Discover is empty, the cause is almost
+always the time range (top right) rather than a missing import.
 
 **Tasks:**
 

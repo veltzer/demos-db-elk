@@ -268,6 +268,13 @@ See [`08_builtin_monitoring_info.sh`](./08_builtin_monitoring_info.sh)
 
 ## What to Alert On (Golden Signals)
 
+The hardest part of monitoring is not collecting data but choosing what
+deserves to wake someone up. The signals below are the ones that catch the
+vast majority of real Elasticsearch incidents. Each maps to an API the
+collector already polls, so the table doubles as a guide for extending the
+threshold check. Treat the suggested numbers as starting points to tune
+against your own cluster's normal baseline, not as fixed truths.
+
 | Signal | Where | Suggested threshold |
 | --- | --- | --- |
 | Cluster status | `_cluster/health` | alert on `red`; warn on `yellow` |

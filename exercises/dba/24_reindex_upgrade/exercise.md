@@ -247,6 +247,35 @@ pre-upgrade health and deprecation checks, snapshot first, disable shard
 allocation, replace the binary, restart, re-enable allocation, wait for green,
 repeat.
 
+**Why rolling works:** Elasticsearch replicates each shard, so as long as a
+copy of every shard stays available the cluster keeps answering queries while
+one node is down. Taking nodes down one at a time, and only proceeding once
+the cluster is green again, guarantees you never lose the last copy of any
+shard. Rolling upgrades are supported between minor versions and across one
+major boundary (for example the last 7.x to 8.x).
+
+**Why disable allocation during a bounce:** the moment a node leaves, the
+cluster's instinct is to rebuild that node's shards elsewhere — a storm of
+copying for a node that is coming right back in a minute. Setting
+`cluster.routing.allocation.enable: primaries` tells the cluster to hold off
+rebuilding replicas during the short outage (while still letting a primary
+with no replica recover). You re-enable allocation (`null` = default) once the
+node rejoins, then wait for green before the next node. The `wait_for_status=
+green&timeout=300s` call deliberately *blocks* until recovery completes, which
+turns "wait for green" into something a script can actually gate on.
+
+**Why the order and the snapshot matter:** the pre-upgrade deprecation check
+(`_migration/deprecations`) surfaces settings or mappings that will break on
+the next version — fix them *before* touching a node. Snapshot first because a
+rolling upgrade is only reversible if you can restore. And upgrade
+master-eligible nodes *last* so the cluster keeps a stable, already-upgraded-
+compatible master coordinating the process throughout.
+
+**Note:** this script is a *runbook*, not an automated upgrade. The binary-
+replacement steps are printed as instructions (a single-node lab cannot
+upgrade itself), while the health, deprecation, and allocation API calls are
+real and runnable.
+
 See [`08_rolling_upgrade_runbook.sh`](./08_rolling_upgrade_runbook.sh)
 
 ## Cleanup

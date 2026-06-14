@@ -261,6 +261,17 @@ See [`12_scoring_performance_comparison.py`](./12_scoring_performance_comparison
 
 **Task:** Add caching analysis for repeated queries.
 
+Every scoring technique you have learned costs something, and this script
+measures it by timing four strategies: a plain match, a single
+`field_value_factor`, several stacked functions, and a script. It runs each
+query ten times and averages the result, because a single timing is noisy due
+to caching, garbage collection, and operating-system effects. The expected
+trend is that `field_value_factor` and decay are cheap (they read a single
+numeric value per document), while `script_score` is the slowest because
+Painless runs per hit. The practical lesson is to reach for built-in
+functions first and only drop to scripts when nothing else expresses your
+logic, then measure before assuming the cost is acceptable.
+
 ## Challenges
 
 ### Challenge 1: Personalized Search Engine
@@ -309,6 +320,12 @@ print(best_practices)
 ```
 
 ## Summary Questions
+
+Use these to check that the concepts connect. The first two test whether you
+have internalized the two-stage scoring pipeline and the `score_mode` versus
+`boost_mode` split that runs through every exercise above. The Explain API
+mentioned in the best practices is the tool that lets you answer the last one
+by hand: it shows the exact arithmetic Elasticsearch performed for a document.
 
 1. When should you use `function_score` vs regular queries?
 1. Whats the difference between `boost_mode` and `score_mode`?

@@ -266,7 +266,22 @@ See [`13_denormalized_nested_structure.py`](./13_denormalized_nested_structure.p
 
 **Task:** Compare query complexity between parent-child and nested approaches.
 
+**What's happening:** This builds a second index where comments are embedded
+inside the post as a `nested` array instead of being separate child documents.
+The same data is modeled two ways so you can compare them side by side.
+
+**Why this matters:** Nested objects are stored alongside their parent in one
+Lucene document, so queries are faster and no routing is needed. The price is
+that updating a single comment means re-indexing the entire post, and you
+cannot query a comment fully independently of its post. This is the central
+design trade-off: parent-child favors independent updates, nested favors read
+speed. Choose based on how your data actually changes and is queried.
+
 ## Part 5: Real-World Scenarios
+
+These scenarios put the whole toolkit together on data that looks like a real
+application. Notice how each question maps onto a specific join query or
+aggregation from the earlier parts.
 
 ### Exercise 5.1: E-commerce Product Reviews
 
@@ -278,6 +293,13 @@ See [`14_ecommerce_product_reviews.py`](./14_ecommerce_product_reviews.py)
 1. Products where all reviews are verified purchases
 1. The top-rated products in each category
 
+**Why this matters:** Counting reviews per product and averaging ratings calls
+for the `children` aggregation from Exercise 2.4. "All reviews verified" is
+subtle: `has_child` finds products with *at least one* matching review, so
+expressing "all" usually means combining it with the absence of any unverified
+review rather than a single positive match. Thinking through that gap is the
+real lesson here.
+
 ### Exercise 5.2: Company Organization Structure
 
 See [`15_company_org_hierarchy.py`](./15_company_org_hierarchy.py)
@@ -287,6 +309,12 @@ See [`15_company_org_hierarchy.py`](./15_company_org_hierarchy.py)
 1. Company -> Departments -> Employees
 1. Queries to find departments over budget
 1. Aggregations for salary statistics by department
+
+**Why this matters:** This is another three-level tree, so the routing rule
+from Exercise 1.4 applies: every employee and department must route to the
+company id at the root. Salary statistics by department combine the `children`
+aggregation with a `stats` metric, showing how aggregations compose across the
+relationship.
 
 ## Best Practices and Considerations
 

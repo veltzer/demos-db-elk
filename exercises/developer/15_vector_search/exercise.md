@@ -13,6 +13,15 @@ to the query vector. With a real embedding model, closeness in that space
 approximates closeness in *meaning*, so a search for "money and the economy"
 can surface a finance article that never uses those exact words.
 
+An **embedding** is just a list of numbers (a vector) that stands in for a
+piece of text. The whole game of vector search is to convert both your
+documents and your query into vectors using the *same* model, then ask "which
+document vectors point in nearly the same direction as the query vector?".
+Because the model is trained so that related meanings produce nearby vectors,
+geometric distance becomes a proxy for semantic similarity. Elasticsearch
+stores these vectors in a `dense_vector` field and does the distance maths for
+you.
+
 The exercise covers:
 
 - A `dense_vector` field mapping with HNSW indexing (`index: true`)
@@ -68,6 +77,28 @@ The `embedding` field is declared as a `dense_vector` with `dims: 16`,
 `index: true` and `similarity: cosine`. The dimension **must** match the
 embedding produced by `embedding.py`.
 
+**What's happening.** The mapping mixes two worlds on purpose. `title` and
+`content` are ordinary `text` fields, so Elasticsearch analyses them into
+tokens and builds the usual inverted index for BM25 keyword search.
+`category` is a `keyword` (stored verbatim, not analysed) so it can be used
+as an exact-match filter. The `embedding` field is the new piece: it holds the
+16-number vector for each article.
+
+**Why `dims` must match.** A `dense_vector` field commits to a fixed length the
+moment you index the first document. Every vector in the field must have
+exactly that many components, because kNN compares vectors component by
+component — mismatched lengths are meaningless. If you later switch to a real
+model that outputs 384 numbers, you must change `dims` to 384 and reindex.
+
+**Why `index: true` and `similarity: cosine`.** Setting `index: true` tells
+Elasticsearch to build a special graph structure (HNSW, explained in the
+Discussion) so that approximate nearest-neighbour queries are fast. Without it
+the vectors are merely stored and can only be searched with a slow exact scan.
+`similarity: cosine` chooses *how* "closeness" is measured. Cosine compares the
+*angle* between two vectors and ignores their length, which suits text
+embeddings where direction encodes meaning. This is also why `embedding.py`
+normalises every vector to length one.
+
 ### Step 2: Load the Data
 
 ```bash
@@ -76,6 +107,19 @@ embedding produced by `embedding.py`.
 
 This embeds each article's title and content and indexes six short articles
 across the `finance`, `tech` and `sports` categories.
+
+**Why embed at index time.** The vector is computed *before* the document is
+stored, then saved alongside it. Search never re-reads or re-embeds the
+stored documents — it only compares their precomputed vectors against the
+query vector. This is what makes vector search scale: the expensive embedding
+work happens once per document, not once per query.
+
+**One vital rule: use the same embedding on both sides.** `load_data.py` and
+the search scripts both import `embed` from `embedding.py`. If the indexing
+embedding and the query embedding ever differed, their vectors would live in
+different coordinate systems and the distances would be nonsense. After
+indexing, the script calls `refresh` so the new documents become immediately
+visible to search rather than waiting for the periodic refresh.
 
 ### Step 3: Run a kNN Search
 
@@ -88,6 +132,17 @@ query vector. (With this word-overlap embedding the query must share vocabulary
 with the documents; see the note above and Exercise 3 for true semantic
 matching.)
 
+**What's happening under the hood.** `knn_search.py` embeds your query string
+into a 16-number vector, then sends a `knn` block naming the `embedding` field,
+the `query_vector`, `k` (how many neighbours to return) and `num_candidates`.
+Elasticsearch walks the HNSW graph from the query point, gathers up to
+`num_candidates` close vectors per shard, keeps the best `k`, and returns them
+ranked by similarity. The `_score` you see is derived from the cosine
+similarity, so a higher score means a smaller angle between the document and
+query vectors. Notice there is no keyword matching at all here: a document can
+rank highly without containing any of the query's words, which is exactly the
+behaviour pure keyword search cannot give you.
+
 ### Step 4: Filter the kNN Search
 
 Restrict the neighbours to a single category:
@@ -95,6 +150,15 @@ Restrict the neighbours to a single category:
 ```bash
 ./knn_search.py --category sports "a close contest"
 ```
+
+**Why filtered kNN is special.** When you pass `--category`, the script adds a
+`filter` term inside the `knn` block. The key point is *where* the filter is
+applied: Elasticsearch enforces it *during* the graph traversal, so it only
+ever counts vectors that already match the category toward your `k` results.
+The naive alternative — find the `k` nearest neighbours first, then throw away
+the ones in the wrong category — can leave you with far fewer than `k` results
+(or none) when matches are rare. Filtering inside the search avoids that trap
+and still returns a full set of relevant neighbours.
 
 ### Step 5: Hybrid Search
 
@@ -104,11 +168,33 @@ Blend keyword and vector relevance in one query:
 ./hybrid_search.py "market rates"
 ```
 
+**What's happening.** `hybrid_search.py` sends *both* a `query` (a BM25
+`multi_match` over `title` and `content`) and a `knn` block in the same
+`_search` request. Elasticsearch runs the two independently and then adds the
+scores together per document, so a document that scores well on *either* the
+keyword side or the vector side rises to the top. The `boost` value on each
+side lets you weight one signal more than the other; here both are `1.0`, an
+even split. Note that `title^2` inside the keyword query separately boosts
+title matches over content matches — a reminder that you can tune relevance at
+several levels at once.
+
+**Why combine them at all.** Keyword and vector search fail in opposite ways.
+BM25 is precise on exact and rare terms (product codes, names) but blind to
+paraphrase. Vectors capture meaning but can drift on short queries or miss an
+exact term the user typed deliberately. Blending the two gives a ranking that
+is robust when either signal alone would be weak.
+
 ### Step 6: Clean Up
 
 ```bash
 ./remove_data.py        # empty the index
 ```
+
+**Empty versus drop.** `remove_data.py` runs a `delete_by_query` with
+`match_all`, so it removes every document but leaves the index and its mapping
+in place. That is handy when you want to reload fresh data without recreating
+the `dense_vector` field. To get rid of the index entirely — mapping, settings
+and all — drop it instead.
 
 To remove the index entirely, see
 [`02_drop_articles_index.sh`](./02_drop_articles_index.sh).

@@ -278,12 +278,37 @@ computed". Timing is a performance tool; explain is a relevance tool.
 
 ## Part 7: Write-Path Tuning
 
+Everything so far has been about reading and serving data. Writing data
+has its own performance levers, and they all trade safety or freshness
+for throughput. Two settings dominate. The first controls how often new
+documents become searchable; the second controls how aggressively
+Elasticsearch protects writes against a crash. Both make sense to relax
+during a big bulk load and to restore immediately afterwards.
+
 See [`07_tune_write_settings.sh`](./07_tune_write_settings.sh)
 
 This raises `index.refresh_interval` and sets
 `index.translog.durability=async` for a write-heavy bulk load, explains
 the trade-offs, and shows how to restore the safe near-real-time
 defaults afterwards.
+
+What's happening: a refresh is what makes newly indexed documents
+visible to search, and each refresh creates a new Lucene segment. The
+default of one second is why Elasticsearch feels near-real-time, but
+during a bulk load it generates a flood of tiny segments that must
+later be merged, burning CPU and disk. Raising the interval to 30s, or
+disabling it with `-1` and refreshing manually at the end, removes that
+overhead. Separately, the translog is a write-ahead log: by default it
+is flushed to disk on every acknowledged write (`durability: request`),
+which is durable but slow. Switching to `async` flushes only every few
+seconds, trading a small window of crash-loss for throughput. That is
+only safe when you can re-drive the lost writes from the source, which
+is exactly the situation in a re-runnable bulk load.
+
+Common pitfall: forgetting to revert. These are relaxed-safety settings
+for a load window, not steady-state defaults. Always restore
+`refresh_interval: 1s` and `durability: request` once the load is done,
+which is why the script prints the restore commands for you.
 
 ## Part 8: Consolidated Perf Snapshot
 
@@ -293,6 +318,15 @@ This consolidates heap percent, thread-pool rejections, breaker trips,
 and cache hit ratios into a single report with `[OK]` / `[WARN]` /
 `[ALERT]` tags. It exits non-zero when anything is in ALERT, so it can
 be wired into cron or a CI health gate.
+
+Why this matters: the individual scripts are for investigation, but
+nobody runs ten scripts by hand every morning. This snapshot is the
+"one screen you glance at" version, pulling the four key signals into a
+single pass over the stats APIs. The detail to notice is the non-zero
+exit code on ALERT. A process exit code is the universal language of
+automation: a cron job, a monitoring agent, or a CI pipeline can run
+this script and react to its exit status without parsing any output.
+That is how a diagnostic becomes a health gate.
 
 ## Files
 

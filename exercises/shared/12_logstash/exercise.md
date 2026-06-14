@@ -12,12 +12,28 @@ Stack (Elasticsearch, Logstash, Kibana).
 - **Filter**: How data is processed and transformed
 - **Output**: Where data goes (usually Elasticsearch)
 
+These three stages form a *pipeline*: an event enters through an input,
+flows through any filters, and leaves through an output. Each event is a
+small structured document (a set of fields), so Logstash is really a tool
+for turning raw, unstructured text (like a log line) into structured data
+that Elasticsearch can index and search.
+
+**Why use Logstash at all?** Elasticsearch stores and searches documents,
+but it does not know how to read a `/var/log` file or split a messy log
+line into fields. Logstash bridges that gap. The filter stage is where the
+real value is added: a plain line such as
+`Jun 14 10:42:01 host sshd[123]: failed login` becomes fields like
+`timestamp`, `host`, `program`, `pid`, and `log_message`. Once data is
+structured, you can filter, aggregate, and visualize it in Kibana.
+
 ---
 
 ## Exercise: Monitor System Logs with Logstash
 
 In this exercise, we'll set up Logstash to read system log files and send them
-to Elasticsearch, then view them in Kibana.
+to Elasticsearch, then view them in Kibana. This walks through the full ELK
+loop end to end: Logstash collects and parses, Elasticsearch stores and
+indexes, and Kibana lets you explore the result visually.
 
 ### Prerequisites
 
@@ -35,9 +51,23 @@ See [`01_download_install_logstash.sh`](./01_download_install_logstash.sh)
 
 See [`02_install_logstash_apt.sh`](./02_install_logstash_apt.sh)
 
+Logstash runs on the Java Virtual Machine and ships with its own bundled
+Java, so you do not need to install Java separately. Keep the Logstash
+version aligned with your Elasticsearch version: the same major version on
+both sides avoids subtle compatibility problems when Logstash talks to the
+Elasticsearch API.
+
 ### Step 2: Verify Elasticsearch is Running
 
 See [`03_check_elasticsearch_health.sh`](./03_check_elasticsearch_health.sh)
+
+**Why this matters:** Logstash's Elasticsearch output simply gives up and
+buffers (or drops) events if it cannot reach the cluster. Confirming that
+Elasticsearch answers on `localhost:9200` *before* starting the pipeline
+saves you from chasing phantom problems later. A healthy cluster reports a
+`green` or `yellow` status; a single-node setup is normally `yellow`
+because replica shards have nowhere to go, and that is expected, not an
+error.
 
 ### Step 3: Create a Simple Logstash Configuration
 

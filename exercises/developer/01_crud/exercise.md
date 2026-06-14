@@ -319,6 +319,19 @@ See [`26_client_delete_documents.py`](./26_client_delete_documents.py)
 
 See [`27_client_advanced_operations.py`](./27_client_advanced_operations.py)
 
+These operations show why a real client is worth the dependency. `mget`
+fetches several documents by ID in one request instead of many. `count`
+returns just the number of matching documents without retrieving them. The
+scroll API solves a real problem: a normal search returns only one page, but
+scroll lets you walk through a very large result set in batches by keeping a
+point-in-time view of the index open (the `2m` keeps that context alive for
+two minutes), which is why the code clears the scroll when done to free
+server resources. Reindexing copies documents from one index into another,
+and it is the standard way to apply a mapping change, since you cannot alter
+the type of an existing field in place. The new mapping here adds a
+`name.keyword` sub-field, a common trick that lets the same field be both
+full-text searchable and exact-match sortable.
+
 ---
 
 ## Complete Working Example
@@ -326,6 +339,11 @@ See [`27_client_advanced_operations.py`](./27_client_advanced_operations.py)
 Here's a complete script that demonstrates all CRUD operations:
 
 See [`28_complete_crud_demo.py`](./28_complete_crud_demo.py)
+
+This pulls every operation into one end-to-end run, so you can see the
+natural lifecycle of data: create the index, insert documents, read them
+back, update them, and finally delete. Following the flow as a whole is the
+best way to confirm that the individual pieces fit together.
 
 ---
 
@@ -413,6 +431,15 @@ See [`28_complete_crud_demo.py`](./28_complete_crud_demo.py)
 
 ## Best Practices
 
+These guidelines flow directly from how Elasticsearch works internally.
+Bulk operations matter because each request carries network and indexing
+overhead, so batching cuts that cost dramatically. The advice about refresh
+ties to the visibility concept below: refreshing is expensive, so you do it
+once after a batch rather than after every document. Scrolling exists
+because Elasticsearch will not let you page deep into a huge result set with
+ordinary pagination. Aliases let you point applications at a stable name
+while you rebuild the underlying index, enabling reindexing with no downtime.
+
 1. **Always use bulk operations** for inserting/updating multiple documents
 1. **Set refresh=false** for bulk operations, then refresh once at the end
 1. **Use scroll API or search_after** for large result sets
@@ -432,17 +459,44 @@ See [`28_complete_crud_demo.py`](./28_complete_crud_demo.py)
 
 See [`29_troubleshoot_connection_refused.sh`](./29_troubleshoot_connection_refused.sh)
 
+"Connection refused" almost always means Elasticsearch is not running on the
+expected port, or you are pointing at the wrong host. It is a network-level
+failure that happens before any request reaches Elasticsearch, so the fix is
+to confirm the process is up and listening on `9200`.
+
 ### Authentication Failed
 
 See [`30_troubleshoot_authentication.sh`](./30_troubleshoot_authentication.sh)
+
+This exercise disables security, so you should not hit authentication
+errors. If you do, it usually means security is actually enabled and the
+request is missing credentials, which is exactly what you would face in a
+secured production cluster.
 
 ### Document Not Found Immediately After Insert
 
 See [`31_troubleshoot_refresh_visibility.py`](./31_troubleshoot_refresh_visibility.py)
 
+This is the single most common surprise for newcomers. Elasticsearch is
+"near real time", not instant: a freshly indexed document is not searchable
+until the index is refreshed, which happens automatically about once per
+second. So a search run immediately after an insert may legitimately return
+nothing even though the write succeeded. Fetching by ID still works right
+away, because that bypasses search. The script shows the fixes: pass
+`refresh=True` on the write to force visibility, or call `indices.refresh`.
+Forcing a refresh is convenient but costly, so avoid doing it on every
+write in high-volume code.
+
 ### Mapping Conflicts
 
 See [`32_troubleshoot_mapping_conflicts.py`](./32_troubleshoot_mapping_conflicts.py)
+
+A mapping conflict happens when a document does not fit the field types
+already defined, for example sending text into a field mapped as a number.
+Because the type of an existing field cannot be changed in place, the real
+remedy is to create a new index with the corrected mapping and reindex into
+it. This is why thinking about your mappings before loading data, as Method
+1 stressed, pays off.
 
 ---
 
