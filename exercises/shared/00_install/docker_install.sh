@@ -12,10 +12,28 @@
 
 PROJECT_DIR=~/elastic-docker
 
+uninstall_previous_docker() {
+	# Remove Docker CE / Docker Desktop if present. These exercises use the
+	# distro's docker.io package, not Docker CE or Docker Desktop.
+	if command -v docker-desktop >/dev/null 2>&1; then
+		sudo apt-get remove -y docker-desktop || true
+	fi
+	sudo apt-get remove -y \
+		docker-ce docker-ce-cli docker-ce-rootless-extras \
+		containerd.io docker-buildx-plugin docker-compose-plugin || true
+	# Drop the Docker CE apt repository and key so docker.io is used instead.
+	sudo rm -f /etc/apt/sources.list.d/docker.list /etc/apt/keyrings/docker.asc \
+		/etc/apt/keyrings/docker.gpg /usr/share/keyrings/docker-archive-keyring.gpg
+	rm -rf "$HOME/.docker/desktop"
+}
+
 install_docker() {
-	# Install Docker
-	curl -fsSL https://get.docker.com -o get-docker.sh
-	sudo sh get-docker.sh
+	# Install the root-installed docker.io package from the distro repos.
+	sudo apt-get update
+	sudo apt-get install -y docker.io docker-compose-v2
+
+	# Ensure the system (root) Docker daemon is running and enabled.
+	sudo systemctl enable --now docker
 
 	# Add user to docker group
 	sudo usermod -aG docker "$USER"
@@ -105,6 +123,7 @@ uninstall() {
 }
 
 install() {
+	uninstall_previous_docker
 	install_docker
 	create_compose_file
 	compose_up
