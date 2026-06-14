@@ -208,6 +208,19 @@ This is the payoff. The script lowers the cluster ILM poll interval to 10
 seconds, creates a policy whose phases advance after a minute or two, and polls
 `_ilm/explain` so you can watch an index walk hot -> warm -> cold -> delete:
 
+The trick that makes this observable is timescale compression. A real policy
+measures `min_age` in days or weeks, so you would never witness a transition in
+a training session. The script shrinks two separate clocks: the policy's
+`min_age` values (down to one, two and three minutes) decide *when* an index is
+allowed to advance, while the cluster setting
+`indices.lifecycle.poll_interval` decides *how often* ILM checks. Both must be
+small or nothing visibly happens — a one-minute `min_age` is meaningless if ILM
+only looks every ten minutes. The polling loop then prints each index's
+phase/action/step only when it changes, so you see the lifecycle unfold as a
+sequence of state changes rather than a wall of repeated output. Lowering the
+poll interval is fine for a demo but adds work for the master node, so it is
+something you would keep modest on a real cluster.
+
 See [`08_watch_transitions.py`](./08_watch_transitions.py)
 
 ```bash
@@ -215,6 +228,15 @@ See [`08_watch_transitions.py`](./08_watch_transitions.py)
 ```
 
 ### Step 7: Clean Up
+
+ILM-managed objects are easy to leave lying around because they are deliberately
+created behind aliases and templates rather than as visible standalone indices.
+The cleanup script removes everything in the right order: data stream and
+indices first, then the templates and component templates, then the policies.
+Order matters because Elasticsearch refuses to delete a component template that
+is still referenced by an index template, and the rolled-over backing indices
+must go before the policy that manages them. Cleaning up also resets the
+lowered poll interval from Step 6, which would otherwise persist cluster-wide.
 
 See [`09_cleanup.sh`](./09_cleanup.sh)
 

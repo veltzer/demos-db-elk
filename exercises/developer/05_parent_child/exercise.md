@@ -191,6 +191,18 @@ See [`09_inner_hits_comments.py`](./09_inner_hits_comments.py)
 
 **Task:** Retrieve blog posts with their most recent 5 comments.
 
+**What's happening:** A plain `has_child` query tells you *which* parents
+match, but it does not show you the matching children. Adding an `inner_hits`
+block makes Elasticsearch attach the children that caused each parent to match,
+right inside that parent's hit. You can size and sort the inner hits
+independently, for example the top three comments by likes.
+
+**Why this matters:** Without `inner_hits` you would need a second round trip:
+one query to find the posts, then a `parent_id` query per post to fetch its
+comments. `inner_hits` collapses that into a single request and keeps each
+child grouped under its parent. The cost is a larger response payload, so cap
+the inner hit `size` to what you actually display.
+
 ### Exercise 3.2: Scoring with Child Documents
 
 See [`10_has_child_function_score.py`](./10_has_child_function_score.py)

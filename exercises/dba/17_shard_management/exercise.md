@@ -198,6 +198,21 @@ Divide the 4-primary `logs_sharded` into an 8-primary `logs_split`, showing
 the modern split rules (target must be a multiple of the source and divide
 `number_of_routing_shards`).
 
+What is happening: split is the mirror image of shrink and the fix for an
+undersharded index whose shards have grown past the target band. The target
+primary count must be a multiple of the source (4 to 8, 4 to 12) and must
+divide the routing-shard count we reserved at creation. Because we set
+`number_of_routing_shards` to 32, the legal targets here are 8, 16, and 32.
+This is the payoff of that earlier decision: the routing hash was reserved
+so each original shard's documents can be cleanly partitioned into the new
+shards without rehashing or moving documents between the wrong shards.
+
+Notice what split does not require: unlike shrink, the shards do not need to
+be gathered onto one node, because split creates new shards rather than
+hard-linking existing ones into a single merged shard. It still requires the
+source to be read-only during the operation, and the script lifts that block
+afterward for the same reason as the shrink step.
+
 See [`07_split_index.sh`](./07_split_index.sh)
 
 ## Part 8: Force-Merge a Read-Only Index

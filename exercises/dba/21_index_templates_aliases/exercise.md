@@ -195,6 +195,21 @@ An alias can carry a `filter` so it only exposes a subset of an index, and a
 shards. These give lightweight per-tenant or per-severity views without
 copying data.
 
+A filtered alias works by silently combining its stored query with every
+search that goes through it, so a search through `logs-errors` can never
+return an `INFO` document even though those documents sit in the same
+physical index. This is a view, not a copy: it costs nothing in storage and
+changing the filter is a metadata update, not a reindex. It is also not a
+security boundary on its own, just a convenient scoping tool.
+
+A routing alias pins the shard-routing value for reads and writes. Normally
+Elasticsearch hashes a document's id to choose a shard; supplying a routing
+value forces all documents sharing that value onto the same shard. The
+payoff is that a search for one tenant can target a single shard instead of
+fanning out to all of them. With the one-shard index in this exercise the
+effect is invisible, but the configuration is identical at any shard count,
+which is the point of practicing it here.
+
 See [`06_filtered_routing_aliases.sh`](./06_filtered_routing_aliases.sh)
 
 ## Part 7: Zero-Downtime Mapping Change via Alias Swap

@@ -184,12 +184,38 @@ thing to run when a node is pegged at high CPU.
 
 See [`07_hot_threads.sh`](./07_hot_threads.sh)
 
+Why this matters: node stats tell you a node is busy; hot threads tell
+you what it is busy doing. `GET /_nodes/hot_threads` repeatedly samples
+the stack traces of the busiest threads and returns the ones that
+consumed the most CPU, along with the code paths they were executing.
+This turns "node 2 is pinned at 100% CPU" into an actionable answer:
+heavy search, bulk indexing, segment merges, garbage collection, or
+script execution. Because it works by sampling, taking more snapshots
+over a longer interval makes transient bursts of work more likely to
+appear, which is why the script offers both a quick capture and a
+deeper one. This is almost always the first command to run during a
+high-CPU incident.
+
 ### Step 7: Pending and running tasks
 
 Show queued cluster-state changes and live long-running tasks (which can
 be cancelled).
 
 See [`08_pending_and_tasks.py`](./08_pending_and_tasks.py)
+
+Concept: this script covers two different ideas that are easy to
+confuse. Pending tasks (`GET /_cluster/pending_tasks`) are changes to
+the cluster state queued on the master node, such as mapping updates,
+settings changes, and shard allocation decisions. The cluster state is
+a single shared document that the master applies one change at a time,
+so a queue that keeps growing means the master has become a bottleneck,
+often from too many indices or rapid mapping changes. Running tasks
+(`GET /_tasks`) are something else entirely: the live work the cluster
+is executing right now, such as searches, bulk loads, reindexes, and
+snapshots. The script flags any task running longer than a threshold,
+because a long-running task can be cancelled to relieve pressure. The
+distinction matters: a slow query is a running task, while a sluggish
+cluster-wide response to changes is a pending-task problem.
 
 ### Step 8: The consolidated dashboard
 

@@ -188,6 +188,27 @@ Pull data from *another* cluster — the workhorse of a cross-cluster migration
 or a major-version upgrade onto a fresh cluster. Note the
 `reindex.remote.whitelist` setting required on the destination nodes.
 
+**How it differs:** in a remote reindex the *destination* cluster runs the job
+and reaches out over HTTP to scroll documents from the remote *source*
+cluster. You add a `remote` block under `source` with the old cluster's host
+and (if it has security on) `username`/`password`. The `size` value controls
+how many documents each scroll batch pulls from the remote.
+
+**The whitelist requirement:** for security, a node will not connect to an
+arbitrary remote host. You must list the source host in
+`reindex.remote.whitelist` in `elasticsearch.yml` on *every* node of the
+destination cluster. This is a *static* setting — it is not changeable through
+the cluster settings API and requires a node restart. Forgetting it is the
+number-one reason a first remote reindex fails. The script in this exercise
+points at a placeholder host and is *expected* to fail; read it as the
+template you would run during a real migration.
+
+**Why this matters for upgrades:** the remote source may be up to one major
+version behind the destination (for example reindex from 7.x into 8.x). That
+makes remote reindex a clean way to migrate onto a freshly built, correctly
+configured new cluster instead of upgrading the old one in place — see the
+trade-off discussion at the end.
+
 See [`06_remote_reindex.sh`](./06_remote_reindex.sh)
 
 ## Part 7: Zero-Downtime Index Migration

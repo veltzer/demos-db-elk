@@ -199,6 +199,12 @@ See [`14_delete_documents.sh`](./14_delete_documents.sh)
 
 ## Notes about python and virtual env
 
+A virtual environment is an isolated Python installation for a single
+project. It keeps the `requests` and `elasticsearch` packages installed for
+this exercise separate from your system Python and from other projects, so
+version conflicts cannot occur. Activating it simply puts that isolated
+environment first on your path; deactivating restores your normal shell.
+
 - To get virtualenv support:
   `$ sudo apt install python3-virtualenv`
 

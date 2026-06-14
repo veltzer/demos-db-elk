@@ -199,11 +199,30 @@ how much a given workload actually benefits from caching.
 
 ## Part 4: Circuit Breakers
 
+A circuit breaker is the JVM's seatbelt. The danger it guards against is
+an `OutOfMemoryError`, which does not fail one request, it crashes the
+entire node. To prevent that, Elasticsearch estimates how much memory a
+request will need *before* allocating it. If that estimate would push
+the node past a configured limit, the breaker trips and the single
+request fails with a `CircuitBreakingException` (HTTP 429). Sacrificing
+one request to keep the node alive is always the right trade.
+
 See [`04_circuit_breakers.py`](./04_circuit_breakers.py)
 
 This reads `GET /_nodes/stats/breaker` and prints each breaker's limit,
 estimated usage, and trip count, explaining the parent, fielddata, and
 request breakers.
+
+What's happening: there is a hierarchy of breakers. The `parent`
+breaker caps total usage across all the others (around 95% of heap by
+default, backed by a real-memory breaker that watches actual heap), and
+the child breakers (`fielddata`, `request`, `in_flight_requests`) cap
+their own subsystems. The `tripped` column is the one that matters: any
+non-zero count means a request was refused. Reading *which* breaker
+tripped points straight at the cause. A fielddata trip means text-field
+aggregation; a request trip means an oversized aggregation; a tripping
+parent breaker means the node is simply short on heap, which loops you
+back to Part 1.
 
 ## Part 5: Slow Logs
 

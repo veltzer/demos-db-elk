@@ -156,17 +156,44 @@ choosing decay over `field_value_factor` is a design decision, not a default.
 
 ## Part 3: Script Scoring
 
+When the built-in functions cannot express your logic, `script_score` lets you
+write arbitrary scoring code in Painless, Elasticsearch's sandboxed scripting
+language. A script runs once per matching document and returns a number that
+becomes that document's score contribution. Inside it you read field values
+through `doc["field"].value` and combine them with normal math and conditions.
+This is the most powerful and the most dangerous tool in the chapter: powerful
+because you can compute anything, dangerous because the script executes for
+every hit and cannot use the inverted index, so a heavy script slows queries.
+
 ### Exercise 3.1: Custom Script Score
 
 See [`07_custom_script_score.py`](./07_custom_script_score.py)
 
 **Task:** Modify the script to include profit margin in scoring.
 
+This script combines several signals that no single built-in function could,
+including a computed conversion rate (`sales_count / view_count`) and a
+stock penalty. Two details deserve attention. First, it reads `_score`, the
+text relevance from the inner query, so it can fold relevance back into the
+formula. Second, this query uses `boost_mode: replace`, which throws away the
+original query score and uses only the script result. The script keeps things
+sensible by multiplying `base_score` back in, but `replace` is a reminder
+that `boost_mode` can discard the text relevance entirely if you let it.
+
 ### Exercise 3.2: Script with Parameters
 
 See [`08_parameterized_script_score.py`](./08_parameterized_script_score.py)
 
 **Task:** Add category preferences to the scoring parameters.
+
+This version moves the changing values into a `params` block instead of hard
+coding them in the script body. This is not just tidiness: Elasticsearch
+compiles each distinct script source once and caches the compiled version, so
+reusing one parameterized script for every user is far cheaper than sending a
+freshly built script string per request. The example feeds in two different
+shopper profiles (budget and premium) and the same compiled script produces
+personalized rankings purely from the parameters. Reading list parameters
+like `params.preferred_brands.contains(...)` shows how rich the inputs can be.
 
 ## Part 4: Random Scoring
 

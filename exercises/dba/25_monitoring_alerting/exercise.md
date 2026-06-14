@@ -203,6 +203,19 @@ See [`05_index_metrics.py`](./05_index_metrics.py)
 Sample every N seconds for a fixed duration so you can see a line chart
 immediately instead of waiting hours for cron to fill in.
 
+**Why a separate loop instead of just cron?** cron's finest granularity is
+one minute, and a meaningful trend line needs many points, so building a
+chart from cron alone could take hours. The sampling loop is a learning
+shortcut: it writes a dozen points in a couple of minutes so you can see a
+real line chart now. In production the same `dba-metrics` index is fed by
+cron; the loop just front-loads some data.
+
+**Concept: monotonic time for the schedule.** The loop measures elapsed time
+with a monotonic clock rather than wall-clock time. A monotonic clock only
+ever moves forward and is immune to the system clock being adjusted (by NTP,
+for example) mid-run, which keeps the sampling interval honest even if the
+machine's calendar time jumps.
+
 See [`06_sample_loop.py`](./06_sample_loop.py)
 
 ## Part 5: Built-In Alerting

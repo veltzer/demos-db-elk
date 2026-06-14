@@ -156,6 +156,20 @@ keyword field searches.
 
 See [`06_aggregations.py`](./06_aggregations.py)
 
+This script runs three aggregations at once: a `terms` aggregation that
+counts how often each tag appears, an `avg` of the `score` field, and a
+`value_count` of `is_active`. It sets `size: 0` so only the aggregated
+results come back, not the matching documents.
+
+**Why this matters:** Aggregations group and summarize data, and they depend
+on the field type. They run on `keyword`, numeric, boolean, and date fields,
+which store one exact value per document, but not on plain `text` fields,
+because a `text` field is broken into many tokens and has no single value to
+group by. This is exactly why `tags` was mapped as `keyword`: it lets you
+both filter on it and bucket by it. If you tried this aggregation on a `text`
+field, Elasticsearch would refuse unless you explicitly enabled the costly
+`fielddata` option.
+
 **Task:** Run the aggregation and analyze the results.
 
 ## Part 4: Advanced Mapping Features
@@ -163,6 +177,19 @@ See [`06_aggregations.py`](./06_aggregations.py)
 ### Exercise 4.1: Multi-fields
 
 See [`07_multi_fields.py`](./07_multi_fields.py)
+
+This script searches the same `name` field two ways: a `match` on `name`
+(analyzed) and a `term` on `name.keyword` (exact). Both work because `name`
+was mapped as a multi-field.
+
+**What's happening:** A multi-field indexes one source value in more than one
+way at the same time. Here `name` is stored as analyzed `text` for searching
+individual words, and the `name.keyword` sub-field stores the same value
+verbatim for exact matching, sorting, and aggregating. You write the value
+once; Elasticsearch maintains both representations. This is the standard
+solution when you need a string to be both full-text searchable and exactly
+matchable, and it is the same pattern dynamic mapping applies to every string
+by default.
 
 **Task:** Compare the results of searching on `name` vs `name.keyword`.
 

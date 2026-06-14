@@ -199,6 +199,30 @@ field, how many bytes go to the inverted index, doc values, stored fields and
 points. It is the answer to "what should I stop indexing to shrink this
 index?".
 
+**Understanding the breakdown:** a single field can occupy disk in several
+independent ways, and `_disk_usage` separates them so you know which lever
+to pull. The four columns map directly to Lucene data structures:
+
+- **inverted index** — the searchable term index built for analyzed text
+  and keywords. High-cardinality and free-text fields dominate here. If a
+  field is stored only for display and never searched, set `index: false`
+  to drop this cost entirely.
+- **doc values** — a columnar copy of a field used for sorting,
+  aggregating, and scripting. If you never sort or aggregate on a field,
+  `doc_values: false` reclaims this.
+- **stored fields** — the original values kept for retrieval, largely the
+  `_source` document.
+- **points** — the data structure for numeric and date range queries.
+
+Because the API physically scans every segment on disk, it is genuinely
+expensive, so Elasticsearch refuses to run it unless you pass
+`run_expensive_tasks=true`. That flag is mandatory and is the script's way
+of acknowledging the cost; do not run this on a busy production index
+during peak load without thinking about it. In the sample data, expect the
+analyzed `message` and high-cardinality `user_agent`/`url` fields to top
+the list — which is the lesson: mapping choices, not raw document count,
+are usually where the disk goes.
+
 See [`06_disk_usage_analysis.py`](./06_disk_usage_analysis.py)
 
 ## Part 6: Segments and Force Merge
