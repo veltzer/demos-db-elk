@@ -118,6 +118,16 @@ mapping from Part 1.
 
 See [`04_index_documents_static_mapping.py`](./04_index_documents_static_mapping.py)
 
+This script indexes three documents into the `static_test` index you just
+created. Each document includes `description` text and a `tags` list, the
+fields the later search and aggregation exercises rely on.
+
+**What's happening:** Because the mapping already exists, Elasticsearch does
+not infer any types here; it validates each value against the schema you
+defined. The documents succeed because they match the declared types. This is
+the payoff of a static mapping: predictable, validated ingestion instead of
+silent type guessing.
+
 **Task:** Index the documents and verify they were indexed successfully.
 
 ## Part 3: Comparing Search Capabilities

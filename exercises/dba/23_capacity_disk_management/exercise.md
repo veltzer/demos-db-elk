@@ -145,6 +145,20 @@ switch to absolute values for exactly this reason.
 Rather than actually filling the disk, apply the exact block Elasticsearch
 applies at flood stage so you can rehearse the recovery safely.
 
+**What's happening:** at flood stage Elasticsearch sets
+`index.blocks.read_only_allow_delete: true` on every affected index. This
+script sets that same flag by hand, so the index ends up in precisely the
+state a real flood would produce — without you having to fill a disk. The
+"allow delete" part of the name is deliberate: the block forbids writes and
+mapping changes but still permits deletes, so you can free space by
+dropping data even while blocked.
+
+The script then attempts a write, which fails with a
+`cluster_block_exception` (HTTP 429). The error body it prints is exactly
+what your application logs would show during a real incident, so learning
+to recognise it here is the point of the exercise. The script intentionally
+does not abort on that failure so you can read the rejection and continue.
+
 See [`04_simulate_flood_stage.sh`](./04_simulate_flood_stage.sh)
 
 ### 4.2 The Recovery Runbook

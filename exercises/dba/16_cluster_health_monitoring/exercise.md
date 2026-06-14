@@ -144,6 +144,18 @@ When a shard is unassigned, this is the tool that tells you exactly why
 
 See [`05_allocation_explain.py`](./05_allocation_explain.py)
 
+Why this matters: knowing a shard is unassigned is not the same as
+knowing why. Elasticsearch decides where to place each shard by running
+it past a series of allocation deciders, one per rule (disk space, the
+same-shard rule, awareness, explicit filtering, retry limits, and more).
+A shard is only placed on a node if every decider says yes. The explain
+API replays that decision and reports, per node, which decider blocked
+the shard and the human-readable explanation. With no arguments the
+script lets Elasticsearch pick an arbitrary unassigned shard, which is
+the fastest way to start. A common pitfall: when everything is assigned
+the API returns an error, so the script handles that case and tells you
+the cluster has nothing stuck rather than crashing.
+
 ### Step 5: Per-node JVM, GC and thread-pool stats
 
 Pull heap used %, GC counts/time, and thread-pool rejection counts into

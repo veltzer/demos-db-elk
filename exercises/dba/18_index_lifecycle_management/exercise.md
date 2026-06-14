@@ -173,6 +173,16 @@ See [`05_create_data_stream.sh`](./05_create_data_stream.sh)
 Roll the write index forward on demand and watch the backing index list grow
 from `logs-000001` to `logs-000002`:
 
+A manual rollover does by hand exactly what ILM does for you on a schedule: it
+creates a fresh backing index, makes it the new write target, and leaves the
+old one frozen for reads. Two subtleties the script demonstrates. It first
+indexes a document because a rollover on an empty index is, by default, a no-op
+— Elasticsearch will not leave you with a string of empty indices. And calling
+`_rollover` with an empty body forces an *unconditional* roll; passing
+`conditions` instead rolls only if a threshold is met, which is precisely the
+check ILM performs each poll. Doing it manually here makes that otherwise
+invisible machinery concrete.
+
 See [`06_manual_rollover.sh`](./06_manual_rollover.sh)
 
 ### Step 5: Inspect and Control ILM

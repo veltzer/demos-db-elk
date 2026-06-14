@@ -132,6 +132,23 @@ configuration a name would resolve to. `_simulate_index/<name>` shows which
 templates match a concrete name and the merged result, while `_simulate`
 with a body lets you trial an unsaved template.
 
+Why this matters: template resolution is invisible until an index is born,
+and by then the mapping is committed and largely immutable. Simulation moves
+that resolution earlier, so you see the final settings and mappings before
+anything is created. The output also reports the `overlapping` templates,
+which are the ones that matched the name by pattern but lost on priority.
+That field is your proof that precedence resolved the way you expected,
+which is exactly the kind of thing that is easy to get wrong by eye.
+
+The script simulates `logs-audit-2024` (both templates match, the audit
+template wins, so you should see replicas 2 plus the `actor` and `action`
+fields) and `logs-2024` (only `logs-template` matches, so replicas 1 and a
+`host` field, but no audit fields). The third call simulates an unsaved
+template body at priority 160 rather than 150. The same overlap rule from
+Part 2 applies during simulation: a `logs-*` candidate at priority 150 would
+clash with the already-saved template, so the example uses 160 to make it a
+distinct, resolvable candidate.
+
 See [`03_simulate_template.sh`](./03_simulate_template.sh)
 
 ## Part 4: Create an Index and Verify Inheritance

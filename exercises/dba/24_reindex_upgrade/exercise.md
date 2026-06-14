@@ -127,6 +127,27 @@ A Painless script in the reindex body plus a query to copy only a subset:
 rename a field, derive a new field, and drop unwanted documents in flight with
 `ctx.op = "noop"`.
 
+**What's happening:** the reindex body grows two new parts. A `query` inside
+`source` restricts *which* documents are read (here only the `Hardware`
+category), so you never copy rows you do not want. A Painless `script` then
+rewrites each surviving document. Painless is Elasticsearch's sandboxed
+scripting language; inside a reindex it sees each document as `ctx._source`
+(the field values) and `ctx.op` (what to do with it). The script in this
+exercise does three classic transforms at once: it renames `category` to
+`category_name`, derives `price_with_tax` from `price`, and removes the stale
+`created` field.
+
+**The `noop` trick:** setting `ctx.op = "noop"` tells reindex to skip writing
+that document entirely. The script uses it to drop any product priced at `0`.
+This is how you filter on a *computed* condition the query language cannot
+express. (Setting `ctx.op = "delete"` would instead remove a matching document
+from the destination — useful when reindexing into an existing index.)
+
+**Why this matters:** combining query plus script turns a mechanical copy into
+a one-pass migrate-clean-and-filter. You can reshape data and discard junk in
+a single server-side operation instead of copying everything and cleaning up
+afterward.
+
 See [`04_reindex_transform.sh`](./04_reindex_transform.sh)
 
 ## Part 5: Conflicts and Parallelism

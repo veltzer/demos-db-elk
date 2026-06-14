@@ -118,6 +118,28 @@ A wrapper that runs the threshold check, captures the result, and routes an
 alert only when the check is not OK — the cron convention of staying silent on
 success.
 
+**Why a wrapper at all?** cron already mails any output a job produces to the
+crontab owner, but that is a blunt instrument: it cannot reach Slack or a
+pager, and it fires even on noise. The wrapper makes routing explicit and
+configurable (email and/or a webhook) and, crucially, stays silent when the
+check returns OK. Silence on success is what keeps a monitoring system
+trustworthy: every message you receive means something is actually wrong.
+
+**What's happening with `set -e`.** The script runs with `set -e`, which
+aborts on any non-zero exit. But a WARN or CRITICAL from the check is a
+non-zero exit that is *expected and meaningful*, not a bug, so the wrapper
+disables `set -e` around the check, captures the exit code, then re-enables
+it. It does the same around alert delivery: a missing mail program or an
+unreachable webhook is a delivery problem and must not crash the wrapper or
+overwrite the real severity it needs to propagate.
+
+**Pitfall: cron has a minimal environment.** A cron job does not inherit
+your interactive shell's working directory, `PATH`, or variables. That is why
+the wrapper resolves its own directory from `BASH_SOURCE` instead of assuming
+a current directory, and why the crontab line uses an absolute path. Settings
+like the alert email are read from the environment so you can override them
+from the crontab without editing the script.
+
 See [`03_cron_alert_wrapper.sh`](./03_cron_alert_wrapper.sh)
 
 ## Part 4: Self-Monitoring Index

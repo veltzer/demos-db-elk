@@ -139,6 +139,16 @@ See [`06_has_parent_query.py`](./06_has_parent_query.py)
 
 **Task:** Find all comments on posts authored by a specific user.
 
+**What's happening:** `has_parent` is the mirror image of `has_child`. You give
+it the `parent_type` and an inner query against the parent; it returns the
+*child* documents whose parent matches. Here it returns comments, filtered by a
+property (the author) that lives on the post, not on the comment.
+
+**Why this matters:** This lets a child be filtered by data it does not store
+itself. Without parent-child you would have to copy the post author onto every
+comment. The trade-off is the same join cost: the inner query runs on parents,
+then the engine walks down to their children.
+
 ### Exercise 2.3: Parent ID Query
 
 See [`07_parent_id_query.py`](./07_parent_id_query.py)
