@@ -23,6 +23,11 @@ kibana() {
 	# Or verify in the browser at http://localhost:5601 (or http://<server-ip>:5601)
 }
 
+browse() {
+	# Open the Kibana UI in the default browser
+	xdg-open "http://localhost:5601"
+}
+
 troubleshoot() {
 	# Check ports are listening
 	sudo netstat -tlnp | grep -E '9200|5601' || true
@@ -45,6 +50,7 @@ Usage: ./check_status.sh [command]
 Commands:
   elasticsearch   cluster health, info and index listing
   kibana          Kibana API status
+  browse          open the Kibana UI in the default browser
   troubleshoot    listening ports and per-method log locations
   all             elasticsearch + kibana (default)
   help            show this help
@@ -54,6 +60,7 @@ EOF
 case "${1:-all}" in
 	elasticsearch) elasticsearch ;;
 	kibana) kibana ;;
+	browse) browse ;;
 	troubleshoot) troubleshoot ;;
 	all) all ;;
 	help | -h | --help) usage ;;
