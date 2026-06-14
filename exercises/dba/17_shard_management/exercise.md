@@ -146,6 +146,22 @@ See [`04_shard_sizing_report.py`](./04_shard_sizing_report.py)
 Raise and lower `number_of_replicas` on the live index and watch cluster
 health move between `yellow` and `green`.
 
+What is happening: unlike the primary count, the replica count is a dynamic
+setting that you can change at any time with no downtime and no reindex.
+When you raise it, Elasticsearch schedules new replica copies and recovers
+their data from the primaries in the background; when you lower it, it
+simply drops the extra copies. This is why replicas are the lever you reach
+for to add read capacity or redundancy on a running cluster.
+
+The instructive part is the health colour. On a single-node box, raising
+replicas to 2 leaves those copies with nowhere to live, so health goes
+yellow with unassigned shards. The only way back to green on one node is to
+drop replicas to 0, because with zero copies there is nothing left to be
+unassigned. In production you would instead add data nodes so the replicas
+have somewhere to go. The lesson: yellow caused by unassigned replicas is a
+capacity statement, not a corruption warning, and replicas cost disk and
+indexing work because every write must be applied to each copy.
+
 See [`05_change_replicas.sh`](./05_change_replicas.sh)
 
 ## Part 6: Shrink an Index (Fewer Primaries)

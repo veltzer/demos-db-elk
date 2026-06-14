@@ -136,8 +136,21 @@ silent type guessing.
 
 See [`05_text_vs_keyword_fields.py`](./05_text_vs_keyword_fields.py)
 
-**Task:** Run both searches and observe the difference between text and keyword
-field searches.
+This script runs two searches against `static_test`: a `match` query on the
+analyzed `description` field, and a `term` query on the `keyword` `tags`
+field.
+
+**Why this matters:** This is the single most important distinction in
+Elasticsearch mappings. A `text` field is passed through an analyzer at index
+time, which lowercases it and breaks it into individual tokens (words). So
+`description` becomes searchable word by word, and a `match` query for
+`python developer` finds documents containing either word in any order. A
+`keyword` field is stored verbatim as one unbroken token, so a `term` query
+must match the whole value exactly, including case. Use `match` on `text` for
+human language and `term` on `keyword` for codes, tags, and identifiers.
+
+**Task:** Run both searches and observe the difference between text and
+keyword field searches.
 
 ### Exercise 3.2: Aggregations
 

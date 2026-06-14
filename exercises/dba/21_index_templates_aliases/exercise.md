@@ -158,6 +158,14 @@ templates - we never specify them on the create call. `logs-app-2024`
 inherits from `logs-template`; `logs-audit-2024` inherits from the
 higher-priority `logs-audit-template`.
 
+This step closes the loop: simulation predicted the configuration, and now
+the live index proves the prediction. The key insight is that the create
+calls are deliberately bare. Because the names match the patterns, the
+templates do all the work, which is precisely how automatic index creation
+behaves in production. If the verified mapping matches what the simulation
+showed, you can trust the template to configure every future index that
+matches the pattern, not just these two.
+
 See [`04_create_and_verify.sh`](./04_create_and_verify.sh)
 
 ## Part 5: Alias Basics

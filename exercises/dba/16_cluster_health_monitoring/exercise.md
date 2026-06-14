@@ -163,6 +163,20 @@ a per-node table.
 
 See [`06_node_stats.py`](./06_node_stats.py)
 
+What is happening: Elasticsearch runs on the Java Virtual Machine, so a
+node's memory health is really JVM heap health. The script pulls heap
+used percent, garbage collection (GC) counts and time, and thread-pool
+rejections out of `GET /_nodes/stats`. Heap and GC are linked: as heap
+fills, the JVM must collect garbage more often to free space. Young GC
+is cheap and constant and is nothing to worry about, but rising
+old-generation GC counts and long pause times mean the node is fighting
+for memory and will eventually become unstable. Thread-pool rejections
+are the other key signal. Each pool (search, write, bulk, get) has a
+bounded queue; when that queue is full Elasticsearch rejects new work
+rather than running out of memory. Any non-zero rejection count means
+the cluster could not keep up and dropped requests, which is why the
+script reports rejections separately and treats them as a red flag.
+
 ### Step 6: Hot threads
 
 Capture what the busiest threads on each node are doing - the first

@@ -144,10 +144,34 @@ See [`03_cron_alert_wrapper.sh`](./03_cron_alert_wrapper.sh)
 
 ## Part 4: Self-Monitoring Index
 
+The threshold check tells you the state *right now* and then forgets it.
+Self-monitoring closes that gap: each run writes its metrics back into
+Elasticsearch as a timestamped document, so over time you build a history you
+can chart. A pull check answers "is it broken now?"; the stored time series
+answers "is it trending toward broken?" and "what did the cluster look like
+just before the incident?".
+
 ### 4.1 Create the Metrics Index
 
 An index template plus a write alias (`dba-metrics`) so the writer never needs
 to know the concrete index name.
+
+**Why an index template?** A template applies field mappings to any index
+whose name matches `dba-metrics-*`, before the index exists. Without it,
+Elasticsearch would guess types from the first document it sees (dynamic
+mapping), and the all-important `@timestamp` could be guessed as text rather
+than a `date`, which would make it unusable as a time axis in Kibana. The
+template pins `@timestamp` to `date` and the numeric metrics to numeric types
+so charts and range queries work correctly from the very first document.
+
+**Why a write alias instead of writing to the index directly?** The writer
+targets the alias `dba-metrics`, and the alias points at the concrete index
+`dba-metrics-000001`. This indirection means that later, when the index grows
+too large, you can roll over to `dba-metrics-000002` and just move the alias;
+the writer code never changes because it only ever knows the alias name. This
+is the same template-plus-alias pattern that Beats and data streams use under
+the hood, which is why the numeric suffix and `is_write_index` flag look the
+way they do.
 
 See [`04_create_metrics_index.sh`](./04_create_metrics_index.sh)
 

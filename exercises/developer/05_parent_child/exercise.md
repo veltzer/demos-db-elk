@@ -155,6 +155,16 @@ See [`07_parent_id_query.py`](./07_parent_id_query.py)
 
 **Task:** Retrieve all comments for a specific blog post.
 
+**What's happening:** `parent_id` takes a child `type` and a single parent
+`id`, and returns the direct children of exactly that parent. It is the most
+direct of the three join queries.
+
+**Why this matters:** When you already know the parent id, prefer `parent_id`
+over `has_child` or `has_parent`. It does not have to evaluate an inner query
+across many documents, so it is the cheapest way to fetch a known parent's
+children. The performance tips at the end of this exercise call this out
+explicitly.
+
 ### Exercise 2.4: Children Aggregation
 
 See [`08_children_aggregation.py`](./08_children_aggregation.py)

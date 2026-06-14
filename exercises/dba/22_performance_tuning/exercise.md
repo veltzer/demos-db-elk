@@ -155,6 +155,11 @@ retry-and-backoff, or scale out across more nodes and shards.
 
 ## Part 3: Caches
 
+Caching is how Elasticsearch turns a repeated query into a near-instant
+response. There are three caches a DBA cares about, and they cache very
+different things at very different layers. Understanding which cache a
+query can use is the difference between guessing and tuning.
+
 ### Step 3.1: Inspect Cache Usage
 
 See [`03_caches.py`](./03_caches.py)
@@ -163,6 +168,19 @@ This reads
 `GET /_nodes/stats/indices/query_cache,request_cache,fielddata` and
 reports each cache's size, evictions, and hit ratio, with a warning if
 fielddata is non-zero.
+
+What's happening: the hit ratio is the headline number. A ratio near
+zero after warm-up means the cache is not earning its memory, usually
+because queries are not repetitive or the cache is too small (look at
+the eviction count: high evictions relative to size mean entries are
+being pushed out before they can be reused). The two good caches here
+are the query cache (filter bitsets, shared across the node) and the
+request cache (whole responses for `size=0` aggregation and count
+requests). The dangerous one is fielddata: it should usually stay tiny.
+A non-zero fielddata size is the script's red flag that something is
+sorting or aggregating on a `text` field, which builds an expensive
+in-memory structure that can exhaust the heap. The fix is to aggregate
+on a `keyword` field instead, exactly like the mapping in Part 0.
 
 ### Step 3.2: Clear Caches to Re-Measure
 

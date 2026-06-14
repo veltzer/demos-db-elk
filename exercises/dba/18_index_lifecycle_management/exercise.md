@@ -187,6 +187,19 @@ See [`06_manual_rollover.sh`](./06_manual_rollover.sh)
 
 ### Step 5: Inspect and Control ILM
 
+These are the endpoints you will reach for when something goes wrong in
+production. `_ilm/explain` is the single most useful one: it reports, per index,
+the current phase, action and step, plus any error that has halted progress.
+When an index appears "stuck", this is where the reason shows up. `_ilm/status`
+tells you whether the lifecycle service as a whole is running or stopped, and
+`_ilm/stop` / `_ilm/start` let you freeze all automatic transitions during
+maintenance so ILM does not move or delete indices out from under you.
+
+`_ilm/move` is the escape hatch: it manually forces one index from its current
+step to a new one. You must name the exact current step (read it from
+`_ilm/explain` first), which is a safety check — it ensures you are moving the
+index from where it actually is, not where you assume it is.
+
 See [`07_inspect_ilm.sh`](./07_inspect_ilm.sh)
 
 ### Step 6: Watch the Lifecycle Transitions

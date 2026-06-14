@@ -94,11 +94,37 @@ yes/no business rules and `field_value_factor` for continuous signals.
 
 ## Part 2: Decay Functions
 
+Decay functions answer a different question from `field_value_factor`. Instead
+of "bigger is better", they express "closer to a target is better". You give
+an `origin` (the ideal value), and the score smoothly falls off as a document
+moves away from it. They work on dates, numbers, and geographic points alike,
+which is why the same shape is reused for recency, distance, and price below.
+
+Every decay function shares three knobs worth understanding:
+
+- `origin`: the point of maximum score (zero distance away).
+- `offset`: a grace zone around the origin where there is no decay at all.
+- `scale` and `decay`: together they set the falloff rate. The score drops to
+  exactly the `decay` value (often `0.5`) once a document is `scale` away from
+  the edge of the offset.
+
+The three decay shapes differ in how the curve falls between those points:
+`gauss` is bell-shaped and forgiving near the origin then steep, `linear` is
+a straight line, and `exp` (exponential) drops fastest right away. Choose the
+shape that matches how tolerant your users are of being "a little off".
+
 ### Exercise 2.1: Gauss Decay for Recency
 
 See [`04_recency_gauss_decay.py`](./04_recency_gauss_decay.py)
 
 **Task:** Implement linear and exponential decay functions.
+
+This applies `gauss` decay to `created_date` with `origin: now`. The settings
+read naturally: `offset: 7d` means anything created in the last week is
+treated as equally fresh, and `scale: 30d` with `decay: 0.5` means a product
+loses half its freshness boost by roughly a month old. Because the origin is
+`now`, the boost is computed at query time and shifts every day, so a product
+gradually fades without any reindexing on your part.
 
 ### Exercise 2.2: Geographic Distance Decay
 
@@ -106,11 +132,27 @@ See [`05_geo_proximity_decay.py`](./05_geo_proximity_decay.py)
 
 **Task:** Combine distance decay with price range decay.
 
+The same `gauss` function now works on the `geo_point` field, with `scale`
+expressed in kilometers. This is why the mapping in Exercise 1.1 declared
+`location` as `geo_point`: Elasticsearch computes the real great-circle
+distance from the user's `origin` to each product. The `offset: 2km` says
+anything within two kilometers is effectively "right here", and the boost
+fades over the next ten kilometers. The decay shape does not care whether the
+distance is days, dollars, or kilometers; only the units of `scale` change.
+
 ### Exercise 2.3: Price Decay for Budget Matching
 
 See [`06_price_preference_decay.py`](./06_price_preference_decay.py)
 
 **Task:** Create a combined decay for both price and rating targets.
+
+Here decay expresses budget matching: the `origin` is the shopper's target
+price and `scale` is how flexible they are. This captures a subtle real-world
+truth that a simple "cheaper is better" boost would miss, namely that an item
+far below budget can look suspiciously cheap and one far above is unaffordable,
+so the sweet spot is near the target, not at zero. The same field can be
+pulled in two directions by different scoring strategies, which is exactly why
+choosing decay over `field_value_factor` is a design decision, not a default.
 
 ## Part 3: Script Scoring
 

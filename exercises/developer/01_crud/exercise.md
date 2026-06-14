@@ -157,6 +157,13 @@ instant and there is no recycle bin.
 
 ## Method 2: curl (Command Line)
 
+With curl you see the HTTP request in full: the method (`-X PUT`), the URL,
+the `Content-Type` header, and the JSON body. This is exactly what Kibana
+Dev Tools was sending for you. The `Content-Type: application/json` header
+is not optional; Elasticsearch rejects a body without it. Working at this
+level is valuable because it makes the API tangible and because curl is
+available everywhere, which makes it perfect for shell scripts and pipelines.
+
 ### 2.1 Create an Index
 
 See [`09_create_index.sh`](./09_create_index.sh)
