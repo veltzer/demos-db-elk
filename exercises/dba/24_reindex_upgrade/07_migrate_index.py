@@ -21,9 +21,13 @@ from elasticsearch import Elasticsearch
 
 es = Elasticsearch("http://localhost:9200")
 
+# NOTE: the alias is namespaced ("orders_alias", not the bare "orders") so it
+# cannot collide with an unrelated index that may already be named "orders" in
+# the cluster - Elasticsearch forbids an alias sharing a name with an existing
+# index.
 OLD = "orders_v1"
 NEW = "orders_v2"
-ALIAS = "orders"
+ALIAS = "orders_alias"
 
 
 def cleanup():

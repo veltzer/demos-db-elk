@@ -4,7 +4,7 @@
 # index templates - we never specify them on the create call itself.
 
 # Create "logs-app-2024". It matches only "logs-*" (logs-template), so it
-# inherits common-settings + logs-mappings + the template overrides.
+# inherits common-settings + logs-fields + the template overrides.
 echo "=== create logs-app-2024 (matches logs-template only) ==="
 curl -X PUT "localhost:9200/logs-app-2024?pretty"
 
@@ -19,7 +19,7 @@ curl -X PUT "localhost:9200/logs-audit-2024?pretty"
 #   - settings.index.number_of_replicas == "1" (from logs-template)
 #   - settings.index.refresh_interval == "5s" (from common-settings)
 #   - mappings include @timestamp/level/service/message/status_code
-#     (logs-mappings) and host (logs-template), but NOT actor/action.
+#     (logs-fields) and host (logs-template), but NOT actor/action.
 echo
 echo "=== GET logs-app-2024 (resolved mapping + settings) ==="
 curl -s "localhost:9200/logs-app-2024?pretty"

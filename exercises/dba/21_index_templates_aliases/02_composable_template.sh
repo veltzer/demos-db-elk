@@ -13,13 +13,18 @@
 #   priority       - when several index templates match the same name, the
 #                    one with the HIGHEST priority wins (only one applies).
 #
-# This template covers any index named "logs-*".
+# This template covers any index named "logs-*". We use priority 150 (not a
+# round 100) on purpose: a stack-managed template named "logs" ships with
+# x-pack/Kibana using the pattern "logs-*-*" at priority 100. Elasticsearch
+# refuses to register two templates whose patterns can overlap at the SAME
+# priority, so "logs-*" at 100 would be rejected. 150 sidesteps that clash
+# while still sitting BELOW the audit template (200) so precedence holds.
 curl -X PUT "localhost:9200/_index_template/logs-template?pretty" \
 	-H 'Content-Type: application/json' -d'
 {
 	"index_patterns": ["logs-*"],
-	"composed_of": ["common-settings", "logs-mappings"],
-	"priority": 100,
+	"composed_of": ["common-settings", "logs-fields"],
+	"priority": 150,
 	"template": {
 		"settings": {
 			"index": {
@@ -46,7 +51,7 @@ curl -X PUT "localhost:9200/_index_template/logs-audit-template?pretty" \
 	-H 'Content-Type: application/json' -d'
 {
 	"index_patterns": ["logs-audit-*"],
-	"composed_of": ["common-settings", "logs-mappings"],
+	"composed_of": ["common-settings", "logs-fields"],
 	"priority": 200,
 	"template": {
 		"settings": {

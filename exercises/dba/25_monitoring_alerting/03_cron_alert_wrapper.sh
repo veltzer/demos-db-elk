@@ -42,6 +42,12 @@ fi
 
 SUBJECT="Elasticsearch monitoring: exit ${RC}"
 
+# Routing an alert must never crash the wrapper or clobber the check's exit
+# code. A missing MTA or an unreachable webhook is an alerting-delivery
+# problem, not a reason to abort and lose the real severity, so disable
+# `set -e` for the delivery section and restore it afterwards.
+set +e
+
 # --- Alert via email (requires a working `mail`/`mailx` MTA) ---------------
 if command -v mail >/dev/null 2>&1; then
 	printf '%s\n' "${OUTPUT}" | mail -s "${SUBJECT}" "${ALERT_EMAIL}"
@@ -55,6 +61,8 @@ if [ -n "${ALERT_WEBHOOK}" ]; then
 		-d "{\"text\": \"${SUBJECT}\n${PAYLOAD}\"}" \
 		"${ALERT_WEBHOOK}" >/dev/null
 fi
+
+set -e
 
 # Also print to stdout so cron mails it to the crontab owner as a backstop.
 printf '%s\n' "${OUTPUT}"

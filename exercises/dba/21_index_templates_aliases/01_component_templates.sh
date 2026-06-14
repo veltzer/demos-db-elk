@@ -27,9 +27,12 @@ curl -X PUT "localhost:9200/_component_template/common-settings?pretty" \
 	}
 }'
 
-# Component 2: "logs-mappings" - the field mappings shared by every log
+# Component 2: "logs-fields" - the field mappings shared by every log
 # index. Note we use date/keyword/text types appropriate for log data.
-curl -X PUT "localhost:9200/_component_template/logs-mappings?pretty" \
+# We deliberately avoid the name "logs-mappings": a stack-managed component
+# template of that exact name ships with x-pack/Kibana and the stack will
+# periodically restore it, clobbering ours. "logs-fields" is exercise-owned.
+curl -X PUT "localhost:9200/_component_template/logs-fields?pretty" \
 	-H 'Content-Type: application/json' -d'
 {
 	"template": {

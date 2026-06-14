@@ -51,8 +51,11 @@ template references it. This lets you define a piece once and reuse it
 across many templates.
 
 We create two: a `common-settings` component (shards, replicas, refresh
-interval) and a `logs-mappings` component (the field types shared by every
-log index).
+interval) and a `logs-fields` component (the field types shared by every
+log index). We avoid the name `logs-mappings` on purpose: a stack-managed
+component template of that exact name ships with x-pack/Kibana and the stack
+restores it periodically, so an exercise component of that name would be
+silently clobbered.
 
 See [`01_component_templates.sh`](./01_component_templates.sh)
 
@@ -64,9 +67,15 @@ applies the inline `template` block (which has the highest precedence), and
 declares a `priority`.
 
 We create two templates to demonstrate precedence: `logs-template`
-(pattern `logs-*`, priority 100) and `logs-audit-template` (pattern
+(pattern `logs-*`, priority 150) and `logs-audit-template` (pattern
 `logs-audit-*`, priority 200). When an index name matches both patterns,
 only the higher-priority template applies.
+
+> Note on priority 150: a stack-managed template named `logs` (pattern
+> `logs-*-*`, priority 100) ships with x-pack/Kibana. Elasticsearch refuses to
+> register two templates whose patterns can overlap at the same priority, so
+> `logs-*` at priority 100 would be rejected on such a cluster. Using 150 keeps
+> `logs-template` below the audit template (200) while avoiding that clash.
 
 See [`02_composable_template.sh`](./02_composable_template.sh)
 

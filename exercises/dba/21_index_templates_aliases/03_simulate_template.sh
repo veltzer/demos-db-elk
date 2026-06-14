@@ -24,14 +24,18 @@ curl -X POST "localhost:9200/_index_template/_simulate_index/logs-2024?pretty"
 # (3) _simulate with a template BODY - try out a candidate index template
 # WITHOUT saving it. Useful for reviewing a change before you PUT it. Here
 # we composed_of the existing components and override the refresh interval.
+# Note the priority is 160, not 150: _simulate validates the body as if it
+# were being registered, so a "logs-*" candidate at the SAME priority as the
+# already-saved logs-template (150) would be rejected for overlapping at an
+# equal priority. 160 makes it a distinct candidate so the trial resolves.
 echo
 echo "=== simulate an unsaved candidate template body ==="
 curl -X POST "localhost:9200/_index_template/_simulate?pretty" \
 	-H 'Content-Type: application/json' -d'
 {
 	"index_patterns": ["logs-*"],
-	"composed_of": ["common-settings", "logs-mappings"],
-	"priority": 100,
+	"composed_of": ["common-settings", "logs-fields"],
+	"priority": 160,
 	"template": {
 		"settings": {
 			"index": {
