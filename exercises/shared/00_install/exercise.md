@@ -16,6 +16,21 @@ For each method, you'll learn how to:
 - Verify the installation
 - Uninstall cleanly
 
+Each method is a single self-contained script with `install`, `verify` and
+`uninstall` subcommands, so you can run a whole method in one go or step
+through individual phases:
+
+| Method | Script |
+| --- | --- |
+| APT Package Manager | [`apt_install.sh`](./apt_install.sh) |
+| Docker Compose | [`docker_install.sh`](./docker_install.sh) |
+| Direct Download (Archive) | [`archive_install.sh`](./archive_install.sh) |
+| Podman | [`podman_install.sh`](./podman_install.sh) |
+| Status / troubleshooting (all methods) | [`check_status.sh`](./check_status.sh) |
+
+> **Note:** these exercises run with security **disabled**, so no generated
+> passwords or enrollment tokens are needed for any method.
+
 ## Prerequisites
 
 Before starting, ensure you have:
@@ -36,124 +51,44 @@ sudo apt update && sudo apt upgrade -y
 
 ## Method 1: APT Package Manager Installation
 
-### Step 1.1: Install Dependencies
+Everything lives in [`apt_install.sh`](./apt_install.sh). Read it top to bottom:
+each step (dependencies, repository, Elasticsearch, configure/start, Kibana,
+start Kibana) is a separate shell function.
 
-See [`01_apt_install_dependencies.sh`](./01_apt_install_dependencies.sh)
-
-### Step 1.2: Add Elasticsearch Repository
-
-See [`02_apt_add_elasticsearch_repo.sh`](./02_apt_add_elasticsearch_repo.sh)
-
-### Step 1.3: Install Elasticsearch
-
-See [`03_apt_install_elasticsearch.sh`](./03_apt_install_elasticsearch.sh)
-
-### Step 1.4: Configure and Start Elasticsearch
-
-See [`04_apt_disable_security_start_elasticsearch.sh`](./04_apt_disable_security_start_elasticsearch.sh)
-
-### Step 1.5: Install Kibana
-
-See [`05_apt_install_kibana.sh`](./05_apt_install_kibana.sh)
-
-### Step 1.6: Start Kibana
-
-See [`06_apt_start_kibana.sh`](./06_apt_start_kibana.sh)
-
-### Verification (APT Method)
-
-See [`07_apt_verify_install.sh`](./07_apt_verify_install.sh)
-
-### Uninstallation (APT Method)
-
-See [`08_apt_uninstall.sh`](./08_apt_uninstall.sh)
+```bash
+./apt_install.sh install     # dependencies, repo, install, configure and start both
+./apt_install.sh verify      # test Elasticsearch and print the Kibana URL
+./apt_install.sh uninstall   # stop services, purge packages, remove all data
+```
 
 ---
 
 ## Method 2: Docker Compose Installation
 
-### Step 2.1: Install Docker and Docker Compose
+Everything lives in [`docker_install.sh`](./docker_install.sh). It installs
+Docker, writes `~/elastic-docker/docker-compose.yml` and starts the stack. No
+Kibana system user setup is required because security is disabled.
 
-See [`09_docker_install.sh`](./09_docker_install.sh)
-
-### Step 2.2: Create Project Directory
-
-See [`10_docker_create_project_dir.sh`](./10_docker_create_project_dir.sh)
-
-### Step 2.3: Create docker-compose.yml
-
-See [`11_docker_create_compose_file.sh`](./11_docker_create_compose_file.sh)
-
-### Step 2.4: Start Services
-
-See [`12_docker_compose_up.sh`](./12_docker_compose_up.sh)
-
-### Step 2.5: Kibana System User (not required — security disabled)
-
-See [`13_docker_kibana_system_user_note.sh`](./13_docker_kibana_system_user_note.sh)
-
-### Verification (Docker Compose Method)
-
-See [`14_docker_verify_install.sh`](./14_docker_verify_install.sh)
-
-### Uninstallation (Docker Compose Method)
-
-See [`15_docker_uninstall.sh`](./15_docker_uninstall.sh)
+```bash
+./docker_install.sh install     # install Docker, write compose file, start services
+./docker_install.sh verify      # test Elasticsearch, show containers, print Kibana URL
+./docker_install.sh uninstall   # compose down -v, remove images and project dir
+```
 
 ---
 
 ## Method 3: Direct Download (Archive) Installation
 
-### Step 3.1: Install Java (Required for Archive Installation)
+Everything lives in [`archive_install.sh`](./archive_install.sh). It installs
+Java, downloads and extracts both archives under `/opt/elastic`, configures and
+starts them. Creating systemd services is optional but recommended.
 
-See [`16_archive_install_java.sh`](./16_archive_install_java.sh)
-
-### Step 3.2: Create Installation Directory
-
-See [`17_archive_create_install_dir.sh`](./17_archive_create_install_dir.sh)
-
-### Step 3.3: Download and Extract Elasticsearch
-
-See [`18_archive_download_elasticsearch.sh`](./18_archive_download_elasticsearch.sh)
-
-### Step 3.4: Configure Elasticsearch
-
-See [`19_archive_configure_elasticsearch.sh`](./19_archive_configure_elasticsearch.sh)
-
-### Step 3.5: Start Elasticsearch
-
-See [`20_archive_start_elasticsearch.sh`](./20_archive_start_elasticsearch.sh)
-
-### Step 3.6: Download and Extract Kibana
-
-See [`21_archive_download_kibana.sh`](./21_archive_download_kibana.sh)
-
-### Step 3.7: Configure Kibana
-
-See [`22_archive_configure_kibana.sh`](./22_archive_configure_kibana.sh)
-
-### Step 3.8: Start Kibana
-
-See [`23_archive_start_kibana.sh`](./23_archive_start_kibana.sh)
-
-### Step 3.9: Create Systemd Services (Optional but Recommended)
-
-**Elasticsearch Service:**
-See [`24_archive_create_elasticsearch_service.sh`](./24_archive_create_elasticsearch_service.sh)
-
-**Kibana Service:**
-See [`25_archive_create_kibana_service.sh`](./25_archive_create_kibana_service.sh)
-
-Enable services:
-See [`26_archive_enable_services.sh`](./26_archive_enable_services.sh)
-
-### Verification (Archive Method)
-
-See [`27_archive_verify_install.sh`](./27_archive_verify_install.sh)
-
-### Uninstallation (Archive Method)
-
-See [`28_archive_uninstall.sh`](./28_archive_uninstall.sh)
+```bash
+./archive_install.sh install     # Java, download, configure and start both
+./archive_install.sh services    # create and enable systemd services (optional)
+./archive_install.sh verify      # check processes, test Elasticsearch, print Kibana URL
+./archive_install.sh uninstall   # stop processes/services, remove /opt/elastic and PIDs
+```
 
 ---
 
@@ -162,46 +97,27 @@ See [`28_archive_uninstall.sh`](./28_archive_uninstall.sh)
 Podman is a daemonless, rootless-capable container engine that is compatible
 with the same `docker-compose.yml` used in Method 2. It reads the compose file
 through its compose provider, so the steps mirror the Docker Compose method.
+Everything lives in [`podman_install.sh`](./podman_install.sh).
 
-### Step 4.1: Install Podman
-
-See [`32_podman_install.sh`](./32_podman_install.sh)
-
-### Step 4.2: Create Project Directory
-
-See [`33_podman_create_project_dir.sh`](./33_podman_create_project_dir.sh)
-
-### Step 4.3: Create docker-compose.yml
-
-See [`34_podman_create_compose_file.sh`](./34_podman_create_compose_file.sh)
-
-### Step 4.4: Start Services
-
-See [`35_podman_compose_up.sh`](./35_podman_compose_up.sh)
-
-### Verification (Podman Method)
-
-See [`36_podman_verify_install.sh`](./36_podman_verify_install.sh)
-
-### Uninstallation (Podman Method)
-
-See [`37_podman_uninstall.sh`](./37_podman_uninstall.sh)
+```bash
+./podman_install.sh install     # install Podman, write compose file, start services
+./podman_install.sh verify      # test Elasticsearch, show containers, print Kibana URL
+./podman_install.sh uninstall   # compose down -v, remove images and project dir
+```
 
 ---
 
 ## Verification Commands (All Methods)
 
-### Check Elasticsearch Status
+Shared status and troubleshooting commands live in
+[`check_status.sh`](./check_status.sh).
 
-See [`29_check_elasticsearch_status.sh`](./29_check_elasticsearch_status.sh)
-
-### Check Kibana Status
-
-See [`30_check_kibana_status.sh`](./30_check_kibana_status.sh)
-
-### Common Troubleshooting
-
-See [`31_troubleshooting_logs.sh`](./31_troubleshooting_logs.sh)
+```bash
+./check_status.sh elasticsearch   # cluster health, info and index listing
+./check_status.sh kibana          # Kibana API status
+./check_status.sh troubleshoot    # listening ports and per-method log locations
+./check_status.sh all             # elasticsearch + kibana (default)
+```
 
 ---
 
