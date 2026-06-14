@@ -201,6 +201,10 @@ To remove the index entirely, see
 
 ## Discussion
 
+The points below explain the trade-offs you are implicitly making with the
+defaults in these scripts. None of them change what the exercise does, but
+understanding them is what separates running vector search from tuning it.
+
 - **Why approximate?** Exact kNN compares the query against every vector — fine
   for six documents, far too slow for millions. Setting `index: true` builds an
   **HNSW** graph so Elasticsearch can find near neighbours in roughly

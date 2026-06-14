@@ -76,9 +76,37 @@ Elasticsearch:
 
 See [`04_create_syslog_config.sh`](./04_create_syslog_config.sh)
 
+**What's happening in this config:** The `file` input tails `/var/log`
+files much like `tail -f`. The `start_position => "beginning"` setting
+tells Logstash to read the file from the top the first time it sees it
+(otherwise it would only pick up lines added after it starts). The `type`
+field tags each event so the filters can treat syslog and auth events
+differently.
+
+The `grok` filter is the heart of the parsing. Grok matches a line against
+named patterns (such as `%{SYSLOGTIMESTAMP:timestamp}` or
+`%{IPORHOST:host}`) and captures each match into a field. Think of it as
+regular expressions with a library of reusable, human-readable building
+blocks. The `date` filter then takes the captured `timestamp` text and
+parses it into `@timestamp`, the special time field Elasticsearch and
+Kibana use to place each event on a time line. Without it, every event
+would be stamped with the moment Logstash read the line, not when the event
+actually occurred. Finally the `mutate` filter copies `host` into a
+`hostname` field, showing how you can reshape events after parsing.
+
+The output sends events to Elasticsearch and *also* prints them to the
+console with the `rubydebug` codec. That console echo is invaluable while
+learning: you can see exactly what fields each event ended up with.
+
 ### Step 4: Test the Configuration
 
 See [`05_test_config_syntax.sh`](./05_test_config_syntax.sh)
+
+**Why this matters:** `--config.test_and_exit` parses the configuration and
+reports `Configuration OK` without actually starting the pipeline. Catching
+a typo or an unbalanced brace here is far cheaper than discovering it after
+Logstash has spun up its full pipeline. Note that this only checks syntax,
+not whether your grok patterns will actually match real log lines.
 
 ### Step 5: Generate Some Log Data (Optional)
 
@@ -86,15 +114,39 @@ If your system doesn't have much log activity, generate some test data:
 
 See [`06_generate_test_logs.sh`](./06_generate_test_logs.sh)
 
+The `logger` command writes a line into the system log through the standard
+syslog facility, which is exactly what Logstash is watching. This gives you
+a controlled way to produce events on demand so you can confirm the
+pipeline end to end instead of waiting for the system to log something on
+its own.
+
 ### Step 6: Run Logstash
 
 **Start Logstash with our configuration:**
 
 See [`07_run_logstash_foreground.sh`](./07_run_logstash_foreground.sh)
 
+Running in the foreground is the right choice while you are learning,
+because the `rubydebug` console output streams past in real time and you can
+watch events being parsed. Logstash takes several seconds to start: it boots
+the JVM, compiles the pipeline, and only then begins reading. Be patient and
+wait for the "Pipeline started" message before expecting any output.
+
 **Alternative - Run in Background:**
 
 See [`08_run_logstash_background.sh`](./08_run_logstash_background.sh)
+
+`nohup ... &` detaches Logstash from your terminal so it keeps running after
+you log out, redirecting its output to a log file you can `tail`. This is
+closer to how Logstash runs in production (usually as a managed service),
+but in the background you lose the live console feed, so you watch the log
+file instead.
+
+**Where does Logstash remember its place?** Each `file` input keeps a
+"sincedb" record of how far it has read in every file. That is why
+restarting Logstash does *not* re-send everything from the beginning: it
+resumes where it left off. This is also why deleting the sincedb (or pointing
+at a fresh file) makes `start_position => "beginning"` take effect again.
 
 ### Step 7: Verify Data in Elasticsearch
 

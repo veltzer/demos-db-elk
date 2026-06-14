@@ -30,7 +30,8 @@ The exercise includes:
 
 - `01_create_index.sh` - Create the `wpt` index with an explicit mapping
 - `02_drop_index.sh` - Drop the `wpt` index
-- `stream_data.py` - Continuously insert one document per second (Ctrl-C to stop)
+- `stream_data.py` - Continuously insert one document per second (Ctrl-C
+  stops it)
 - `show_data.py` - Show the current document count and most recent records
 - `remove_data.py` - Delete all documents from the index (keeps the mapping)
 
@@ -99,6 +100,17 @@ In a second terminal, run the reader a few times and watch the total climb:
 ./show_data.py
 ```
 
+**What's happening.** The reader sorts by `day` descending and asks for the
+top 10, so you always see the newest records first along with the running
+total. Crucially it calls `indices.refresh` before searching. Elasticsearch is
+*near real-time*, not real-time: a freshly indexed document lands in an
+in-memory buffer and is not visible to search until a *refresh* flushes that
+buffer into a searchable segment. Without the explicit refresh you would often
+see a count that lags a second or two behind what the producer has actually
+written, which is confusing in a demo. Forcing a refresh on every read makes
+the count trustworthy here, but it is exactly what you would *not* do in
+production — see the Discussion.
+
 ### Step 4: Clean Up
 
 Stop the producer with Ctrl-C, then empty the index:
@@ -107,8 +119,19 @@ Stop the producer with Ctrl-C, then empty the index:
 ./remove_data.py
 ```
 
+**What's happening.** `remove_data.py` uses `delete_by_query` with a
+`match_all` query, which removes every document while leaving the index and its
+mapping in place. This is the difference between emptying a drawer and throwing
+the drawer away: the next time you stream, the typed mapping from Step 1 is
+still there, so you do not have to recreate it. Note that delete-by-query
+removes documents one matched hit at a time under the hood, so it is far
+heavier than dropping an index — fine for a small demo, but on large indices
+people usually drop and recreate instead.
+
 To remove the index entirely, see
-[`02_drop_index.sh`](./02_drop_index.sh).
+[`02_drop_index.sh`](./02_drop_index.sh). That `DELETE` removes the mapping and
+all data in a single fast operation; use it when you want a clean slate rather
+than just empty contents.
 
 ## Discussion
 

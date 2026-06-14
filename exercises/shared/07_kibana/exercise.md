@@ -119,6 +119,18 @@ always the time range (top right) rather than a missing import.
 
 ### Exercise 1.2: KQL (Kibana Query Language) Practice
 
+KQL is Kibana's own query syntax, designed to be readable: you write
+`field: value`, combine clauses with `AND`, `OR`, and `NOT`, and use comparison
+operators like `>` and `<=` on numbers. Behind the scenes Kibana translates KQL
+into the JSON query that Elasticsearch actually runs.
+
+Kibana also supports the older Lucene syntax, and you can toggle between the two
+in the search bar. They overlap heavily but differ in a few places. The most
+visible difference here is range syntax: KQL writes a numeric range as two
+comparisons (`status_code >= 200 AND status_code <= 299`), while Lucene writes
+it with bracket notation (`status_code: [200 TO 299]`). Both ask Elasticsearch
+the same question; they are just two spellings.
+
 Write KQL queries for the following:
 
 1. **Web Traffic Analysis:**
@@ -175,6 +187,15 @@ Write KQL queries for the following:
    ```
 
 ### Exercise 1.3: Time-based Filtering
+
+The time picker is a separate filter that applies on top of whatever KQL query
+you have typed. It works only because `timestamp` was mapped as a `date` field
+and chosen as the index pattern's time field. Relative ranges like "Last 4
+hours" are recomputed every time the view refreshes, which is what makes them
+useful on dashboards that need to keep showing "recent" data without manual
+edits. Because this dataset was generated to span the last 30 days, a range
+wider than that will simply show everything, and a range in the future will
+show nothing.
 
 1. Filter data for the last 7 days
 1. Create a custom time range for specific dates

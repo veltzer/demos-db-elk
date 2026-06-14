@@ -252,13 +252,30 @@ query path.
 
 **Add 5 More Comments - Compare the Effort:**
 
+This final comparison makes the write-cost asymmetry impossible to miss.
+
 *Nested (must include ALL existing comments each time):*
 See [`16_nested_add_many_comments_note.sh`](./16_nested_add_many_comments_note.sh)
+
+This script is a note rather than a command, and that is the point: there
+is no shortcut. To add comments you would have to read the current
+document, append to the comments array in your application, and reindex
+the whole thing. The work scales with how much is already there.
 
 *Parent-Child (simple new documents):*
 See [`17_parent_child_add_comment_simple.sh`](./17_parent_child_add_comment_simple.sh)
 
+By contrast, adding a comment is a single self-contained `POST`. No read,
+no merge, no rewrite of existing data. For high-volume, frequently edited
+children this is the difference between a system that scales and one that
+grinds to a halt.
+
 ### Exercise Questions
+
+For each scenario, weigh two things: how often the children change, and
+how much you care about raw query speed and memory. Frequent child
+changes push you toward parent-child; stable, read-heavy data pushes you
+toward nested.
 
 1. **Scenario**: A news website with articles that receive hundreds of comments
    daily. Which approach would you choose?
@@ -269,6 +286,10 @@ See [`17_parent_child_add_comment_simple.sh`](./17_parent_child_add_comment_simp
    you choose?
 
 ### Clean Up
+
+Delete both indices so your cluster is left clean and you can rerun the
+exercise from scratch. Removing an index frees its storage and any
+in-memory structures such as the global ordinals the join field built up.
 
 See [`18_cleanup_delete_indices.sh`](./18_cleanup_delete_indices.sh)
 

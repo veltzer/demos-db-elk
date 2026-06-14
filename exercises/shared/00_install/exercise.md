@@ -120,6 +120,34 @@ Everything lives in [`docker_install.sh`](./docker_install.sh). It installs
 Docker, writes `~/elastic-docker/docker-compose.yml` and starts the stack. No
 Kibana system user setup is required because security is disabled.
 
+What's happening under the hood: instead of installing software onto the
+host, this method runs each service inside a container built from an official
+Elastic image pinned to version 9.1.3. A container bundles the program and
+all of its dependencies (including the Java runtime) into an isolated unit,
+which is why this method needs no separate Java install and cannot conflict
+with other software on the machine. The `docker-compose.yml` file describes
+both services declaratively, so `docker compose up -d` reads that one file
+and starts everything in the background. A few settings in the compose file
+are worth understanding:
+
+- `discovery.type=single-node` tells Elasticsearch not to look for peers and
+  form a cluster; it runs alone, which is what you want for learning.
+- `bootstrap.memory_lock=true` plus the `memlock` ulimit asks the kernel to
+  keep the heap in RAM and never swap it to disk, because swapping wrecks
+  search performance.
+- The `elasticsearch-data` named volume stores indices outside the container,
+  so data survives a container restart. Removing the volume (the `-v` in
+  `down -v`) is what actually deletes your data.
+- `network_mode: host` lets the containers share the host's network, so
+  Kibana can reach Elasticsearch at `localhost:9200` and you reach Kibana at
+  `localhost:5601` without publishing ports.
+
+> **Common pitfall:** the install adds your user to the `docker` group, but
+> that membership only applies to new login sessions. The script runs
+> `newgrp docker` to start a shell with the new group so the rest of the run
+> works without `sudo`; in your own terminals you may need to log out and
+> back in.
+
 ```bash
 ./docker_install.sh install     # install Docker, write compose file, start
 ./docker_install.sh verify      # test ES, show containers, print Kibana URL
@@ -133,6 +161,36 @@ Kibana system user setup is required because security is disabled.
 Everything lives in [`archive_install.sh`](./archive_install.sh). It installs
 Java, downloads and extracts both archives under `/opt/elastic`, configures and
 starts them. Creating systemd services is optional but recommended.
+
+What's happening under the hood: this is the most hands-on method, because
+nothing manages the lifecycle for you. Unlike the APT package, the download
+archive does not bundle Java, so the script installs OpenJDK 17 first.
+Elasticsearch is sensitive to its Java version, so a packaged or archive
+install normally ships a tested runtime; here you supply one yourself, which
+is why this method has the most ways to go wrong. After extracting both
+archives, the script creates a `elasticsearch` symbolic link pointing at the
+versioned directory. That indirection is the trick that lets you keep several
+versions side by side and switch by repointing one link. It also changes
+ownership to your user so Elasticsearch can write its data and logs without
+root.
+
+On start, `elasticsearch -d -p /tmp/elasticsearch.pid` launches the node as a
+background daemon and records its process id in a file so it can be stopped
+later. Kibana is started with `nohup ... &` and its own PID file. Because no
+service manager is involved yet, these processes will not restart on reboot
+or on failure, which is exactly the gap the optional `services` step fills.
+
+```bash
+./archive_install.sh services    # create systemd units (see below)
+```
+
+The `services` step writes two `systemd` unit files,
+`elasticsearch-archive.service` and `kibana-archive.service`, that run the
+binaries under your user account and restart them on failure. The Kibana unit
+declares `After=... elasticsearch-archive.service` so the dependency starts
+in the right order. This is the manual equivalent of what the APT package
+gives you for free, which is why the comparison table later calls it more
+work.
 
 ```bash
 ./archive_install.sh install     # Java, download, configure and start both

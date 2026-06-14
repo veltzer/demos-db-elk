@@ -152,7 +152,20 @@ After running tests, you'll find:
 1. **Increase Bulk Size**: Use larger chunk sizes (5000-10000 documents)
 1. **Disable Indexing**: Only index fields you need to search
 
+A note on chunk size. There is no single best value. Too small and you
+pay request overhead too often; too large and a single request can
+exceed memory limits or time out, forcing retries that hurt throughput.
+The right number depends on document size and node resources, which is
+exactly why the suite sweeps several values and lets the data decide.
+
 ### Example: Optimized Bulk Loading
+
+The pattern below is the safe way to apply these tips: create the index
+with replicas off and refresh disabled, run the bulk load, then restore
+normal settings and trigger one final refresh so the data becomes
+searchable and properly replicated. Doing it in this order means you get
+the speed during the load without permanently sacrificing durability or
+search visibility.
 
 See [`05_bulk_optimized_index_setup.py`](./05_bulk_optimized_index_setup.py)
 
@@ -164,6 +177,13 @@ If you get connection errors:
 See [`06_check_connection.sh`](./06_check_connection.sh)
 
 ### Memory Issues
+
+Bulk requests are held in memory while a node parses and applies them, so
+large batches on an undersized heap can lead to memory pressure and slow,
+unstable behavior. Raising the heap gives the node room to work. A common
+guideline is to set the minimum and maximum heap to the same value so the
+JVM does not spend time resizing, and to keep it well under half of the
+machine's physical memory so the operating system can cache index files.
 
 For large datasets, increase heap size:
 See [`07_increase_heap_size.sh`](./07_increase_heap_size.sh)
@@ -182,6 +202,13 @@ See [`07_increase_heap_size.sh`](./07_increase_heap_size.sh)
 See [`08_generate_products_only.sh`](./08_generate_products_only.sh)
 
 ### Parallel Bulk Loading
+
+A single client sending one bulk request at a time often cannot keep a
+multi-core cluster busy. Splitting the input and running several loaders
+at once lets the cluster apply work in parallel across shards and CPUs.
+The catch is that more parallelism is not always faster: past the point
+where the cluster is saturated, extra loaders just add contention and
+rejected requests. Increase concurrency gradually and watch throughput.
 
 For very large datasets, split files and load in parallel:
 

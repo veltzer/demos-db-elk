@@ -180,7 +180,14 @@ from easiest to hardest.
 
 1. Add an **Add note** page that indexes a new note from a web form.
 1. Boost the `title` field so title matches rank above body matches
-   (hint: `"fields": ["title^3", "text"]`).
+   (hint: `"fields": ["title^3", "text"]`). The `^3` multiplies that field's
+   contribution to the relevance score, so a hit in the title outweighs the same
+   word buried in the body — usually what users want.
 1. Add result highlighting so the matched terms are shown in bold.
+   Elasticsearch can return a `highlight` section with the matching fragments
+   already wrapped in tags, so you do not have to find the terms yourself.
 1. Replace `from`/`size` pagination with `search_after` and discuss why it
-   scales better for deep pages.
+   scales better for deep pages. Instead of skipping `from` documents,
+   `search_after` remembers the sort values of the last hit on the current page
+   and asks for documents *after* that point, so the cost does not grow with the
+   page number.
