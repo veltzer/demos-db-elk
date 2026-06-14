@@ -30,7 +30,7 @@ This exercise covers:
 
 - Python 3.x with the `elasticsearch` module
 - Elasticsearch running on <http://localhost:9200> with security disabled
-- See the [`00_install`](../00_install/exercise.md) exercise if you have not
+- See the [`00_install`](../../shared/00_install/exercise.md) exercise if you have not
   set it up yet
 - **Note:** Watcher (script 07) requires a commercial or trial license and is
   not available on the free Basic license. It is included as a reference
@@ -78,7 +78,7 @@ See [`04_create_metrics_index.sh`](./04_create_metrics_index.sh)
 
 Stamp the collector output with a UTC `@timestamp` and index one document per
 run. Accumulate these and chart them in Kibana (see
-[`07_kibana`](../07_kibana/exercise.md)).
+[`07_kibana`](../../shared/07_kibana/exercise.md)).
 
 See [`05_index_metrics.py`](./05_index_metrics.py)
 

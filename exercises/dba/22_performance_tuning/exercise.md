@@ -34,7 +34,7 @@ The exercise covers:
 - Python 3.x with modules: `elasticsearch`, and optionally `faker`
   (used by the load generator; it falls back to canned data if missing).
 - Elasticsearch running on <http://localhost:9200> with security
-  disabled (plain HTTP). See [`../00_install`](../00_install).
+  disabled (plain HTTP). See [`../00_install`](../../shared/00_install).
 - Install the required modules:
 
 ```bash

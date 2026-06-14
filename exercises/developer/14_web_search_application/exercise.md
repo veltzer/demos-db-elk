@@ -50,7 +50,7 @@ pip install -r requirements.txt
 ### 2. Ensure Elasticsearch is Running
 
 Elasticsearch should be reachable on `localhost:9200`. See the
-[`00_install`](../00_install/exercise.md) exercise if you have not set it up yet.
+[`00_install`](../../shared/00_install/exercise.md) exercise if you have not set it up yet.
 
 ## Quick Start
 

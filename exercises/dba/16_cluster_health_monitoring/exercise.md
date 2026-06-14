@@ -41,7 +41,7 @@ pip install elasticsearch
 ```
 
 If Elasticsearch is not installed or running, see the install exercise
-in [`../00_install`](../00_install).
+in [`../00_install`](../../shared/00_install).
 
 Make the scripts executable once:
 

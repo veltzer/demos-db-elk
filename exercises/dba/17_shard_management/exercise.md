@@ -26,7 +26,7 @@ This exercise walks through the full lifecycle on a sample log index.
 
 - Python 3.x with modules: `elasticsearch`, `faker`
 - Elasticsearch running on <http://localhost:9200> with security disabled
-  (plain HTTP, no auth). See [`../00_install`](../00_install)
+  (plain HTTP, no auth). See [`../00_install`](../../shared/00_install)
 - Install required modules:
 
 ```bash

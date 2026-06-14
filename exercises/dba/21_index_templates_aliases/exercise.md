@@ -41,7 +41,7 @@ pip install elasticsearch
 
 - Elasticsearch running on <http://localhost:9200> with security disabled
   (plain HTTP). If it is not installed yet, see
-  [`../00_install`](../00_install).
+  [`../00_install`](../../shared/00_install).
 
 ## Part 1: Component Templates
 

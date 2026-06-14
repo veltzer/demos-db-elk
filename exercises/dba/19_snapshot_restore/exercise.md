@@ -40,7 +40,7 @@ pip install elasticsearch
 ### 2. Elasticsearch running with security disabled
 
 Elasticsearch must be reachable on <http://localhost:9200> over plain
-HTTP with security disabled. See the [`00_install`](../00_install/exercise.md)
+HTTP with security disabled. See the [`00_install`](../../shared/00_install/exercise.md)
 exercise if you have not set it up yet.
 
 ### 3. important: configure `path.repo` and restart
