@@ -244,6 +244,12 @@ fine for learning and makes it obvious which pipeline produced which output.
 
 See [`14_monitor_data_flow.sh`](./14_monitor_data_flow.sh)
 
+The `watch` loop polls `_cat/indices` every few seconds; a steadily rising
+document count is the most direct proof that the pipeline is alive and
+events are reaching Elasticsearch. The `_count` and latest-document queries
+let you confirm both the volume and the freshness of the data without
+opening Kibana.
+
 ### Expected Results
 
 After completing this exercise, you should see:
@@ -254,7 +260,19 @@ After completing this exercise, you should see:
 1. **Kibana Visualization:** Real-time log data flowing into Kibana
 1. **Structured Data:** Raw log lines parsed into structured fields
 
+The daily index naming is a deliberate pattern, not an accident. Splitting
+data into one index per day keeps each index a manageable size, makes
+time-range searches faster (Elasticsearch can skip whole indices outside
+the range), and turns cleanup into a simple matter of deleting old indices
+rather than slow per-document deletes.
+
 ### Troubleshooting
+
+Most pipeline problems fall into a few categories: Logstash cannot read the
+input file, cannot reach Elasticsearch, or the grok pattern does not match
+the real log lines. The cases below cover the first two; for the third,
+watch the `rubydebug` console output for a `_grokparsefailure` tag, which
+means the pattern did not fit the line and the fields were not extracted.
 
 **Common Issues:**
 
@@ -299,6 +317,15 @@ After completing this exercise, you should see:
 ### Clean Up
 
 See [`15_cleanup_indices.sh`](./15_cleanup_indices.sh)
+
+**What's happening:** The script first stops Logstash, then deletes the test
+indices. Note the comments in the script: it matches the full binary path
+`/opt/logstash` rather than the bare word `logstash`, because a loose
+pattern would also match this script's own command line (the directory is
+named `12_logstash`) and kill it mid-run. Also, Elasticsearch 8 refuses to
+delete indices by wildcard for safety (the
+`action.destructive_requires_name` setting), so the script resolves the
+concrete index names first and deletes them one by one.
 
 This exercise demonstrates the complete ELK pipeline: Logstash collecting and
 processing data, Elasticsearch storing it, and Kibana visualizing it!

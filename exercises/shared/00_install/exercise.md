@@ -12,9 +12,10 @@ Linux using four different methods:
 
 Why so many methods? Elasticsearch and Kibana are two cooperating
 processes, not a single program. Elasticsearch is the search and storage
-engine: it indexes documents and answers queries over a REST API on port
-9200. Kibana is the web front end: it connects to Elasticsearch and renders
-dashboards, searches, and management screens, served on port 5601. Together
+engine: it indexes documents and answers queries over a REST API on
+port 9200. Kibana is the web front end: it connects to Elasticsearch and
+renders dashboards, searches, and management screens, served on port 5601.
+Together
 they form the core of what is often called the Elastic Stack. Every method
 below ends up with the same two processes talking to each other; they differ
 only in how the software gets onto the machine and how its lifecycle is

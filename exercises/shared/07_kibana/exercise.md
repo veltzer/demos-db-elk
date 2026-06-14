@@ -329,6 +329,19 @@ category to group by.
 
 ### Exercise 3.2: Aggregations and Bucket Analysis
 
+Aggregations are where Elasticsearch shines. Instead of returning documents,
+they return summaries: counts per bucket, sums, averages, percentiles, and so
+on. Buckets can also nest, so you can group by hour and then, within each hour,
+group by status code. The "Customer Lifetime Value" task uses a terms
+aggregation that groups by `customer_email`, sums each customer's purchases,
+and keeps the top spenders.
+
+One pitfall to watch: a terms aggregation only considers the top buckets it
+collects from each shard, so on large or sharded data the "top 10" can be
+slightly approximate. For this single-node dataset it will be exact, but it is
+worth knowing the limitation exists before you rely on such a number in
+production.
+
 1. **Peak Hours Analysis**
    - Use date histogram with hourly buckets
    - Find the busiest hours for web traffic
@@ -345,6 +358,19 @@ category to group by.
 
 ### Exercise 3.3: Alerting and Monitoring
 
+An alert is just a saved query that runs on a schedule and does something when
+its condition is met. Conceptually it has three parts: a condition (for
+example, error rate above five percent), a check interval (how often to run
+it), and an action (notify, log, and so on). The hard part of alerting is
+rarely the action; it is defining a condition that fires on real problems
+without drowning you in false alarms. That is why the CPU alert below asks for
+"more than 5 minutes" rather than a single spike: requiring a condition to
+persist filters out momentary noise.
+
+Note that this generated dataset is a fixed historical snapshot, not a live
+feed, so these alerts will not actually fire on new data. The goal is to learn
+how to express the condition.
+
 1. **High Error Rate Alert**
    - Create a watcher/alert for when error rate exceeds 5%
    - Trigger: HTTP status codes 4xx or 5xx
@@ -357,6 +383,15 @@ category to group by.
    - Alert when hourly revenue drops below average by 30%
 
 ## Part 4: Dashboard Creation
+
+A dashboard is a collection of saved visualizations arranged on one screen.
+Crucially, the dashboard's time picker and any filters you add at the top apply
+to every panel at once, so changing the range refreshes the whole story
+together. This is why building reusable, well-named visualizations in Part 2
+pays off here: a dashboard is assembled from those saved pieces rather than
+rebuilt from scratch. Think about audience when you design one. An executive
+view wants a few headline numbers and trends; an operational view wants
+current state and recent errors so an on-call engineer can react quickly.
 
 ### Exercise 4.1: Executive Dashboard
 
@@ -390,6 +425,15 @@ Create a comprehensive dashboard with:
    - Resource utilization trends
 
 ## Part 5: Data Exploration Challenges
+
+These challenges are open-ended on purpose. Up to now you followed recipes; here
+you start from a question and decide which query, aggregation, and chart will
+answer it. A practical approach is to first isolate the relevant `data_type`,
+then choose a grouping field for the buckets and a metric for the bars or lines,
+and finally sanity-check the result in Discover. Remember that this data is
+randomly generated, so any "anomaly" or "correlation" you find is a coincidence
+rather than a real signal. The skill being practiced is the method of looking,
+not the specific findings.
 
 ### Challenge 1: Anomaly Detection
 
