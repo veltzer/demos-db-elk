@@ -71,7 +71,7 @@ Kibana system user setup is required because security is disabled.
 
 ```bash
 ./docker_install.sh install     # install Docker, write compose file, start
-./docker_install.sh verify      # test Elasticsearch, show containers, Kibana URL
+./docker_install.sh verify      # test ES, show containers, print Kibana URL
 ./docker_install.sh uninstall   # compose down -v, remove images and project dir
 ```
 
@@ -86,7 +86,7 @@ starts them. Creating systemd services is optional but recommended.
 ```bash
 ./archive_install.sh install     # Java, download, configure and start both
 ./archive_install.sh services    # create and enable systemd services (optional)
-./archive_install.sh verify      # check processes, test Elasticsearch, Kibana URL
+./archive_install.sh verify      # check processes, test ES, print Kibana URL
 ./archive_install.sh uninstall   # stop, remove /opt/elastic and PID files
 ```
 
@@ -101,7 +101,7 @@ Everything lives in [`podman_install.sh`](./podman_install.sh).
 
 ```bash
 ./podman_install.sh install     # install Podman, write compose file, start
-./podman_install.sh verify      # test Elasticsearch, show containers, Kibana URL
+./podman_install.sh verify      # test ES, show containers, print Kibana URL
 ./podman_install.sh uninstall   # compose down -v, remove images and project dir
 ```
 
