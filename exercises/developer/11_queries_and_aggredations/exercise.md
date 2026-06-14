@@ -14,6 +14,16 @@ Think of it like a library:
 - **Aggregation**: "How many books do we have per author?" (returns
   counts/statistics)
 
+**Why this distinction matters:** under the hood, Elasticsearch handles
+these two jobs with different machinery. A query runs against the
+inverted index to find matching documents quickly, then scores and
+returns them. An aggregation scans the matching documents and computes
+summaries over their field values, usually reading from a column-oriented
+structure called doc values. The same `_search` request can do both at
+once: the `query` decides which documents participate, and the `aggs`
+then summarize only those documents. Keeping this split clear in your
+head is the key to writing efficient requests.
+
 ---
 
 ## Simple Exercise: Online Store Orders

@@ -261,6 +261,28 @@ See [`07_segments_and_forcemerge.sh`](./07_segments_and_forcemerge.sh)
 Given current store size, doc count, and an estimated ingest rate, project
 growth per day and how many days of free disk remain.
 
+**The model behind the forecast:** the whole projection rests on one
+measured ratio — bytes per document, computed as the index's store size
+divided by its document count. Multiply that by your expected documents per
+day and you have growth per day; divide remaining free disk by that growth
+and you have days until full. The strength of this approach is that the
+bytes-per-document figure is read from the *live* index, so it already
+reflects your real mappings, replicas, and compression rather than a guess.
+
+**Why it uses the tightest node:** the script finds the data node with the
+*least* free disk and forecasts against that one. This is deliberate. A
+cluster does not fill evenly; it effectively "fills" at the rate of its
+fullest node, because a single node crossing flood stage blocks writes to
+every index with a shard there (see the Discussion). Forecasting against
+total cluster free space would be dangerously optimistic. The script also
+skips the pseudo-rows `_cat/allocation` emits for unassigned shards, since
+those carry no disk figures.
+
+The one number you must supply honestly is the ingest rate. In production
+you would derive it from real traffic — for example the document-count
+difference between two consecutive days of a time-based index — rather than
+estimating. A forecast is only as good as that input.
+
 See [`08_capacity_forecast.py`](./08_capacity_forecast.py)
 
 ## Part 8: Steering Shards (Hot/Warm Tiering)

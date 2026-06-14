@@ -254,6 +254,16 @@ See [`07_watcher_example.sh`](./07_watcher_example.sh)
 Read-only inspection of which X-Pack features and licensing are available on
 your cluster (self-monitoring, Watcher).
 
+**Why inspect before you build.** Before reaching for Watcher or Stack
+Monitoring you need to know what your license actually permits, otherwise you
+write alerting that silently never fires. The `_xpack` and `_license`
+endpoints answer that question, and the script only reads, so it is safe to
+run anywhere. On Basic you will see several features reported as unavailable,
+which confirms why this exercise leans on the pull-based approach. The script
+also summarizes the production options you graduate to with a license:
+Metricbeat shipping to a separate monitoring cluster, and Kibana's built-in
+alerting rules.
+
 See [`08_builtin_monitoring_info.sh`](./08_builtin_monitoring_info.sh)
 
 ## What to Alert On (Golden Signals)

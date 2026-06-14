@@ -239,11 +239,26 @@ reconsider the data model, which is exactly what Part 4 explores.
 
 ## Part 4: Performance Considerations
 
+Parent-child flexibility is not free. Join queries cost more CPU than ordinary
+queries, and the join field keeps a global ordinals data structure in memory to
+map parents to children quickly. This part measures those costs and contrasts
+parent-child with the main alternative, nested documents.
+
 ### Exercise 4.1: Compare Parent-Child vs Nested Performance
 
 See [`12_query_performance_benchmark.py`](./12_query_performance_benchmark.py)
 
 **Task:** Compare the performance of different parent-child query types.
+
+**What's happening:** The benchmark runs the different join query types and
+times them, so you can see in numbers that `parent_id` is cheaper than
+`has_child` and `has_parent`, and that deeper or more selective joins cost
+more.
+
+**Why this matters:** Measuring on your own data beats relying on rules of
+thumb. Run it more than once: the first run pays a warm-up cost while global
+ordinals are built and caches fill, so later runs are more representative of
+steady state.
 
 ### Exercise 4.2: Create Alternative Denormalized Structure
 

@@ -252,6 +252,13 @@ Elasticsearch logs directory.
 
 ## Part 6: Profile a Slow Query
 
+Once a slow log has identified a problem query, you need to know *why*
+it is slow. The Profile API breaks a single query into its component
+parts and measures the time each one spends, per shard. It is the
+difference between knowing a query is slow and knowing that, say, a
+`range` clause on an un-indexed field is eating ninety percent of the
+time.
+
 See [`08_profile_slow_query.py`](./08_profile_slow_query.py)
 
 This runs a query with `profile: true` and attributes time to each query
@@ -259,6 +266,15 @@ component on each shard. (Field-index timing is covered in exercise 04,
 so this is intentionally brief.) It also points at the
 `_search` with `"explain": true` companion for per-document score
 attribution.
+
+What's happening: a `bool` query is a tree of clauses, and the profile
+output mirrors that tree. The script reports each query component's
+total time plus its top sub-operations from the `breakdown` map, and
+the collector time spent gathering and scoring matches on the shard.
+Two companion ideas are worth separating. Profile answers "where did
+the *time* go", measured in nanoseconds. The `explain` option answers a
+different question, "why did this document match and how was its score
+computed". Timing is a performance tool; explain is a relevance tool.
 
 ## Part 7: Write-Path Tuning
 

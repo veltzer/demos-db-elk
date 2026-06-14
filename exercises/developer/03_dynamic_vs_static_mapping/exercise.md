@@ -244,6 +244,11 @@ Write a Python script that:
 
 ### Challenge 3: Dynamic Templates
 
+Dynamic templates sit between fully dynamic and fully static mapping. They let
+you keep dynamic mapping on but supply your own rules for how new fields are
+typed, based on the field name or the detected value type. This gives you
+predictable types for whole families of fields without listing each one.
+
 Research and implement dynamic templates to automatically map fields based on
 naming patterns:
 

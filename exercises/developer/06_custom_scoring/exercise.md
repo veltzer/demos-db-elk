@@ -222,12 +222,36 @@ See [`10_advanced_ecommerce_score.py`](./10_advanced_ecommerce_score.py)
 
 **Task:** Add seasonal scoring adjustments.
 
+This is the chapter's capstone: it stacks almost every technique at once. The
+inner query is now a `bool` with `should` clauses that search name,
+description, and tags with different boosts, so text relevance itself is
+shaped before any function runs. The `functions` array then layers business
+goals (profit margin), inventory rules (boost overstock, clear nearly-empty
+sale items), a quality script, a recency decay on `last_restocked`, and a
+personalization filter on the user's preferred categories. The script here
+computes a Bayesian average rating, which blends each product's rating toward
+a prior mean until it has enough reviews to be trusted. This guards against
+the classic pitfall of a single five-star review outranking a proven product
+with hundreds of reviews. The user-context weights let the same query lean
+more toward profit for regular users and less for VIPs.
+
 ### Exercise 5.2: Click-Through Rate (CTR) Optimization
 
 See [`11_ctr_optimization.py`](./11_ctr_optimization.py)
 
 **Task:** Implement a multi-armed bandit approach for exploration vs
 exploitation.
+
+This script scores products by how often users actually click them, but with
+a statistical twist. Instead of using the raw click rate (clicks divided by
+impressions), it computes the lower bound of a Wilson score interval. The
+reason is sample size: a product with one click out of one impression has a
+raw rate of 100 percent, yet we have almost no evidence it is good. The Wilson
+lower bound pulls uncertain rates downward and only trusts high rates once
+there are many impressions, so well-tested winners rise above lucky newcomers.
+Note also the guard `doc["clicks"].size() == 0`, which returns a neutral score
+for products that have no CTR data yet, a reminder that scripts must always
+handle missing fields or they will throw errors at query time.
 
 ## Part 6: Performance Analysis
 

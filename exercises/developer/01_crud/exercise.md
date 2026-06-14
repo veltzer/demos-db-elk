@@ -291,6 +291,14 @@ later.
 
 See [`22_client_create_index.py`](./22_client_create_index.py)
 
+This version adds a `settings` block with `number_of_shards` and
+`number_of_replicas`. Shards are the pieces an index is split into so it can
+spread across machines and scale; replicas are copies of those shards that
+provide fault tolerance and extra read capacity. For a single-node learning
+setup, one shard and zero replicas is fine. The script also deletes the
+index first if it already exists, which makes it safe to run repeatedly
+during practice without hitting an "already exists" error.
+
 ### 4.3 Insert Documents
 
 See [`23_client_insert_documents.py`](./23_client_insert_documents.py)

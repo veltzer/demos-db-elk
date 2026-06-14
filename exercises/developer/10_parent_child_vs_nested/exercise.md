@@ -36,11 +36,32 @@ the differences in practice.
 
 ### Step 1: Create Both Index Types
 
+The mapping is where the two strategies diverge before you index a single
+document. Read both scripts side by side and notice how the relationship
+is declared.
+
 **Nested Index:**
 See [`01_create_nested_index.sh`](./01_create_nested_index.sh)
 
+In the nested index, `comments` is given `"type": "nested"`. This tells
+Elasticsearch to treat each comment as its own hidden Lucene document
+behind the scenes, even though they all live inside one visible blog
+document. That hidden separation is what lets a query say "this single
+comment matched both conditions" instead of matching across comments.
+
 **Parent-Child Index:**
 See [`02_create_parent_child_index.sh`](./02_create_parent_child_index.sh)
+
+In the parent-child index there is no nested block. Instead there is a
+`join` field named `relation` that declares `"post": "comment"`, meaning
+documents of type `post` can have children of type `comment`. Notice the
+comment fields (`comment_text`, `commenter`, `date`) sit at the top level
+alongside the post fields. Both document types share one flat mapping;
+the `relation` field is what marks which role a given document plays.
+
+**Why this matters**: parent and child documents must live in the same
+index and on the same shard. The join only works within a single shard,
+which is why routing becomes mandatory later on.
 
 ### Step 2: Add Sample Data
 
