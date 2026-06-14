@@ -32,8 +32,8 @@ This exercise covers:
 
 - Python 3.x with the `elasticsearch` module
 - Elasticsearch running on <http://localhost:9200> with security disabled
-- See the [`00_install`](../../shared/00_install/exercise.md) exercise if you have not
-  set it up yet
+- See the [`00_install`](../../shared/00_install/exercise.md) exercise if you
+  have not set it up yet
 - Install required modules:
 
 ```bash

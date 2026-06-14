@@ -48,8 +48,9 @@ pip install elasticsearch
 ```
 
 Elasticsearch should be reachable on `localhost:9200`. See the
-[`00_install`](../../shared/00_install/exercise.md) exercise if you have not set it up
-yet. This exercise targets Elasticsearch 8.x / 9.x (data streams and composable
+[`00_install`](../../shared/00_install/exercise.md) exercise if you have not
+set it up yet. This exercise targets Elasticsearch 8.x / 9.x (data streams and
+composable
 index templates).
 
 ## Files
@@ -212,7 +213,8 @@ Retention is a business decision about cost vs availability:
    `_ilm/explain`.
 1. Convert the rollover-alias pipeline to a pure data stream and write a small
    producer (reuse `stream_data.py` from the
-   [`13_streaming_ingestion`](../../shared/13_streaming_ingestion/exercise.md) exercise)
+   [`13_streaming_ingestion`](../../shared/13_streaming_ingestion/exercise.md)
+   exercise)
    that appends an `@timestamp` per document.
 1. Use `_ilm/stop`, manually `_ilm/move` an index from `hot` to `warm`, then
    `_ilm/start` and watch it continue from `_ilm/explain`.

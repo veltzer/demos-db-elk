@@ -53,8 +53,9 @@ pip install elasticsearch
 ### 2. Ensure Elasticsearch is Running
 
 Elasticsearch should be reachable on `localhost:9200` with security disabled.
-See the [`00_install`](../../shared/00_install/exercise.md) exercise if you have not set
-it up yet. `dense_vector` kNN requires Elasticsearch 8.0+ (this course uses
+See the [`00_install`](../../shared/00_install/exercise.md) exercise if you
+have not set it up yet. `dense_vector` kNN requires Elasticsearch 8.0+ (this
+course uses
 9.1.3).
 
 ## Quick Start
