@@ -27,8 +27,13 @@ def explain(body=None) -> None:
         # so we reliably catch the "everything is assigned" case.
         error = (getattr(exc, "body", None) or {}).get("error", {})
         reason = error.get("reason", "") if isinstance(error, dict) else ""
-        haystack = f"{reason} {exc}"
-        if "unable to find any unassigned shards" in haystack:
+        haystack = f"{reason} {exc}".lower()
+        # ES phrasing has varied across versions, e.g. 9.x says "There are no
+        # unassigned shards in this cluster" while older versions said "unable
+        # to find any unassigned shards". Match on the stable core wording.
+        if "no unassigned shards" in haystack or (
+            "unable to find any unassigned shards" in haystack
+        ):
             print(
                 "No unassigned shards to explain. The cluster has nothing "
                 "stuck. To explain an ASSIGNED shard, set the index/shard/"
