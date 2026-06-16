@@ -25,6 +25,8 @@ Both tracks depend on these. Do the install first.
   measuring query performance and the impact of field indexing
 - [`07_kibana`](./shared/07_kibana/exercise.md) — data visualization and
   analysis in Kibana
+- [`09_ssh_tunnel`](./shared/09_ssh_tunnel/exercise.md) — reaching Kibana
+  through an SSH tunnel (Linux, macOS, Windows)
 - [`12_logstash`](./shared/12_logstash/exercise.md) — Logstash setup and
   data flow
 - [`13_streaming_ingestion`](./shared/13_streaming_ingestion/exercise.md) —
