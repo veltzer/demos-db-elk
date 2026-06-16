@@ -22,8 +22,13 @@ def explain(body=None) -> None:
         # everything is assigned it returns a 400, which we handle below.
         result = es.cluster.allocation_explain(body=body or {})
     except ApiError as exc:
-        msg = str(exc)
-        if "unable to find any unassigned shards" in msg:
+        # The full error text lives in the structured body (reason field),
+        # not in str(exc), which only carries the short reason. Inspect both
+        # so we reliably catch the "everything is assigned" case.
+        error = (getattr(exc, "body", None) or {}).get("error", {})
+        reason = error.get("reason", "") if isinstance(error, dict) else ""
+        haystack = f"{reason} {exc}"
+        if "unable to find any unassigned shards" in haystack:
             print(
                 "No unassigned shards to explain. The cluster has nothing "
                 "stuck. To explain an ASSIGNED shard, set the index/shard/"
