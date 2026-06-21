@@ -82,24 +82,31 @@ sudo systemctl restart elasticsearch
 
 #### docker-compose
 
-The container already exposes `/usr/share/elasticsearch/snapshots` as the
-conventional repo path. You must do two things: pass `path.repo` as an
-environment variable, and mount a volume there so the data survives a
-container restart. Add to your service:
+A ready-to-use [`docker-compose.yml`](./docker-compose.yml) is provided in
+this directory. You do **not** need to edit it — just bring it up from
+here:
 
-```yaml
-services:
-  elasticsearch:
-    environment:
-      - path.repo=/usr/share/elasticsearch/snapshots
-    volumes:
-      - es_snapshots:/usr/share/elasticsearch/snapshots
-
-volumes:
-  es_snapshots:
+```bash
+docker compose up -d
 ```
 
-Then recreate the container: `docker compose up -d`.
+It is already configured for snapshots in two ways:
+
+- `path.repo=/usr/share/elasticsearch/snapshots` is passed as an
+  environment variable, allow-listing that directory for the repository.
+- That directory is deliberately **not** a Docker volume. Elasticsearch
+  creates it inside the container on first use, owned by the
+  `elasticsearch` user automatically. Because there is no volume, there is
+  no root-owned mountpoint to `chown` and no init container to add — the
+  common "path is not accessible" / `access_denied_exception` error
+  simply cannot happen.
+
+The trade-off: the snapshot directory lives in the container's writable
+layer, so snapshots are **ephemeral**. They survive `docker compose
+restart`/`stop`/`start` but are wiped by `docker compose down`. That is
+fine for this exercise. For snapshots you genuinely need to keep, mount a
+persistent volume (or host directory) at that path and make it writable by
+the `elasticsearch` user instead.
 
 In the scripts below the repository `location` is `"backups"`, which is
 interpreted **relative to the first `path.repo` entry**. So with
