@@ -56,7 +56,7 @@ Accurate for Elasticsearch 8.x and 9.x.
 Most stats are zero on an idle cluster. Create the demo index, bulk-load
 documents, and warm the caches first:
 
-See [`06_generate_load.py`](./06_generate_load.py)
+See [`01_generate_load.py`](./01_generate_load.py)
 
 This creates the `perf_demo` index with a `keyword` field (safe for
 aggregation) and a `text` field (for search), loads 20,000 documents,
@@ -93,7 +93,7 @@ heap usage and GC time tells you how close a node is to that cliff.
 
 ### Step 1.1: Inspect Heap and GC per Node
 
-See [`01_jvm_heap_gc.py`](./01_jvm_heap_gc.py)
+See [`02_jvm_heap_gc.py`](./02_jvm_heap_gc.py)
 
 This reads `GET /_nodes/stats/jvm` and prints heap used percent, the
 young/survivor/old memory pool sizes, and the cumulative GC counts and
@@ -111,7 +111,7 @@ clearest early warning of sustained heap pressure.
 
 ### Step 1.2: How to Set the Heap
 
-See [`01b_set_heap_notes.sh`](./01b_set_heap_notes.sh)
+See [`02b_set_heap_notes.sh`](./02b_set_heap_notes.sh)
 
 This documents the two supported ways to set heap (a
 `jvm.options.d/*.options` drop-in file, or the `ES_JAVA_OPTS`
@@ -136,7 +136,7 @@ front of it. This design protects the node: a fixed number of threads
 means CPU and memory use stay predictable no matter how many clients
 pile on at once.
 
-See [`02_thread_pools.py`](./02_thread_pools.py)
+See [`03_thread_pools.py`](./03_thread_pools.py)
 
 This reads the data behind
 `GET /_cat/thread_pool?v&h=node_name,name,active,queue,rejected` and
@@ -162,7 +162,7 @@ query can use is the difference between guessing and tuning.
 
 ### Step 3.1: Inspect Cache Usage
 
-See [`03_caches.py`](./03_caches.py)
+See [`04_caches.py`](./04_caches.py)
 
 This reads
 `GET /_nodes/stats/indices/query_cache,request_cache,fielddata` and
@@ -184,17 +184,17 @@ on a `keyword` field instead, exactly like the mapping in Part 0.
 
 ### Step 3.2: Clear Caches to Re-Measure
 
-See [`03b_clear_cache.sh`](./03b_clear_cache.sh)
+See [`04b_clear_cache.sh`](./04b_clear_cache.sh)
 
 This calls `POST /<index>/_cache/clear` so you can compare cold vs warm
-behaviour. Re-run `03_caches.py` afterwards to watch the caches warm up.
+behaviour. Re-run `04_caches.py` afterwards to watch the caches warm up.
 
 Why this matters: clearing caches is a measurement trick, not
 maintenance. In normal operation Elasticsearch manages eviction itself,
 and clearing a warm cache only throws away work and makes the next
 queries slow. The value here is experimental: clear, run a query once
 (a cold miss), run it again (a warm hit), and watch the hit ratio climb
-in `03_caches.py`. That before-and-after contrast is what teaches you
+in `04_caches.py`. That before-and-after contrast is what teaches you
 how much a given workload actually benefits from caching.
 
 ## Part 4: Circuit Breakers
@@ -207,7 +207,7 @@ the node past a configured limit, the breaker trips and the single
 request fails with a `CircuitBreakingException` (HTTP 429). Sacrificing
 one request to keep the node alive is always the right trade.
 
-See [`04_circuit_breakers.py`](./04_circuit_breakers.py)
+See [`05_circuit_breakers.py`](./05_circuit_breakers.py)
 
 This reads `GET /_nodes/stats/breaker` and prints each breaker's limit,
 estimated usage, and trip count, explaining the parent, fielddata, and
@@ -233,11 +233,13 @@ Elasticsearch writes the full request source to a dedicated log file.
 This is the only built-in way to catch the specific offending requests,
 complete with the query that produced them.
 
-See [`05_enable_slowlogs.sh`](./05_enable_slowlogs.sh)
+See [`06_enable_slowlogs.sh`](./06_enable_slowlogs.sh)
 
 This issues `PUT /<index>/_settings` to enable the search and indexing
-slow logs with sensible warn/info/debug/trace thresholds, and documents
-where the slow-log files land.
+slow logs with sensible warn/info/debug/trace thresholds, documents
+where the slow-log lines land, and then **demonstrates** them: it forces
+a couple of slow queries and prints the resulting slow-log lines so you
+see the mechanism end to end rather than just enabling it.
 
 What's happening: the thresholds are tiered (warn, info, debug, trace)
 so you can keep the warn tier quiet for genuine emergencies while a
@@ -246,9 +248,29 @@ settings, meaning they take effect immediately with no restart, and
 they apply at the shard level. Note the two search phases: the "query"
 phase is the per-shard search that finds matching documents, while the
 "fetch" phase loads the matched documents' contents, so they get
-separate thresholds. Setting any tier to `-1` turns it off. The lines
-land in `*_search_slowlog.json` and `*_indexing_slowlog.json` in the
-Elasticsearch logs directory.
+separate thresholds. Setting any tier to `-1` turns it off.
+
+Where the lines land depends on the log4j2 slow-log appender. On a
+classic package install it is a rolling **file**
+(`<cluster>_index_search_slowlog.json` and the indexing equivalent) in
+the Elasticsearch logs directory, commonly `/var/log/elasticsearch/`. In
+the official **Docker** image this exercise uses, the slow-log appender
+is a *console* appender, so the lines go to the container's stdout and
+you read them with `docker logs elasticsearch` instead of tailing a file.
+
+The demo at the end of the script handles both the "make it fire" and
+the "show me the line" halves. A query against a 20,000-document demo
+index finishes in a millisecond or two, far below the 500ms trace
+threshold, so on an idle laptop nothing would ever be logged. The script
+therefore (1) temporarily drops the trace threshold to `0ms` so that
+*any* query is logged (the reliable way to see the mechanism), and also
+(2) runs a genuinely expensive query, a leading-wildcard regexp
+(`.*london.*`) that cannot use the inverted index and must scan every
+term. It restores the 500ms threshold afterwards, then pulls the most
+recent search slow-log lines out of `docker logs`. Each line carries the
+offending query under `elasticsearch.slowlog.source` and its time under
+`elasticsearch.slowlog.took`, which is exactly how you catch the
+specific requests hurting a cluster.
 
 ## Part 6: Profile a Slow Query
 
@@ -259,7 +281,7 @@ difference between knowing a query is slow and knowing that, say, a
 `range` clause on an un-indexed field is eating ninety percent of the
 time.
 
-See [`08_profile_slow_query.py`](./08_profile_slow_query.py)
+See [`07_profile_slow_query.py`](./07_profile_slow_query.py)
 
 This runs a query with `profile: true` and attributes time to each query
 component on each shard. (Field-index timing is covered in the
@@ -286,7 +308,7 @@ documents become searchable; the second controls how aggressively
 Elasticsearch protects writes against a crash. Both make sense to relax
 during a big bulk load and to restore immediately afterwards.
 
-See [`07_tune_write_settings.sh`](./07_tune_write_settings.sh)
+See [`08_tune_write_settings.sh`](./08_tune_write_settings.sh)
 
 This raises `index.refresh_interval` and sets
 `index.translog.durability=async` for a write-heavy bulk load, explains
@@ -331,16 +353,16 @@ That is how a diagnostic becomes a health gate.
 
 ## Files
 
-- [`01_jvm_heap_gc.py`](./01_jvm_heap_gc.py) - heap, pools, and GC report
-- [`01b_set_heap_notes.sh`](./01b_set_heap_notes.sh) - how to set heap
-- [`02_thread_pools.py`](./02_thread_pools.py) - thread-pool rejections
-- [`03_caches.py`](./03_caches.py) - cache sizes and hit ratios
-- [`03b_clear_cache.sh`](./03b_clear_cache.sh) - clear caches
-- [`04_circuit_breakers.py`](./04_circuit_breakers.py) - breaker trips
-- [`05_enable_slowlogs.sh`](./05_enable_slowlogs.sh) - enable slow logs
-- [`06_generate_load.py`](./06_generate_load.py) - create index and load
-- [`07_tune_write_settings.sh`](./07_tune_write_settings.sh) - write tuning
-- [`08_profile_slow_query.py`](./08_profile_slow_query.py) - profile API
+- [`01_generate_load.py`](./01_generate_load.py) - create index and load (run first)
+- [`02_jvm_heap_gc.py`](./02_jvm_heap_gc.py) - heap, pools, and GC report
+- [`02b_set_heap_notes.sh`](./02b_set_heap_notes.sh) - how to set heap
+- [`03_thread_pools.py`](./03_thread_pools.py) - thread-pool rejections
+- [`04_caches.py`](./04_caches.py) - cache sizes and hit ratios
+- [`04b_clear_cache.sh`](./04b_clear_cache.sh) - clear caches
+- [`05_circuit_breakers.py`](./05_circuit_breakers.py) - breaker trips
+- [`06_enable_slowlogs.sh`](./06_enable_slowlogs.sh) - enable slow logs and demo them
+- [`07_profile_slow_query.py`](./07_profile_slow_query.py) - profile API
+- [`08_tune_write_settings.sh`](./08_tune_write_settings.sh) - write tuning
 - [`09_perf_snapshot.py`](./09_perf_snapshot.py) - consolidated snapshot
 
 ## Discussion
@@ -361,7 +383,7 @@ Two rules dominate sizing:
    than growing one heap past ~31GB.
 
 Also set `-Xms` equal to `-Xmx` so the JVM never resizes the heap at
-runtime. Watch the GC numbers from `01_jvm_heap_gc.py`: frequent or long
+runtime. Watch the GC numbers from `02_jvm_heap_gc.py`: frequent or long
 **old-generation** (old / "Old Gen") collections are the warning sign of
 sustained heap pressure. A node that sits above 85% heap and does long
 old-GC pauses is one expensive aggregation away from a breaker trip.
@@ -392,7 +414,7 @@ hides the problem). Instead:
   **text** field forces an in-memory fielddata structure that can blow
   the heap. never enable fielddata on text fields; instead aggregate or
   sort on a `keyword` sub-field, which uses on-disk `doc_values` for
-  free. A non-zero fielddata size in `03_caches.py` is worth a look.
+  free. A non-zero fielddata size in `04_caches.py` is worth a look.
 
 Clearing caches with `POST /<index>/_cache/clear` is a diagnostic tool
 for measuring cold-vs-warm behaviour, not a routine maintenance task.
@@ -418,10 +440,14 @@ source. Suggested starting thresholds:
 - search fetch: warn `1s`, info `800ms`
 - indexing: warn `10s`, info `5s`, debug `2s`, trace `500ms`
 
-Thresholds apply at the shard level and are dynamic (no restart). Lines
-land in the `*_search_slowlog.json` and `*_indexing_slowlog.json` files
-in the Elasticsearch logs directory (commonly `/var/log/elasticsearch/`
-on a package install). Set a threshold to `-1` to disable that tier.
+Thresholds apply at the shard level and are dynamic (no restart). Where
+the lines land depends on the log4j2 appender: on a package install they
+go to the rolling `*_search_slowlog.json` and `*_indexing_slowlog.json`
+files in the Elasticsearch logs directory (commonly
+`/var/log/elasticsearch/`), while in the official Docker image the
+appender is a console appender, so they go to the container's stdout
+(read them with `docker logs elasticsearch`). Set a threshold to `-1` to
+disable that tier.
 
 ### Write-Path Tuning
 
@@ -446,20 +472,20 @@ Always revert to safe defaults (`refresh_interval: 1s`,
 
 1. **Force a fielddata trip.** Add a text-only field, aggregate on it
    without a keyword sub-field, and watch the fielddata breaker in
-   `04_circuit_breakers.py`. Then fix it with a keyword sub-field.
+   `05_circuit_breakers.py`. Then fix it with a keyword sub-field.
 1. **Provoke rejections.** Hammer the cluster with many concurrent bulk
-   or search requests and catch the rejections in `02_thread_pools.py`.
+   or search requests and catch the rejections in `03_thread_pools.py`.
 1. **Measure write tuning.** Time a bulk load with default settings vs
    `refresh_interval: -1` + `durability: async`, then compare.
-1. **Compare cold vs warm caches.** Run `03b_clear_cache.sh`, then a
-   query, then `03_caches.py` repeatedly to watch hit ratios climb.
+1. **Compare cold vs warm caches.** Run `04b_clear_cache.sh`, then a
+   query, then `04_caches.py` repeatedly to watch hit ratios climb.
 
 ## Next Steps
 
 1. Wire `09_perf_snapshot.py` into a cron job and alert on its non-zero
    exit status.
 1. Correlate slow-log entries with the profile output from
-   `08_profile_slow_query.py` to fix specific slow queries.
+   `07_profile_slow_query.py` to fix specific slow queries.
 1. Repeat the heap/GC and breaker analysis on a real multi-node cluster.
 1. Explore index sorting, force-merge after bulk loads, and shard sizing
    ([`01_shard_management`](../01_shard_management/exercise.md)) as further

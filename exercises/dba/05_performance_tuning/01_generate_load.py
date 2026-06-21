@@ -8,8 +8,9 @@ documents. It then runs a few repeated filter + aggregation queries so
 the query/request caches and thread pools show non-zero activity when
 you inspect them.
 
-Run this once before the inspection scripts so they have real numbers to
-report.
+Run this FIRST: it creates the `perf_demo` index that every later script
+in this exercise reads, and it leaves the caches and thread pools warm so
+the inspection scripts have real numbers to report.
 """
 
 import random
@@ -109,7 +110,7 @@ def main() -> None:
     print("warming query/request caches with repeated aggregations...")
     warm_caches()
 
-    print("done. Now run the inspection scripts (01..04, 07).")
+    print("done. Now run the inspection scripts (02..09).")
 
 
 if __name__ == "__main__":

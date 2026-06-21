@@ -81,7 +81,7 @@ def main() -> None:
         print(
             "ALERT: one or more breakers have tripped. Requests were "
             "rejected to protect the node from OOM. Investigate heap "
-            "pressure (01_jvm_heap_gc.py) and check for fielddata on "
+            "pressure (02_jvm_heap_gc.py) and check for fielddata on "
             "text fields and overly large aggregations."
         )
     else:

@@ -90,7 +90,7 @@ def main() -> None:
     print("=" * 64)
     print(
         "Tip: clear caches to re-measure cold-vs-warm behaviour with "
-        "03b_clear_cache.sh. Low hit ratios after warm-up suggest the "
+        "04b_clear_cache.sh. Low hit ratios after warm-up suggest the "
         "cache is too small or queries are not repetitive."
     )
 

@@ -17,7 +17,7 @@ Elasticsearch node. Two rules of thumb to remember:
     32GB heap can actually hold LESS usable data than a 30GB heap while
     making GC pauses longer.
 
-You set the heap with jvm.options (see 01b_set_heap_notes.sh).
+You set the heap with jvm.options (see 02b_set_heap_notes.sh).
 """
 
 from elasticsearch import Elasticsearch

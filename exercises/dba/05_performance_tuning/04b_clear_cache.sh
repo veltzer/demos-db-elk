@@ -26,4 +26,4 @@ curl -s -X POST \
 # The request cache is controlled per index by a setting. To DISABLE the
 # shard request cache for an index (rarely needed):
 #   PUT /<index>/_settings { "index.requests.cache.enable": false }
-echo "done. Re-run 03_caches.py to watch the caches warm up again."
+echo "done. Re-run 04_caches.py to watch the caches warm up again."
