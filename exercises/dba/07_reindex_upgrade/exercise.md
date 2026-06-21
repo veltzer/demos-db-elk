@@ -319,8 +319,8 @@ See [`09_cleanup.sh`](./09_cleanup.sh)
 ## Next Steps
 
 1. Pair reindexing with composable templates and aliases
-   ([`21_index_templates_aliases`](../21_index_templates_aliases/exercise.md))
+   ([`04_index_templates_aliases`](../04_index_templates_aliases/exercise.md))
 1. Snapshot before every upgrade
-   ([`19_snapshot_restore`](../19_snapshot_restore/exercise.md))
+   ([`03_snapshot_restore`](../03_snapshot_restore/exercise.md))
 1. Watch cluster health during the rolling upgrade — see
-   [`16_cluster_health_monitoring`](../16_cluster_health_monitoring/)
+   [`00_cluster_health_monitoring`](../00_cluster_health_monitoring/)

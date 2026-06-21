@@ -348,8 +348,8 @@ See [`09_allocation_filtering.sh`](./09_allocation_filtering.sh)
 ## Next Steps
 
 1. Combine watermark monitoring with the alerting exercise
-   ([`25_monitoring_alerting`](../25_monitoring_alerting/exercise.md))
+   ([`08_monitoring_alerting`](../08_monitoring_alerting/exercise.md))
 1. Automate hot/warm tiering with ILM — see
-   [`18_index_lifecycle_management`](../18_index_lifecycle_management/)
+   [`02_index_lifecycle_management`](../02_index_lifecycle_management/)
 1. Plan shard sizing up front
-   ([`17_shard_management`](../17_shard_management/exercise.md))
+   ([`01_shard_management`](../01_shard_management/exercise.md))

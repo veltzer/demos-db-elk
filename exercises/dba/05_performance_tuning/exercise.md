@@ -262,8 +262,9 @@ time.
 See [`08_profile_slow_query.py`](./08_profile_slow_query.py)
 
 This runs a query with `profile: true` and attributes time to each query
-component on each shard. (Field-index timing is covered in exercise 04,
-so this is intentionally brief.) It also points at the
+component on each shard. (Field-index timing is covered in the
+[`02_query_performance`](../../shared/02_query_performance/exercise.md)
+exercise, so this is intentionally brief.) It also points at the
 `_search` with `"explain": true` companion for per-document score
 attribution.
 
@@ -461,4 +462,5 @@ Always revert to safe defaults (`refresh_interval: 1s`,
    `08_profile_slow_query.py` to fix specific slow queries.
 1. Repeat the heap/GC and breaker analysis on a real multi-node cluster.
 1. Explore index sorting, force-merge after bulk loads, and shard sizing
-   (exercise 17) as further performance levers.
+   ([`01_shard_management`](../01_shard_management/exercise.md)) as further
+   performance levers.

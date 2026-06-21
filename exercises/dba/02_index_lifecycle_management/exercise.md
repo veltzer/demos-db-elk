@@ -322,7 +322,7 @@ Retention is a business decision about cost vs availability:
    `_ilm/explain`.
 1. Convert the rollover-alias pipeline to a pure data stream and write a small
    producer (reuse `stream_data.py` from the
-   [`13_streaming_ingestion`](../../shared/13_streaming_ingestion/exercise.md)
+   [`06_streaming_ingestion`](../../shared/06_streaming_ingestion/exercise.md)
    exercise)
    that appends an `@timestamp` per document.
 1. Use `_ilm/stop`, manually `_ilm/move` an index from `hot` to `warm`, then
@@ -334,9 +334,9 @@ Retention is a business decision about cost vs availability:
 ## Next Steps
 
 1. Combine ILM with snapshots (see
-   [`19_snapshot_restore`](../19_snapshot_restore/exercise.md)) for a
+   [`03_snapshot_restore`](../03_snapshot_restore/exercise.md)) for a
    snapshot-then-delete retention policy.
 1. Explore searchable snapshots for the cold/frozen tier on a licensed cluster.
 1. Wire ILM into a real ingestion pipeline and alert on stuck indices.
 1. Review how index templates and aliases interact in
-   [`21_index_templates_aliases`](../21_index_templates_aliases/exercise.md).
+   [`04_index_templates_aliases`](../04_index_templates_aliases/exercise.md).

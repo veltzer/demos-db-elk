@@ -10,7 +10,7 @@ alerting features.
 
 ## Overview
 
-The [`16_cluster_health_monitoring`](../16_cluster_health_monitoring/) exercise
+The [`00_cluster_health_monitoring`](../00_cluster_health_monitoring/) exercise
 covers the raw health APIs. This exercise is about *operationalising*
 them: periodic checks with thresholds, alert routing, a self-monitoring index
 so you can chart cluster health over time, and the golden signals a DBA should
@@ -179,7 +179,7 @@ See [`04_create_metrics_index.sh`](./04_create_metrics_index.sh)
 
 Stamp the collector output with a UTC `@timestamp` and index one document per
 run. Accumulate these and chart them in Kibana (see
-[`07_kibana`](../../shared/07_kibana/exercise.md)).
+[`04_kibana`](../../shared/04_kibana/exercise.md)).
 
 **Why UTC, and why `@timestamp`?** Kibana's time-based views need a date
 field to plot against, and the de facto convention across the Elastic Stack
@@ -314,6 +314,6 @@ against your own cluster's normal baseline, not as fixed truths.
 
 1. Wire the threshold check into your real monitoring system via cron
 1. Combine with capacity forecasting
-   ([`23_capacity_disk_management`](../23_capacity_disk_management/exercise.md))
+   ([`06_capacity_disk_management`](../06_capacity_disk_management/exercise.md))
 1. Snapshot-failure alerting ties into
-   ([`19_snapshot_restore`](../19_snapshot_restore/exercise.md))
+   ([`03_snapshot_restore`](../03_snapshot_restore/exercise.md))

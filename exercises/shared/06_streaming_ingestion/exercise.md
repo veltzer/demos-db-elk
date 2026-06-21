@@ -138,7 +138,7 @@ than just empty contents.
 
 - **Why one-at-a-time?** This mirrors a live feed where you cannot wait to batch
   documents. In production you would usually buffer and use the bulk API (see
-  the [`02_bulk`](../02_bulk/exercise.md) exercise) for throughput, but the
+  the [`01_bulk`](../01_bulk/exercise.md) exercise) for throughput, but the
   single-document path is the simplest mental model for a stream.
 - **Refresh interval.** Newly indexed documents are not searchable until a
   refresh occurs. `show_data.py` calls `indices.refresh` so you always see the

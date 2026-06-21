@@ -354,7 +354,7 @@ counts, and alert when they regress.
 1. Add SLM alerting: watch `_slm/stats` and the policy `last_failure` and
    fire an alert when a scheduled snapshot fails.
 1. Combine snapshots with Index Lifecycle Management (see the
-   [ILM exercise](../18_index_lifecycle_management/exercise.md)) so
+   [ILM exercise](../02_index_lifecycle_management/exercise.md)) so
    warm/cold indices are snapshotted before deletion.
 1. Practice a partial restore of a single shard that failed, and a restore
    that renames and reduces replicas for a smaller recovery cluster.
