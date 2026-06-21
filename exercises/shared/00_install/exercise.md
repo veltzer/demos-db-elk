@@ -121,6 +121,11 @@ Everything lives in [`docker_install.sh`](./docker_install.sh). It installs
 Docker, writes `~/elastic-docker/docker-compose.yml` and starts the stack. No
 Kibana system user setup is required because security is disabled.
 
+A copy of the exact file the script generates is checked in here as
+[`docker-compose.yml`](./docker-compose.yml) so you can read it without
+running the installer first. The script is the source of truth; if you
+change one, change the other to match.
+
 What's happening under the hood: instead of installing software onto the
 host, this method runs each service inside a container built from an official
 Elastic image pinned to version 9.1.3. A container bundles the program and
