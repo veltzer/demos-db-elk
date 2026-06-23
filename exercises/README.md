@@ -13,6 +13,46 @@ Each exercise lives in its own folder with an `exercise.md` (the
 instructions) and numbered runnable `.sh` / `.py` scripts. Start with the
 shared foundations, then follow whichever track matches your role.
 
+## Resetting between exercises
+
+Each exercise creates indices, templates, policies and other objects. To keep
+runs independent, reset the cluster to its post-install state **before and
+after every exercise**. Two scripts in [`../scripts`](../scripts) handle this:
+
+- [`elk_capture_baseline.py`](../scripts/elk_capture_baseline.py) — run this
+  **once**, on a freshly installed cluster (right after
+  [`00_install`](./shared/00_install/exercise.md), before doing any exercise).
+  It records the names of everything Elasticsearch and Kibana ship with, plus
+  the cluster settings, to `~/elk_baseline.json`. This file is your machine's
+  definition of "default", so it is not committed to the repo.
+- [`elk_reset.py`](../scripts/elk_reset.py) — run this before and after each
+  exercise. It deletes everything present now but **not** in the baseline
+  (your indices, templates, ILM/SLM policies, ingest pipelines, snapshot
+  repositories, transforms and data streams) and resets all cluster settings
+  to their defaults, returning the cluster to the captured baseline.
+
+```bash
+# once, on a fresh install:
+./scripts/elk_capture_baseline.py
+
+# before and after each exercise:
+./scripts/elk_reset.py        # quiet; add -v to see what was removed
+```
+
+The reset is **idempotent** (running it twice is the same as once) and quiet
+by default. Both scripts honour `ES_URL` (default `http://localhost:9200`) and
+`ELK_BASELINE` (default `~/elk_baseline.json`). The reset refuses to touch a
+non-local cluster unless you set `ELK_RESET_ALLOW_REMOTE=1`, because it is
+destructive.
+
+Two limits worth knowing: the reset deletes objects by **name**, so it does
+not restore the internal contents of a built-in object that an exercise edited
+in place; and it cannot revert node-level configuration
+(`elasticsearch.yml`, JVM heap size, `node.attr.*`), which lives on disk rather
+than in the REST API and needs a container or process restart. These affect
+only a couple of DBA exercises (`05_performance_tuning`, parts of
+`06_capacity_disk_management`).
+
 ## Shared foundations
 
 Both tracks depend on these. Do the install first.
