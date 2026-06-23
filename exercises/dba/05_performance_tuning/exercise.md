@@ -360,7 +360,7 @@ That is how a diagnostic becomes a health gate.
 - [`04_caches.py`](./04_caches.py) - cache sizes and hit ratios
 - [`04b_clear_cache.sh`](./04b_clear_cache.sh) - clear caches
 - [`05_circuit_breakers.py`](./05_circuit_breakers.py) - breaker trips
-- [`06_enable_slowlogs.sh`](./06_enable_slowlogs.sh) - enable slow logs and demo them
+- [`06_enable_slowlogs.sh`](./06_enable_slowlogs.sh) - enable slow logs
 - [`07_profile_slow_query.py`](./07_profile_slow_query.py) - profile API
 - [`08_tune_write_settings.sh`](./08_tune_write_settings.sh) - write tuning
 - [`09_perf_snapshot.py`](./09_perf_snapshot.py) - consolidated snapshot
