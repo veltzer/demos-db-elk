@@ -37,9 +37,33 @@ The exercise includes:
 
 ### 1. Install Python Dependencies
 
+Create a virtual environment first, then install into it:
+
 ```bash
-pip install elasticsearch faker matplotlib numpy
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
 ```
+
+Installing into a venv rather than the system Python is what keeps this
+reproducible. A distribution-packaged Python mixes its own vendored
+libraries into every run, and those can be older or newer than what the
+Elasticsearch client expects. The usual symptom is a warning at startup
+that has nothing to do with your code:
+
+```
+/usr/lib/python3/dist-packages/requests/__init__.py:87: RequestsDependencyWarning:
+urllib3 (2.7.0) or chardet (4.0.0) doesn't match a supported version!
+```
+
+That message means the system `requests` was built against different
+library versions than the ones installed alongside it. A venv sidesteps
+it entirely, because `/usr/lib/python3/dist-packages` drops off the
+import path and only the pinned dependencies get loaded. Nothing in this
+exercise imports `requests` directly.
+
+Reactivate the venv (`source .venv/bin/activate`) in each new shell
+before running any of the scripts below.
 
 ### 2. Ensure Elasticsearch is Running
 

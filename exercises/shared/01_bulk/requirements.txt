@@ -1,5 +1,8 @@
-elasticsearch>=7.0.0,<8.0.0
+# The 8.x client talks to both Elasticsearch 8.x and 9.x servers.
+# The 9.x client sends compatible-with=9 headers that 8.x servers reject,
+# so the upper bound is what keeps this working against either server.
+# The floor is 8.0.0 because the scripts call es.options(), added in 8.x.
+elasticsearch>=8.0.0,<9.0.0
 faker>=20.0.0
 matplotlib>=3.5.0
 numpy>=1.21.0
-python-dateutil>=2.8.0
