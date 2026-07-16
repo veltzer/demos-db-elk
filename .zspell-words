@@ -351,3 +351,5 @@ fanout
 appender
 honour
 stdout
+vendored
+venv
