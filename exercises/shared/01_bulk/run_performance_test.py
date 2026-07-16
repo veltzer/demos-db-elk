@@ -162,9 +162,8 @@ class PerformanceTestSuite:
             batch = actions[i:i + chunk_size]
             try:
                 success, failed = helpers.bulk(
-                    self.es,
+                    self.es.options(request_timeout=60),
                     batch,
-                    request_timeout=60,
                     raise_on_error=False
                 )
                 success_count += success
