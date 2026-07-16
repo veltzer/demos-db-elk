@@ -128,10 +128,9 @@ class BulkInsertTester:
 
         # Perform bulk insert
         success, failed = helpers.bulk(
-            self.es,
+            self.es.options(request_timeout=60),
             actions,
             chunk_size=chunk_size,
-            request_timeout=60,
             raise_on_error=False
         )
 
