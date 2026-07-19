@@ -353,3 +353,7 @@ honour
 stdout
 vendored
 venv
+esql
+DSL
+EVAL
+autocomplete

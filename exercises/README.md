@@ -94,6 +94,8 @@ Modelling data, querying it, and building search features.
   — a small web search application
 - [`08_vector_search`](./developer/08_vector_search/exercise.md) — semantic
   / kNN vector search and hybrid search
+- [`09_esql`](./developer/09_esql/exercise.md) — ES|QL, the piped query
+  language: `FROM`, `WHERE`, `EVAL`, `STATS ... BY`
 
 ## DBA track
 
