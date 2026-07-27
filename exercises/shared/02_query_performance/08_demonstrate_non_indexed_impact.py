@@ -4,7 +4,8 @@ Demonstrate the query cost of searching a field that was indexed with index: fal
 """
 
 import time
-from elasticsearch import Elasticsearch
+from elasticsearch import ApiError, Elasticsearch
+from elastic_transport import TransportError
 
 es = Elasticsearch("http://localhost:9200")
 
@@ -77,12 +78,12 @@ def demonstrate_index_impact():
         print(f"  Indexed in users_non_indexed: {test['indexed_in_second']}")
         print()
 
-        if test['query_type'] == 'term':
-            query = {"query": {"term": {test['field']: test['value']}}}
-        elif test['query_type'] == 'range':
-            query = {"query": {"range": {test['field']: test['value']}}}
-        elif test['query_type'] == 'match':
-            query = {"query": {"match": {test['field']: test['value']}}}
+        query = {"query": {test['query_type']: {test['field']: test['value']}}}
+
+        # Reset per test case, so a value from the previous iteration cannot
+        # leak into this one when a branch below does not run.
+        indexed_time = None
+        non_indexed_time = None
 
         # Test on indexed version
         if test['indexed_in_first']:
@@ -90,7 +91,7 @@ def demonstrate_index_impact():
                 result1 = measure_query_time('users_indexed', query, runs=5)
                 print(f"  users_indexed: {result1['avg_ms']:.2f}ms (Success)")
                 indexed_time = result1['avg_ms']
-            except Exception as e:
+            except (ApiError, TransportError) as e:
                 print(f"  users_indexed: Failed - {str(e)[:50]}")
                 indexed_time = None
 
@@ -100,7 +101,7 @@ def demonstrate_index_impact():
                 result2 = measure_query_time('users_non_indexed', query, runs=5)
                 print(f"  users_non_indexed: {result2['avg_ms']:.2f}ms (Success)")
                 non_indexed_time = result2['avg_ms']
-            except Exception:
+            except (ApiError, TransportError):
                 print("  users_non_indexed: FAILED - Cannot search non-indexed field!")
                 non_indexed_time = None
 

@@ -10,7 +10,8 @@ import argparse
 import os
 import sys
 from datetime import datetime
-from elasticsearch import Elasticsearch, helpers
+from elasticsearch import ApiError, Elasticsearch, helpers
+from elastic_transport import TransportError
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -169,7 +170,7 @@ class PerformanceTestSuite:
                 success_count += success
                 if isinstance(failed, list):
                     failed_count += len(failed)
-            except Exception as e:
+            except (ApiError, TransportError) as e:
                 print(f"Error in batch {i//chunk_size}: {e}")
                 failed_count += len(batch)
 
@@ -213,11 +214,13 @@ class PerformanceTestSuite:
         try:
             stats = self.es.indices.stats(index=index_name)
             return stats['indices'][index_name]['primaries']['store']['size_in_bytes']
-        except Exception:
+        except (ApiError, TransportError):
             return 0
 
-    def run_comprehensive_test(self, data_file, test_sizes=[1000, 5000, 10000]):
+    def run_comprehensive_test(self, data_file, test_sizes=None):
         """Run comprehensive performance tests"""
+        if test_sizes is None:
+            test_sizes = [1000, 5000, 10000]
 
         print("\n" + "="*70)
         print("COMPREHENSIVE BULK INSERT PERFORMANCE TEST")
@@ -290,9 +293,9 @@ class PerformanceTestSuite:
         ax2.grid(True, axis='y')
 
         # Add value labels on bars
-        for bar, avg_time in zip(bars, avg_times):
-            height = bar.get_height()
-            ax2.text(bar.get_x() + bar.get_width()/2., height,
+        for rect, avg_time in zip(bars, avg_times):
+            height = rect.get_height()
+            ax2.text(rect.get_x() + rect.get_width()/2., height,
                     f'{avg_time:.1f}s', ha='center', va='bottom')
 
         # Chart 3: Index size comparison
@@ -334,8 +337,8 @@ class PerformanceTestSuite:
                 avg_speed = np.mean([d['docs_per_second'] for d in data])
                 avg_time = np.mean([d['elapsed_time'] for d in data])
                 avg_size = np.mean([d['index_size_mb'] for d in data])
-                max_speed = max([d['docs_per_second'] for d in data])
-                min_speed = min([d['docs_per_second'] for d in data])
+                max_speed = max(d['docs_per_second'] for d in data)
+                min_speed = min(d['docs_per_second'] for d in data)
 
                 f.write(f"  Average Speed: {avg_speed:.0f} docs/second\n")
                 f.write(f"  Speed Range: {min_speed:.0f} - {max_speed:.0f} docs/second\n")
@@ -368,9 +371,9 @@ class PerformanceTestSuite:
             standard_speed = np.mean([d['docs_per_second'] for d in configs.get('standard', [])])
             if standard_speed > 0:
                 f.write("Performance Improvements vs Standard Configuration:\n")
-                for config in configs:
+                for config, runs in configs.items():
                     if config != 'standard':
-                        config_speed = np.mean([d['docs_per_second'] for d in configs[config]])
+                        config_speed = np.mean([d['docs_per_second'] for d in runs])
                         improvement = ((config_speed - standard_speed) / standard_speed) * 100
                         f.write(f"  {config}: {improvement:+.1f}%\n")
 

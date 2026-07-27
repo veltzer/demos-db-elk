@@ -3,7 +3,8 @@
 Create an index with dynamic mapping disabled (strict) and show unmapped fields being rejected
 """
 
-from elasticsearch import Elasticsearch
+from elasticsearch import ApiError, Elasticsearch
+from elastic_transport import TransportError
 
 # Connect to Elasticsearch
 es = Elasticsearch(["http://localhost:9200"])
@@ -38,5 +39,5 @@ try:
             "category": "Electronics"  # This field is not mapped
         }
     )
-except Exception as e:
+except (ApiError, TransportError) as e:
     print(f"Error with strict mapping: {e}")

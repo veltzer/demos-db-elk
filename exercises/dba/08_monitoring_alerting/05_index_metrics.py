@@ -49,7 +49,7 @@ def index_metrics_doc(doc):
 def main():
     """Collect once and store the metrics document."""
     doc = build_metrics_doc()
-    success, errors = index_metrics_doc(doc)
+    _, errors = index_metrics_doc(doc)
     if errors:
         print(f"FAILED to index metrics: {errors}")
         raise SystemExit(1)

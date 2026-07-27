@@ -9,8 +9,7 @@ the request body below.
 This is the single best tool for answering "why is my cluster yellow/red?"
 """
 
-from elasticsearch import Elasticsearch
-from elasticsearch import ApiError
+from elasticsearch import ApiError, Elasticsearch
 
 es = Elasticsearch("http://localhost:9200")
 

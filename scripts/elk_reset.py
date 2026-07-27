@@ -81,7 +81,7 @@ def safe_delete(action, name: str) -> bool:
         return False
 
 
-def reset_category(es, label, current, baseline, deleter) -> int:
+def reset_category(label, current, baseline, deleter) -> int:
     """Delete every current object whose name is not in the baseline.
 
     `current` is the set of names present now, `baseline` the set to keep,
@@ -174,70 +174,60 @@ def main() -> None:
     # indices before templates, so nothing is recreated from a template
     # during teardown.
     changed += reset_category(
-        es,
         "data stream",
         current["data_streams"],
         baseline.get("data_streams", []),
         lambda n: es.indices.delete_data_stream(name=n),
     )
     changed += reset_category(
-        es,
         "index",
         current["indices"],
         baseline.get("indices", []),
         lambda n: es.indices.delete(index=n, expand_wildcards="all"),
     )
     changed += reset_category(
-        es,
         "index template",
         current["index_templates"],
         baseline.get("index_templates", []),
         lambda n: es.indices.delete_index_template(name=n),
     )
     changed += reset_category(
-        es,
         "component template",
         current["component_templates"],
         baseline.get("component_templates", []),
         lambda n: es.cluster.delete_component_template(name=n),
     )
     changed += reset_category(
-        es,
         "legacy template",
         current["legacy_templates"],
         baseline.get("legacy_templates", []),
         lambda n: es.indices.delete_template(name=n),
     )
     changed += reset_category(
-        es,
         "ILM policy",
         current["ilm_policies"],
         baseline.get("ilm_policies", []),
         lambda n: es.ilm.delete_lifecycle(name=n),
     )
     changed += reset_category(
-        es,
         "SLM policy",
         current["slm_policies"],
         baseline.get("slm_policies", []),
         lambda n: es.slm.delete_lifecycle(policy_id=n),
     )
     changed += reset_category(
-        es,
         "ingest pipeline",
         current["ingest_pipelines"],
         baseline.get("ingest_pipelines", []),
         lambda n: es.ingest.delete_pipeline(id=n),
     )
     changed += reset_category(
-        es,
         "transform",
         current["transforms"],
         baseline.get("transforms", []),
         lambda n: es.transform.delete_transform(transform_id=n, force=True),
     )
     changed += reset_category(
-        es,
         "snapshot repository",
         current["snapshot_repos"],
         baseline.get("snapshot_repos", []),

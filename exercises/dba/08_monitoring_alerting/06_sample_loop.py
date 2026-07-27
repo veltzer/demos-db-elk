@@ -34,7 +34,7 @@ def run_sampler(interval_s, duration_s):
     while True:
         tick += 1
         doc = index_metrics.build_metrics_doc()
-        success, errors = index_metrics.index_metrics_doc(doc)
+        _, errors = index_metrics.index_metrics_doc(doc)
         if errors:
             print(f"tick {tick}: FAILED to index: {errors}")
         else:

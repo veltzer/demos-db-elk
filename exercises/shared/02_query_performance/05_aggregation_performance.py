@@ -4,7 +4,8 @@ Measure the cost of aggregation queries
 """
 
 import time
-from elasticsearch import Elasticsearch
+from elasticsearch import ApiError, Elasticsearch
+from elastic_transport import TransportError
 
 es = Elasticsearch("http://localhost:9200")
 
@@ -65,6 +66,6 @@ print("Aggregation on non-indexed field (email) in users_non_indexed:")
 try:
     result = measure_aggregation_performance('users_non_indexed', agg_query_non_indexed_field)
     print(f"  ES took: {result['es_took_ms']}ms")
-except Exception as e:
+except (ApiError, TransportError) as e:
     print("  Error: Cannot aggregate on non-indexed field!")
     print(f"  {str(e)[:150]}...")

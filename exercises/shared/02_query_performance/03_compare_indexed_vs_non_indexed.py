@@ -4,7 +4,8 @@ Compare query times against indexed and non-indexed fields
 """
 
 import time
-from elasticsearch import Elasticsearch
+from elasticsearch import ApiError, Elasticsearch
+from elastic_transport import TransportError
 
 es = Elasticsearch("http://localhost:9200")
 
@@ -39,30 +40,13 @@ def measure_query_time(index_name, query_body, runs=5):
 def compare_field_performance(field_name, search_value, query_type="term"):
     """Compare query performance between indexed and non-indexed versions"""
 
-    if query_type == "term":
-        query = {
-            "query": {
-                "term": {
-                    field_name: search_value
-                }
+    query = {
+        "query": {
+            query_type: {
+                field_name: search_value
             }
         }
-    elif query_type == "range":
-        query = {
-            "query": {
-                "range": {
-                    field_name: search_value
-                }
-            }
-        }
-    elif query_type == "match":
-        query = {
-            "query": {
-                "match": {
-                    field_name: search_value
-                }
-            }
-        }
+    }
 
     print(f"\nComparing field: {field_name}")
     print(f"Query type: {query_type}")
@@ -73,7 +57,7 @@ def compare_field_performance(field_name, search_value, query_type="term"):
         print("users_indexed (field IS indexed):")
         indexed_result = measure_query_time("users_indexed", query, runs=10)
         print(f"  Average: {indexed_result['avg_ms']:.2f}ms")
-    except Exception as e:
+    except (ApiError, TransportError) as e:
         print(f"  Error: {e}")
         indexed_result = None
 
@@ -82,7 +66,7 @@ def compare_field_performance(field_name, search_value, query_type="term"):
         print("\nusers_non_indexed (field NOT indexed):")
         non_indexed_result = measure_query_time("users_non_indexed", query, runs=10)
         print(f"  Average: {non_indexed_result['avg_ms']:.2f}ms")
-    except Exception as e:
+    except (ApiError, TransportError) as e:
         print("  Error: Cannot search on non-indexed field!")
         print(f"  {str(e)[:100]}...")
         non_indexed_result = None

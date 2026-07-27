@@ -2,7 +2,8 @@
 """
 Delete documents from the products index using the Elasticsearch client
 """
-from elasticsearch import Elasticsearch
+from elasticsearch import ApiError, Elasticsearch
+from elastic_transport import TransportError
 
 # Initialize client
 es = Elasticsearch(
@@ -18,7 +19,7 @@ def delete_document(doc_id: str):
         response = es.delete(index=INDEX_NAME, id=doc_id)
         print(f"Deleted document {doc_id}: {response['result']}")
         return response
-    except Exception as e:
+    except (ApiError, TransportError) as e:
         print(f"Error deleting document: {e}")
         return None
 

@@ -4,7 +4,8 @@ Retrieve and search documents in the products index using the Elasticsearch clie
 """
 import json
 
-from elasticsearch import Elasticsearch
+from elasticsearch import ApiError, Elasticsearch
+from elastic_transport import TransportError
 
 # Initialize client
 es = Elasticsearch(
@@ -21,7 +22,7 @@ def get_document(doc_id: str):
         print(f"Document ID {doc_id}:")
         print(json.dumps(response['_source'], indent=2))
         return response
-    except Exception as e:
+    except (ApiError, TransportError) as e:
         print(f"Error getting document: {e}")
         return None
 

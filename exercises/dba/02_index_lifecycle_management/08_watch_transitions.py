@@ -18,7 +18,8 @@ cold -> delete. Stop early with Ctrl-C.
 
 import time
 
-from elasticsearch import Elasticsearch
+from elasticsearch import ApiError, Elasticsearch
+from elastic_transport import TransportError
 
 es = Elasticsearch("http://localhost:9200")
 
@@ -115,7 +116,7 @@ def watch(minutes: float = 5.0) -> None:
     while time.time() < deadline:
         try:
             explain = es.ilm.explain_lifecycle(index="fastlogs-*")
-        except Exception as exc:  # index may be deleted mid-poll
+        except (ApiError, TransportError) as exc:  # index may be deleted mid-poll
             print(f"explain failed (index likely deleted): {exc}")
             break
         indices = explain.get("indices", {})

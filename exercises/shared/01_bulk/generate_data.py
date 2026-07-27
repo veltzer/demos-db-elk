@@ -89,7 +89,7 @@ def generate_order(order_id, num_products):
     items = []
     subtotal = 0
 
-    for i in range(num_items):
+    for _ in range(num_items):
         product_id = random.randint(1, num_products)
         quantity = random.randint(1, 3)
         unit_price = round(random.uniform(9.99, 499.99), 2)

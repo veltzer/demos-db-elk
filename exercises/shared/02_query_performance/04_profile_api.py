@@ -11,12 +11,12 @@ es = Elasticsearch("http://localhost:9200")
 def profile_query(index_name, query_body):
     """Use Elasticsearch's Profile API to get detailed timing"""
 
-    profile_query = {
+    profiled_body = {
         **query_body,
         "profile": True
     }
 
-    result = es.search(index=index_name, body=profile_query)
+    result = es.search(index=index_name, body=profiled_body)
 
     print(f"\nProfile for index: {index_name}")
     print("-" * 50)

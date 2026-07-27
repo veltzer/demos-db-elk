@@ -176,8 +176,10 @@ class BulkInsertTester:
             "docs_per_second": success / elapsed_time if elapsed_time > 0 else 0
         }
 
-    def test_bulk_performance(self, data_file, test_name, enable_indexing=True, chunk_sizes=[100, 500, 1000, 5000]):
+    def test_bulk_performance(self, data_file, test_name, enable_indexing=True, chunk_sizes=None):
         """Test bulk insert performance with different chunk sizes"""
+        if chunk_sizes is None:
+            chunk_sizes = [100, 500, 1000, 5000]
 
         print(f"\n{'='*60}")
         print(f"Test: {test_name}")
