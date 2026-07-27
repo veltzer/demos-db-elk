@@ -6,6 +6,7 @@ Elasticsearch CRUD operations using requests library
 import json
 from datetime import datetime
 from typing import Optional
+
 import requests
 
 # Configuration

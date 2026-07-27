@@ -8,6 +8,7 @@ bulk load completes.
 """
 
 import sys
+
 from elasticsearch import Elasticsearch
 
 ES_HOST = "localhost"

@@ -3,9 +3,8 @@
 
 import json
 
-from elasticsearch import Elasticsearch
-
 from constants import ES_URL, INDEX
+from elasticsearch import Elasticsearch
 
 
 def main() -> None:

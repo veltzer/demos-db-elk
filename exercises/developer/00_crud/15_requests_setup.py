@@ -4,10 +4,12 @@ Elasticsearch CRUD operations using requests library
 """
 
 import json
+
 # The next two imports are unused here on purpose: they keep this snippet
 # identical to the sibling snippets that do use them.
 from datetime import datetime  # noqa: F401  # pylint: disable=unused-import
 from typing import Dict, Optional  # noqa: F401  # pylint: disable=unused-import
+
 import requests
 
 # Configuration

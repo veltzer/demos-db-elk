@@ -4,8 +4,9 @@ Demonstrate the query cost of searching a field that was indexed with index: fal
 """
 
 import time
-from elasticsearch import ApiError, Elasticsearch
+
 from elastic_transport import TransportError
+from elasticsearch import ApiError, Elasticsearch
 
 es = Elasticsearch("http://localhost:9200")
 

@@ -4,6 +4,7 @@ Create and populate the products index used by the custom scoring exercises
 """
 import random
 from datetime import datetime, timedelta
+
 from elasticsearch import Elasticsearch
 
 es = Elasticsearch(["http://localhost:9200"])

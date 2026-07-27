@@ -4,8 +4,9 @@ Compare query times against indexed and non-indexed fields
 """
 
 import time
-from elasticsearch import ApiError, Elasticsearch
+
 from elastic_transport import TransportError
+from elasticsearch import ApiError, Elasticsearch
 
 es = Elasticsearch("http://localhost:9200")
 

@@ -4,6 +4,7 @@ Measure query execution time over repeated runs
 """
 
 import time
+
 from elasticsearch import Elasticsearch
 
 es = Elasticsearch("http://localhost:9200")
@@ -47,6 +48,6 @@ query_indexed = {
 }
 
 print("Index: users_indexed")
-result = measure_query_time("users_indexed", query_indexed)
-print(f"  Average: {result['avg_ms']:.2f}ms")
-print(f"  Min: {result['min_ms']:.2f}ms, Max: {result['max_ms']:.2f}ms")
+summary = measure_query_time("users_indexed", query_indexed)
+print(f"  Average: {summary['avg_ms']:.2f}ms")
+print(f"  Min: {summary['min_ms']:.2f}ms, Max: {summary['max_ms']:.2f}ms")

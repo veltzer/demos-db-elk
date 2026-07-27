@@ -3,6 +3,7 @@
 Compare the query cost of the different scoring strategies
 """
 import time
+
 from elasticsearch import Elasticsearch
 
 es = Elasticsearch(["http://localhost:9200"])

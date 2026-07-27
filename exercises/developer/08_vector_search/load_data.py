@@ -9,7 +9,6 @@ similarity (kNN) as well as by keywords (BM25).
 from typing import Any
 
 from elasticsearch import Elasticsearch
-
 from embedding import embed
 
 es = Elasticsearch("http://localhost:9200")

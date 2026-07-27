@@ -4,10 +4,11 @@ Data generator for Elasticsearch bulk insert exercise
 Generates fake e-commerce data for testing bulk insert performance
 """
 
-import json
-import random
 import argparse
+import json
 import os
+import random
+
 from faker import Faker
 
 # Initialize Faker

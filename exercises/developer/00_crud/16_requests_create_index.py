@@ -4,6 +4,7 @@ Elasticsearch CRUD operations using requests library
 """
 
 import json
+
 import requests
 
 # Configuration

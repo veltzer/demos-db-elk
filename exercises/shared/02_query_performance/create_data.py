@@ -4,9 +4,10 @@ Script to create fake data for Elasticsearch query performance testing.
 Demonstrates the impact of indexing on query performance.
 """
 
+import argparse
 import random
 import time
-import argparse
+
 from elasticsearch import Elasticsearch, helpers
 from faker import Faker
 

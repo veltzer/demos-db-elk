@@ -14,7 +14,6 @@ Pass a query on the command line, or use the default:
 import argparse
 
 from elasticsearch import Elasticsearch
-
 from embedding import embed
 
 es = Elasticsearch("http://localhost:9200")

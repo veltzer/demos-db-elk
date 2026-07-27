@@ -19,7 +19,6 @@ Run 04_create_metrics_index.sh first to set up the index/alias.
 
 import sys
 import time
-
 from importlib import import_module
 
 index_metrics = import_module("05_index_metrics")

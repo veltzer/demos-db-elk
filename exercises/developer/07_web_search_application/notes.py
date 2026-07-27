@@ -10,9 +10,6 @@ Routes:
 Start it with ``./notes.py`` and open http://localhost:8080 in a browser.
 """
 
-from elasticsearch import Elasticsearch
-from flask import Flask, request
-
 from constants import (
     APP_NAME,
     ES_URL,
@@ -21,6 +18,8 @@ from constants import (
     LISTENING_PORT,
     PAGINATION_SIZE,
 )
+from elasticsearch import Elasticsearch
+from flask import Flask, request
 
 app = Flask(APP_NAME)
 es = Elasticsearch(ES_URL)

@@ -33,8 +33,7 @@ import json
 import os
 import sys
 
-from elasticsearch import Elasticsearch
-from elasticsearch import NotFoundError
+from elasticsearch import Elasticsearch, NotFoundError
 
 ES_URL = os.environ.get("ES_URL", "http://localhost:9200")
 BASELINE = os.environ.get(

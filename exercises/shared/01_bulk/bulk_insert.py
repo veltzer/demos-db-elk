@@ -4,12 +4,14 @@ Elasticsearch Bulk Insert with Performance Measurements
 Tests bulk insert performance with indexed vs non-indexed data
 """
 
-import json
-import time
 import argparse
+import json
 import os
 import sys
+import time
+
 from elasticsearch import Elasticsearch, helpers
+
 
 class BulkInsertTester:
     def __init__(self, es_host='localhost', es_port=9200):

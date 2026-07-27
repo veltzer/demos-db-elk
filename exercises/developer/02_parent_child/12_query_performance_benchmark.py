@@ -3,6 +3,7 @@
 Benchmark the cost of parent-child queries against simple queries
 """
 import time
+
 from elasticsearch import Elasticsearch
 
 es = Elasticsearch(["http://localhost:9200"])

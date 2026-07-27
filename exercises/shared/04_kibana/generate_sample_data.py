@@ -3,10 +3,11 @@
 Generate sample web server logs and other data for the Kibana exercises
 """
 
-import os
-import json
-import random
 import argparse
+import json
+import os
+import random
+
 from faker import Faker
 
 fake = Faker()

@@ -12,9 +12,8 @@ What this script does:
 
 import csv
 
-from elasticsearch import Elasticsearch
-
 from constants import ES_URL, FILENAME, INDEX
+from elasticsearch import Elasticsearch
 
 
 def main() -> None:

@@ -3,8 +3,8 @@
 Demonstrate the errors a dynamically inferred mapping causes on conflicting field types
 """
 
-from elasticsearch import ApiError, Elasticsearch
 from elastic_transport import TransportError
+from elasticsearch import ApiError, Elasticsearch
 
 # Connect to Elasticsearch
 es = Elasticsearch(["http://localhost:9200"])

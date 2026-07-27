@@ -20,6 +20,7 @@ End-to-end zero-downtime index migration runbook using an alias swap
 #   7. Print PASS or FAIL.
 
 import sys
+
 from elasticsearch import Elasticsearch
 
 es = Elasticsearch("http://localhost:9200")

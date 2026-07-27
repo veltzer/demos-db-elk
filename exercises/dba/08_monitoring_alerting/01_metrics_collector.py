@@ -20,6 +20,7 @@ Security is disabled (plain HTTP, no auth), as in the rest of the course.
 """
 
 import json
+
 from elasticsearch import Elasticsearch
 
 es = Elasticsearch("http://localhost:9200")

@@ -5,6 +5,7 @@ Elasticsearch CRUD operations using requests library
 
 import json
 from typing import Dict, Optional
+
 import requests
 
 # Configuration

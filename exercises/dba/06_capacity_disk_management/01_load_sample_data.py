@@ -14,12 +14,12 @@ Load sample documents into the "capacity_demo" index for the disk and capacity s
 # to make _cat/allocation, _disk_usage and the forecaster produce meaningful
 # numbers while still loading quickly on a laptop.
 
-import sys
 import random
+import sys
 from datetime import datetime, timedelta
 
-from faker import Faker
 from elasticsearch import Elasticsearch, helpers
+from faker import Faker
 
 es = Elasticsearch("http://localhost:9200")
 fake = Faker()

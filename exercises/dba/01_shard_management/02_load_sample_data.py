@@ -13,12 +13,12 @@ Load sample log documents into the "logs_sharded" index using the bulk helper
 # (50000) is enough to give each of the 4 primary shards some store size to
 # look at in the _cat APIs, while still loading quickly on a laptop.
 
-import sys
 import random
+import sys
 from datetime import datetime, timedelta
 
-from faker import Faker
 from elasticsearch import Elasticsearch, helpers
+from faker import Faker
 
 es = Elasticsearch("http://localhost:9200")
 fake = Faker()

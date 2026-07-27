@@ -16,8 +16,7 @@ the inspection scripts have real numbers to report.
 import random
 from typing import Any
 
-from elasticsearch import Elasticsearch
-from elasticsearch import helpers
+from elasticsearch import Elasticsearch, helpers
 
 fake: Any
 try:

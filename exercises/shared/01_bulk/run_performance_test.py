@@ -4,16 +4,18 @@ Complete Performance Testing Suite for Elasticsearch Bulk Insert
 Measures and compares bulk insert performance with various configurations
 """
 
-import json
-import time
 import argparse
+import json
 import os
 import sys
+import time
 from datetime import datetime
-from elasticsearch import ApiError, Elasticsearch, helpers
-from elastic_transport import TransportError
+
 import matplotlib.pyplot as plt
 import numpy as np
+from elastic_transport import TransportError
+from elasticsearch import ApiError, Elasticsearch, helpers
+
 
 class PerformanceTestSuite:
     def __init__(self, es_host='localhost', es_port=9200):
@@ -267,6 +269,17 @@ class PerformanceTestSuite:
                 configs[config] = []
             configs[config].append(r)
 
+        self._plot_comparison_charts(configs, output_dir)
+        report_file = self._write_text_report(configs, output_dir)
+
+        print(f"\n✓ Report generated: {report_file}")
+        print(f"✓ Chart saved: {output_dir}/performance_analysis.png")
+
+        return report_file
+
+    def _plot_comparison_charts(self, configs, output_dir):
+        """Draw the four comparison charts into performance_analysis.png"""
+
         # Create performance comparison chart
         fig, axes = plt.subplots(2, 2, figsize=(12, 10))
         fig.suptitle('Elasticsearch Bulk Insert Performance Analysis', fontsize=16)
@@ -322,7 +335,9 @@ class PerformanceTestSuite:
         plt.savefig(f'{output_dir}/performance_analysis.png', dpi=100)
         plt.close()
 
-        # Generate text report
+    def _write_text_report(self, configs, output_dir):
+        """Write the plain-text performance report and return its path"""
+
         report_file = f'{output_dir}/performance_report.txt'
         with open(report_file, 'w') as f:
             f.write("="*70 + "\n")
@@ -376,9 +391,6 @@ class PerformanceTestSuite:
                         config_speed = np.mean([d['docs_per_second'] for d in runs])
                         improvement = ((config_speed - standard_speed) / standard_speed) * 100
                         f.write(f"  {config}: {improvement:+.1f}%\n")
-
-        print(f"\n✓ Report generated: {report_file}")
-        print(f"✓ Chart saved: {output_dir}/performance_analysis.png")
 
         return report_file
 

@@ -4,8 +4,8 @@ Retrieve and search documents in the products index using the Elasticsearch clie
 """
 import json
 
-from elasticsearch import ApiError, Elasticsearch
 from elastic_transport import TransportError
+from elasticsearch import ApiError, Elasticsearch
 
 # Initialize client
 es = Elasticsearch(

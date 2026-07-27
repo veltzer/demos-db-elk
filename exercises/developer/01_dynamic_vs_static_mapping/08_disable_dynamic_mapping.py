@@ -3,8 +3,8 @@
 Create an index with dynamic mapping disabled (strict) and show unmapped fields being rejected
 """
 
-from elasticsearch import ApiError, Elasticsearch
 from elastic_transport import TransportError
+from elasticsearch import ApiError, Elasticsearch
 
 # Connect to Elasticsearch
 es = Elasticsearch(["http://localhost:9200"])

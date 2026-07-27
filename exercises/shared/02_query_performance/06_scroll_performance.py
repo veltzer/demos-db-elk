@@ -4,6 +4,7 @@ Measure the cost of scrolling through large result sets
 """
 
 import time
+
 from elasticsearch import Elasticsearch
 
 es = Elasticsearch("http://localhost:9200")
@@ -62,7 +63,7 @@ large_result_query = {
 }
 
 print("\nScrolling through large result set:")
-result = measure_scroll_performance('users_indexed', large_result_query)
-print(f"  Total documents: {result['total_hits']}")
-print(f"  Total time: {result['total_time_ms']:.2f}ms")
-print(f"  Throughput: {result['docs_per_second']:.0f} docs/second")
+summary = measure_scroll_performance('users_indexed', large_result_query)
+print(f"  Total documents: {summary['total_hits']}")
+print(f"  Total time: {summary['total_time_ms']:.2f}ms")
+print(f"  Throughput: {summary['docs_per_second']:.0f} docs/second")
