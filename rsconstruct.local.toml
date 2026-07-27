@@ -1,0 +1,8 @@
+# Repo-specific overlay. Deep-merged over the canonical rsconstruct.toml.
+
+# Check each file on its own (batch = false): the exercise scripts reuse
+# basenames across directories (e.g. remove_data.py in several dirs), which
+# mypy's batch mode rejects as "duplicate module". Per-file invocation
+# sidesteps that.
+[processor.mypy]
+batch = false
