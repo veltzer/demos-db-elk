@@ -112,7 +112,7 @@ See [`06_search_nested_index.sh`](./06_search_nested_index.sh)
 
 With object fields, Elasticsearch internally stores Alice's data like this:
 
-```
+```text
 tests.subject: ["math", "english"]
 tests.score: [95, 70]
 ```
@@ -130,7 +130,7 @@ warning sign whenever you write two clauses about the same nested item.
 With nested fields, each test is stored as a separate document, preserving the
 relationships:
 
-```
+```text
 { "subject": "math", "score": 95 }
 { "subject": "english", "score": 70 }
 ```

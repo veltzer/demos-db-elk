@@ -1,11 +1,14 @@
 #!/usr/bin/env python
+"""
+Recommend which fields are worth indexing and which are not
+"""
 def analyze_field_usage():
     """Analyze which fields might benefit from having indexing disabled"""
-    
+
     print("\n" + "=" * 60)
     print("FIELD INDEXING RECOMMENDATIONS")
     print("=" * 60)
-    
+
     recommendations = {
         'Should remain indexed': [
             'user_id - Used for lookups',
@@ -30,12 +33,12 @@ def analyze_field_usage():
             'Computed fields that are never queried'
         ]
     }
-    
+
     for category, fields in recommendations.items():
         print(f"\n{category}:")
         for field in fields:
             print(f"  - {field}")
-    
+
     print("\n" + "-" * 60)
     print("Memory and Performance Benefits of Disabling Indexing:")
     print("  1. Reduced index size (can be 30-50% smaller)")

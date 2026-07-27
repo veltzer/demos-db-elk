@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+"""
+Measure query performance under concurrent load from multiple threads
+"""
 
 import concurrent.futures
 import statistics
@@ -11,7 +14,7 @@ es = Elasticsearch("http://localhost:9200")
 
 def run_concurrent_queries(index_name, query_body, num_threads=10, queries_per_thread=10):
     """Test query performance under concurrent load"""
-    
+
     def run_queries():
         times = []
         for _ in range(queries_per_thread):
@@ -20,20 +23,20 @@ def run_concurrent_queries(index_name, query_body, num_threads=10, queries_per_t
             end = time.perf_counter()
             times.append((end - start) * 1000)
         return times
-    
+
     print(f"\nRunning {num_threads} concurrent threads, {queries_per_thread} queries each...")
-    
+
     all_times = []
     start_time = time.perf_counter()
-    
+
     with concurrent.futures.ThreadPoolExecutor(max_workers=num_threads) as executor:
         futures = [executor.submit(run_queries) for _ in range(num_threads)]
         for future in concurrent.futures.as_completed(futures):
             all_times.extend(future.result())
-    
+
     end_time = time.perf_counter()
     total_time = (end_time - start_time) * 1000
-    
+
     return {
         'total_queries': len(all_times),
         'total_time_ms': total_time,

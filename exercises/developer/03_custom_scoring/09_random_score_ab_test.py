@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+"""
+Vary result order per user with random_score, as used for A/B testing
+"""
 from elasticsearch import Elasticsearch
 
 es = Elasticsearch(["http://localhost:9200"])
@@ -35,10 +38,10 @@ def search_with_randomization(query_text, user_id):
         },
         "size": 5
     }
-    
+
     print(f"\nRandomized search for user {user_id}")
     print("-" * 50)
-    
+
     result = es.search(index="products", body=query)
     for hit in result["hits"]["hits"]:
         p = hit["_source"]

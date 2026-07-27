@@ -11,6 +11,7 @@ Override the target with the ES_URL environment variable, e.g.
 """
 
 import os
+from typing import Any, cast
 
 from elasticsearch import Elasticsearch
 
@@ -69,8 +70,12 @@ def main() -> None:
 
     # List unassigned shards with their reason, if any.
     print("-" * 60)
-    shards = es.cat.shards(
-        h="index,shard,prirep,state,unassigned.reason", format="json"
+    # cat.shards is typed as returning ObjectApiResponse | TextApiResponse;
+    # mypy cannot narrow that on format="json", which always yields the JSON
+    # (list-of-dicts) variant, so state the runtime shape explicitly.
+    shards = cast(
+        list[dict[str, Any]],
+        es.cat.shards(h="index,shard,prirep,state,unassigned.reason", format="json"),
     )
     unassigned = [s for s in shards if s["state"] != "STARTED"]
     if unassigned:

@@ -3,9 +3,9 @@
 Elasticsearch CRUD operations using requests library
 """
 
-import requests
 import json
 from typing import Dict, Optional
+import requests
 
 # Configuration
 ES_HOST = "localhost"
@@ -37,24 +37,24 @@ def search_documents(query: Optional[Dict] = None):
     """Search documents with optional query"""
     if query is None:
         query = {"query": {"match_all": {}}}
-    
+
     response = session.get(
         f"{ES_URL}/{INDEX_NAME}/_search",
         data=json.dumps(query)
     )
-    
+
     print(f"Search status: {response.status_code}")
     result = response.json()
-    
+
     # Display results
     hits = result.get('hits', {}).get('hits', [])
     print(f"Total hits: {result.get('hits', {}).get('total', {}).get('value', 0)}")
-    
+
     for hit in hits:
         print(f"\nID: {hit['_id']}")
         print(f"Score: {hit['_score']}")
         print(f"Source: {json.dumps(hit['_source'], indent=2)}")
-    
+
     return response
 
 def search_with_criteria():
@@ -71,7 +71,7 @@ def search_with_criteria():
         "sort": [{"price": "asc"}],
         "size": 10
     }
-    
+
     return search_documents(query)
 
 # Execute

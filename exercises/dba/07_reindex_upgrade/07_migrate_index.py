@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+"""
+End-to-end zero-downtime index migration runbook using an alias swap
+"""
 
 # End-to-end "migrate index" runbook in one script.
 #

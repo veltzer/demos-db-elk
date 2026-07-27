@@ -3,9 +3,9 @@
 Elasticsearch CRUD operations using requests library
 """
 
-import requests
 import json
 from datetime import datetime
+import requests
 
 # Configuration
 ES_HOST = "localhost"
@@ -39,12 +39,12 @@ def update_document_full(doc_id: str):
         "created_at": datetime.now().isoformat(),
         "in_stock": True
     }
-    
+
     response = session.put(
         f"{ES_URL}/{INDEX_NAME}/_doc/{doc_id}",
         data=json.dumps(updated_doc)
     )
-    
+
     print(f"Full update status: {response.status_code}")
     pretty_print(response)
     return response
@@ -58,12 +58,12 @@ def update_document_partial(doc_id: str):
             "tags": ["wireless", "bluetooth", "audio", "sale"]
         }
     }
-    
+
     response = session.post(
         f"{ES_URL}/{INDEX_NAME}/_update/{doc_id}",
         data=json.dumps(update_data)
     )
-    
+
     print(f"Partial update status: {response.status_code}")
     pretty_print(response)
     return response
@@ -79,12 +79,12 @@ def update_by_query():
             "params": {"discount": 0.9}  # 10% discount
         }
     }
-    
+
     response = session.post(
         f"{ES_URL}/{INDEX_NAME}/_update_by_query",
         data=json.dumps(update_query)
     )
-    
+
     print(f"Update by query status: {response.status_code}")
     pretty_print(response)
     return response

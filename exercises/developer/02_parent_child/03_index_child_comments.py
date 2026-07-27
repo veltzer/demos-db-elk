@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+"""
+Index comments as child documents of the blog posts
+"""
 from typing import Any
 
 from elasticsearch import Elasticsearch

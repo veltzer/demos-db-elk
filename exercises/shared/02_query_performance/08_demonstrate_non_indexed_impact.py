@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+"""
+Demonstrate the query cost of searching a field that was indexed with index: false
+"""
 
 import time
 from elasticsearch import Elasticsearch
@@ -35,11 +38,11 @@ def measure_query_time(index_name, query_body, runs=5):
 
 def demonstrate_index_impact():
     """Complete demonstration of indexing impact on query performance"""
-    
+
     print("\n" + "=" * 70)
     print("DEMONSTRATION: Impact of Field Indexing on Query Performance")
     print("=" * 70)
-    
+
     # List of test cases
     test_cases = [
         {
@@ -64,23 +67,23 @@ def demonstrate_index_impact():
             'query_type': 'match'
         }
     ]
-    
+
     results = []
-    
+
     for test in test_cases:
         print(f"\n{'-' * 60}")
         print(f"Testing field: {test['field']} (Query type: {test['query_type']})")
         print(f"  Indexed in users_indexed: {test['indexed_in_first']}")
         print(f"  Indexed in users_non_indexed: {test['indexed_in_second']}")
         print()
-        
+
         if test['query_type'] == 'term':
             query = {"query": {"term": {test['field']: test['value']}}}
         elif test['query_type'] == 'range':
             query = {"query": {"range": {test['field']: test['value']}}}
         elif test['query_type'] == 'match':
             query = {"query": {"match": {test['field']: test['value']}}}
-        
+
         # Test on indexed version
         if test['indexed_in_first']:
             try:
@@ -90,7 +93,7 @@ def demonstrate_index_impact():
             except Exception as e:
                 print(f"  users_indexed: Failed - {str(e)[:50]}")
                 indexed_time = None
-        
+
         # Test on non-indexed version
         if not test['indexed_in_second']:
             try:
@@ -100,13 +103,13 @@ def demonstrate_index_impact():
             except Exception:
                 print("  users_non_indexed: FAILED - Cannot search non-indexed field!")
                 non_indexed_time = None
-        
+
         results.append({
             'field': test['field'],
             'indexed_time': indexed_time,
             'non_indexed_time': non_indexed_time
         })
-    
+
     # Summary
     print("\n" + "=" * 70)
     print("SUMMARY: Query Performance Impact")

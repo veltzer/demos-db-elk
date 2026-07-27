@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+"""
+Aggregate over child comments from their parent blog posts with the children aggregation
+"""
 from elasticsearch import Elasticsearch
 
 es = Elasticsearch(["http://localhost:9200"])

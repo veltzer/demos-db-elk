@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+"""
+Score parent blog posts by the activity of their child comments with has_child function_score
+"""
 from elasticsearch import Elasticsearch
 
 es = Elasticsearch(["http://localhost:9200"])

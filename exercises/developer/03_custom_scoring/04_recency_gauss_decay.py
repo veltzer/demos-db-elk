@@ -1,6 +1,9 @@
 #!/usr/bin/env python
-from elasticsearch import Elasticsearch
+"""
+Boost recent products with a Gaussian decay function over the creation date
+"""
 from datetime import datetime
+from elasticsearch import Elasticsearch
 
 es = Elasticsearch(["http://localhost:9200"])
 
@@ -32,9 +35,9 @@ def search_with_recency_boost(query_text):
         },
         "size": 5
     }
-    
+
     result = es.search(index="products", body=query)
-    
+
     print(f"\nRecency-boosted search: \"{query_text}\"")
     print("-" * 50)
     for hit in result["hits"]["hits"]:

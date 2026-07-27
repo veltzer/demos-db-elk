@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+"""
+Express complex scoring logic with a Painless script_score function
+"""
 from elasticsearch import Elasticsearch
 
 es = Elasticsearch(["http://localhost:9200"])
@@ -25,14 +28,14 @@ def search_with_script_score(query_text):
                                     double sales_boost = Math.log(1 + doc["sales_count"].value);
                                     double stock_penalty = doc["stock_quantity"].value > 0 ? 1.0 : 0.5;
                                     double sale_boost = doc["is_on_sale"].value ? 1.5 : 1.0;
-                                    
+
                                     // Calculate conversion rate
                                     double views = doc["view_count"].value;
                                     double sales = doc["sales_count"].value;
                                     double conversion_rate = views > 0 ? sales / views : 0;
                                     double conversion_boost = 1 + (conversion_rate * 10);
-                                    
-                                    return base_score * rating_boost * review_boost * 
+
+                                    return base_score * rating_boost * review_boost *
                                            sales_boost * stock_penalty * sale_boost * conversion_boost;
                                 """
                             }
@@ -45,14 +48,14 @@ def search_with_script_score(query_text):
         "size": 5,
         "explain": False
     }
-    
+
     result = es.search(index="products", body=query)
-    
+
     print(f"\nScript-scored search: \"{query_text}\"")
     print("-" * 80)
     print(f"{'Score':<12} {'Rating':<8} {'Reviews':<10} {'Sales':<10} {'Conv Rate':<12} {'Name'}")
     print("-" * 80)
-    
+
     for hit in result["hits"]["hits"]:
         p = hit["_source"]
         conv_rate = p["sales_count"] / p["view_count"] if p["view_count"] > 0 else 0

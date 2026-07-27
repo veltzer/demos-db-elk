@@ -6,9 +6,9 @@ Demonstrates the impact of indexing on query performance.
 
 import random
 import time
+import argparse
 from elasticsearch import Elasticsearch, helpers
 from faker import Faker
-import argparse
 
 fake = Faker()
 es = Elasticsearch("http://localhost:9200")
@@ -93,10 +93,10 @@ def generate_user_document():
     """Generate a single user document with fake data"""
     departments = ["Engineering", "Marketing", "Sales", "HR", "Finance", "Operations", "Support"]
     tags = ["python", "java", "javascript", "react", "docker", "kubernetes", "aws", "azure", "ml", "data"]
-    
+
     joined_date = fake.date_between(start_date="-5y", end_date="today")
     last_login = fake.date_time_between(start_date=joined_date, end_date="now")
-    
+
     return {
         "user_id": fake.uuid4(),
         "username": fake.user_name(),
@@ -125,17 +125,17 @@ def generate_user_document():
 def bulk_index_documents(index_name, num_docs, batch_size=500):
     """Bulk index documents to Elasticsearch"""
     print(f"Generating and indexing {num_docs} documents to [{index_name}]...")
-    
+
     def generate_actions():
         for i in range(num_docs):
             yield {
                 "_index": index_name,
                 "_source": generate_user_document()
             }
-            
+
             if (i + 1) % 1000 == 0:
                 print(f"  Generated {i + 1} documents...")
-    
+
     start_time = time.time()
     success, failed = helpers.bulk(
         es,
@@ -144,14 +144,14 @@ def bulk_index_documents(index_name, num_docs, batch_size=500):
         request_timeout=30
     )
     elapsed = time.time() - start_time
-    
+
     print(f"Indexed {success} documents in {elapsed:.2f} seconds")
     if failed:
         print(f"Failed to index {len(failed)} documents")
-    
+
     # Refresh the index to make documents searchable immediately
     es.indices.refresh(index=index_name)
-    
+
     return success
 
 def create_index_with_mapping(index_name, mapping):
@@ -159,10 +159,10 @@ def create_index_with_mapping(index_name, mapping):
     if es.indices.exists(index=index_name):
         print(f"Deleting existing index \"{index_name}\"...")
         es.indices.delete(index=index_name)
-    
+
     print(f"Creating index [{index_name}]...")
     es.indices.create(index=index_name, body=mapping)
-    
+
     # Verify mapping
     created_mapping = es.indices.get_mapping(index=index_name)
     field_count = len(created_mapping[index_name]["mappings"]["properties"])
@@ -173,41 +173,41 @@ def main():
     parser.add_argument("--docs", type=int, default=10000, help="Number of documents to create (default: 10000)")
     parser.add_argument("--batch-size", type=int, default=500, help="Batch size for bulk indexing (default: 500)")
     parser.add_argument("--create-both", action="store_true", help="Create both indexed and non-indexed indices")
-    
+
     args = parser.parse_args()
-    
+
     print("=" * 60)
     print("Elasticsearch Data Generation Script")
     print("=" * 60)
-    
+
     # Check Elasticsearch connection
     if not es.ping():
         print("Error: Cannot connect to Elasticsearch at http://localhost:9200")
         print("Please ensure Elasticsearch is running.")
         return
-    
+
     info = es.info()
     info_version = info["version"]
     print(f"Connected to Elasticsearch {info_version}")
     print()
-    
+
     if args.create_both:
         # Create both indices for comparison
         print("Creating TWO indices for comparison:")
         print("1. [users_indexed] - All fields indexed (normal)")
         print("2. [users_non_indexed] - Some fields not indexed")
         print("-" * 60)
-        
+
         # Create indexed version
         create_index_with_mapping("users_indexed", create_indexed_mapping())
         indexed_count = bulk_index_documents("users_indexed", args.docs, args.batch_size)
         print()
-        
+
         # Create non-indexed version
         create_index_with_mapping("users_non_indexed", create_non_indexed_mapping())
         non_indexed_count = bulk_index_documents("users_non_indexed", args.docs, args.batch_size)
         print()
-        
+
         print("=" * 60)
         print("Data generation complete!")
         print(f"- users_indexed: {indexed_count} documents")
@@ -217,15 +217,15 @@ def main():
         print("  - location.country, location.latitude, location.longitude")
         print("  - last_login, post_count, followers, metadata")
         print("\nYou can now run query performance tests to compare the indices.")
-        
+
     else:
         # Create only the indexed version
         print("Creating index [users_indexed] with all fields indexed...")
         print("-" * 60)
-        
+
         create_index_with_mapping("users_indexed", create_indexed_mapping())
         count = bulk_index_documents("users_indexed", args.docs, args.batch_size)
-        
+
         print("=" * 60)
         print(f"Data generation complete! Created {count} documents in [users_indexed]")
         print("To create both indexed and non-indexed versions for comparison,")

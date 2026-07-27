@@ -15,16 +15,16 @@ INDEX_NAME = "products_demo"
 
 def run_complete_demo():
     """Run complete CRUD demonstration"""
-    
+
     print("=" * 50)
     print("ELASTICSEARCH CRUD OPERATIONS DEMO")
     print("=" * 50)
-    
+
     # 1. CREATE INDEX
     print("\n1. CREATING INDEX")
     if es.indices.exists(index=INDEX_NAME):
         es.indices.delete(index=INDEX_NAME)
-    
+
     es.indices.create(
         index=INDEX_NAME,
         body={
@@ -39,7 +39,7 @@ def run_complete_demo():
         }
     )
     print(f"✓ Index '{INDEX_NAME}' created")
-    
+
     # 2. INSERT DOCUMENTS
     print("\n2. INSERTING DOCUMENTS")
     products = [
@@ -49,25 +49,25 @@ def run_complete_demo():
         {"name": "Monitor", "price": 299.99, "category": "Electronics", "in_stock": True},
         {"name": "Desk Chair", "price": 199.99, "category": "Furniture", "in_stock": True}
     ]
-    
+
     for i, product in enumerate(products, 1):
         es.index(index=INDEX_NAME, id=str(i), document=product)
         print(f"✓ Inserted: {product['name']}")
-    
+
     # Refresh index to make documents searchable immediately
     es.indices.refresh(index=INDEX_NAME)
-    
+
     # 3. READ/SEARCH DOCUMENTS
     print("\n3. SEARCHING DOCUMENTS")
-    
+
     # Get specific document
     doc = es.get(index=INDEX_NAME, id="1")
     print(f"✓ Retrieved doc 1: {doc['_source']['name']}")
-    
+
     # Search all
     results = es.search(index=INDEX_NAME, body={"query": {"match_all": {}}})
     print(f"✓ Total documents: {results['hits']['total']['value']}")
-    
+
     # Search with filter
     results = es.search(
         index=INDEX_NAME,
@@ -81,10 +81,10 @@ def run_complete_demo():
         }
     )
     print(f"✓ Electronics in stock: {results['hits']['total']['value']}")
-    
+
     # 4. UPDATE DOCUMENTS
     print("\n4. UPDATING DOCUMENTS")
-    
+
     # Update price
     es.update(
         index=INDEX_NAME,
@@ -92,7 +92,7 @@ def run_complete_demo():
         body={"doc": {"price": 899.99}}
     )
     print("✓ Updated Laptop price to $899.99")
-    
+
     # Update by query - add discount
     # Refresh so update_by_query sees the latest document versions
     es.indices.refresh(index=INDEX_NAME)
@@ -104,14 +104,14 @@ def run_complete_demo():
         }
     )
     print("✓ Applied 10% discount to all Electronics")
-    
+
     # 5. DELETE DOCUMENTS
     print("\n5. DELETING DOCUMENTS")
-    
+
     # Delete single document
     es.delete(index=INDEX_NAME, id="5")
     print("✓ Deleted document 5 (Desk Chair)")
-    
+
     # Delete by query
     # Refresh so delete_by_query sees the documents update_by_query just changed
     es.indices.refresh(index=INDEX_NAME)
@@ -120,18 +120,18 @@ def run_complete_demo():
         body={"query": {"term": {"in_stock": False}}}
     )
     print("✓ Deleted all out-of-stock items")
-    
+
     # 6. FINAL COUNT
     print("\n6. FINAL STATUS")
     es.indices.refresh(index=INDEX_NAME)
     count = es.count(index=INDEX_NAME)['count']
     print(f"✓ Remaining documents: {count}")
-    
+
     # 7. CLEANUP
     print("\n7. CLEANUP")
     es.indices.delete(index=INDEX_NAME)
     print(f"✓ Index '{INDEX_NAME}' deleted")
-    
+
     print("\n" + "=" * 50)
     print("DEMO COMPLETED SUCCESSFULLY!")
     print("=" * 50)

@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+"""
+Get detailed per-phase query timings from the Elasticsearch Profile API
+"""
 
 from elasticsearch import Elasticsearch
 
@@ -7,19 +10,19 @@ es = Elasticsearch("http://localhost:9200")
 
 def profile_query(index_name, query_body):
     """Use Elasticsearch's Profile API to get detailed timing"""
-    
+
     profile_query = {
         **query_body,
         "profile": True
     }
-    
+
     result = es.search(index=index_name, body=profile_query)
-    
+
     print(f"\nProfile for index: {index_name}")
     print("-" * 50)
     print(f"Total took: {result['took']}ms")
     print(f"Total hits: {result['hits']['total']['value']}")
-    
+
     if 'profile' in result:
         shards = result['profile']['shards']
         for i, shard in enumerate(shards):

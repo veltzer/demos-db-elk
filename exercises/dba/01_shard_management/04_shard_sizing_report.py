@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+"""
+Report shard count vs data size per index and flag suspicious shard sizing
+"""
 
 # Report shard count vs data size for every index and flag suspicious shard
 # sizing. This is the heart of the "oversharding" problem that bites real

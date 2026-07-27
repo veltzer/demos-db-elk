@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+"""
+Boost products by geographic proximity to the user with a decay function
+"""
 from elasticsearch import Elasticsearch
 
 es = Elasticsearch(["http://localhost:9200"])
@@ -31,9 +34,9 @@ def search_by_proximity(query_text, user_location):
         },
         "size": 5
     }
-    
+
     result = es.search(index="products", body=query)
-    
+
     print(f"\nProximity search from {user_location}")
     print("-" * 50)
     for hit in result["hits"]["hits"]:

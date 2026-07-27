@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+"""
+Index replies as grandchild documents of the comments
+"""
 from typing import Any
 
 from elasticsearch import Elasticsearch

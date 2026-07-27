@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+"""
+Load sample documents into the "capacity_demo" index for the disk and capacity scripts
+"""
 
 # Load sample documents into the "capacity_demo" index so the later disk and
 # capacity scripts have a non-trivial store size to look at. We generate

@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+"""
+Measure the cost of aggregation queries
+"""
 
 import time
 from elasticsearch import Elasticsearch
@@ -8,14 +11,14 @@ es = Elasticsearch("http://localhost:9200")
 
 def measure_aggregation_performance(index_name, agg_body):
     """Measure aggregation query performance"""
-    
+
     start = time.perf_counter()
     result = es.search(index=index_name, body=agg_body)
     end = time.perf_counter()
-    
+
     elapsed_ms = (end - start) * 1000
     es_took = result.get('took', 0)
-    
+
     return {
         'client_time_ms': elapsed_ms,
         'es_took_ms': es_took,

@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+"""
+Troubleshoot documents not being visible immediately after indexing (refresh behaviour)
+"""
 from elasticsearch import Elasticsearch
 
 # Initialize client

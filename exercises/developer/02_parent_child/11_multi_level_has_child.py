@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+"""
+Query across two levels of the join relation with nested has_child queries
+"""
 from elasticsearch import Elasticsearch
 
 es = Elasticsearch(["http://localhost:9200"])

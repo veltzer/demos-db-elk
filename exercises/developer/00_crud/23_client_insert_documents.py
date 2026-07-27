@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+"""
+Insert documents into the products index, singly and in bulk, using the Elasticsearch client
+"""
 from datetime import datetime
 
 from elasticsearch import Elasticsearch, helpers
@@ -24,15 +27,15 @@ def insert_single_document():
         "created_at": datetime.now(),
         "in_stock": True
     }
-    
+
     # Insert with auto-generated ID
     response = es.index(index=INDEX_NAME, document=document)
     print(f"Document inserted (auto ID): {response['_id']}")
-    
+
     # Insert with specific ID
     response = es.index(index=INDEX_NAME, id="1", document=document)
     print(f"Document inserted (ID=1): {response['result']}")
-    
+
     return response
 
 def bulk_insert_documents():
@@ -99,11 +102,11 @@ def bulk_insert_documents():
             }
         }
     ]
-    
+
     # Use helpers for efficient bulk operations
     success, failed = helpers.bulk(es, products, stats_only=True)
     print(f"Bulk insert - Success: {success}, Failed: {failed}")
-    
+
     return success, failed
 
 def bulk_insert_generator():
@@ -125,7 +128,7 @@ def bulk_insert_generator():
                     "in_stock": True
                 }
             }
-    
+
     success, failed = helpers.bulk(es, generate_products(), stats_only=True)
     print(f"Bulk generator insert - Success: {success}, Failed: {failed}")
     return success, failed

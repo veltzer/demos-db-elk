@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+"""
+Score results by historical click-through rate
+"""
 from elasticsearch import Elasticsearch
 
 es = Elasticsearch(["http://localhost:9200"])
@@ -13,7 +16,7 @@ def ctr_optimized_search(query_text):
         {"id": 4, "clicks": 500, "impressions": 3000},
         {"id": 5, "clicks": 75, "impressions": 500}
     ]
-    
+
     for update in ctr_updates:
         es.update(
             index="products",
@@ -25,9 +28,9 @@ def ctr_optimized_search(query_text):
                 }
             }
         )
-    
+
     es.indices.refresh(index="products")
-    
+
     # Search with CTR optimization
     query = {
         "query": {
@@ -45,23 +48,23 @@ def ctr_optimized_search(query_text):
                                     if (doc["clicks"].size() == 0 || doc["impressions"].size() == 0) {
                                         return 1.0;
                                     }
-                                    
+
                                     double clicks = doc["clicks"].value;
                                     double impressions = doc["impressions"].value;
-                                    
+
                                     if (impressions == 0) return 1.0;
-                                    
+
                                     // Wilson score interval for CTR
                                     double ctr = clicks / impressions;
                                     double z = 1.96; // 95% confidence
                                     double n = impressions;
-                                    
+
                                     double center = ctr + z*z/(2*n);
                                     double spread = z * Math.sqrt(ctr*(1-ctr)/n + z*z/(4*n*n));
                                     double denominator = 1 + z*z/n;
-                                    
+
                                     double lower_bound = (center - spread) / denominator;
-                                    
+
                                     return 1 + (lower_bound * 10); // Scale the CTR boost
                                 """
                             }
@@ -73,9 +76,9 @@ def ctr_optimized_search(query_text):
         },
         "size": 5
     }
-    
+
     result = es.search(index="products", body=query)
-    
+
     print(f"\nCTR-Optimized Search: \"{query_text}\"")
     print("-" * 60)
     for hit in result["hits"]["hits"]:

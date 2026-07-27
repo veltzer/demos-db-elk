@@ -1,10 +1,13 @@
 #!/usr/bin/env python
+"""
+Generate sample web server logs and other data for the Kibana exercises
+"""
 
 import os
 import json
 import random
-from faker import Faker
 import argparse
+from faker import Faker
 
 fake = Faker()
 
@@ -19,7 +22,7 @@ def generate_web_log_entry():
         'curl/7.68.0',
         'Python-requests/2.25.1'
     ]
-    
+
     return {
         'timestamp': fake.date_time_between(start_date='-30d', end_date='now').isoformat(),
         'ip_address': fake.ipv4(),
@@ -38,7 +41,7 @@ def generate_ecommerce_transaction():
     """Generate an e-commerce transaction"""
     categories = ['Electronics', 'Clothing', 'Books', 'Home', 'Sports', 'Beauty']
     payment_methods = ['credit_card', 'debit_card', 'paypal', 'apple_pay', 'google_pay']
-    
+
     return {
         'timestamp': fake.date_time_between(start_date='-30d', end_date='now').isoformat(),
         'transaction_id': fake.uuid4(),
@@ -77,7 +80,7 @@ def generate_application_logs():
     """Generate application log entries"""
     log_levels = ['DEBUG', 'INFO', 'WARN', 'ERROR', 'FATAL']
     services = ['auth-service', 'user-service', 'payment-service', 'notification-service', 'api-gateway']
-    
+
     return {
         'timestamp': fake.date_time_between(start_date='-30d', end_date='now').isoformat(),
         'level': random.choice(log_levels),
@@ -94,23 +97,23 @@ def generate_application_logs():
 
 def main():
     parser = argparse.ArgumentParser(description='Generate sample data for Kibana exercises')
-    parser.add_argument('--type', choices=['web_logs', 'ecommerce', 'metrics', 'app_logs', 'all'], 
+    parser.add_argument('--type', choices=['web_logs', 'ecommerce', 'metrics', 'app_logs', 'all'],
                        default='all', help='Type of data to generate')
     parser.add_argument('--count', type=int, default=1000, help='Number of records to generate per type')
     parser.add_argument('--output', default='sample_data.json', help='Output file name')
-    
+
     args = parser.parse_args()
-    
+
     data = []
-    
+
     if args.type == 'all':
         types_to_generate = ['web_logs', 'ecommerce', 'metrics', 'app_logs']
     else:
         types_to_generate = [args.type]
-    
+
     for data_type in types_to_generate:
         print(f"Generating {args.count} {data_type} records...")
-        
+
         for _ in range(args.count):
             if data_type == 'web_logs':
                 record = generate_web_log_entry()
@@ -125,12 +128,12 @@ def main():
             elif data_type == 'app_logs':
                 record = generate_application_logs()
                 record['data_type'] = 'application_log'
-            
+
             data.append(record)
-    
+
     # Sort by timestamp
     data.sort(key=lambda x: x['timestamp'])
-    
+
     # Write to file in Elasticsearch bulk format
     with open(args.output, 'w') as f:
         for record in data:
@@ -139,7 +142,7 @@ def main():
             f.write(json.dumps(index_action) + '\n')
             # Write the document
             f.write(json.dumps(record) + '\n')
-    
+
     print(f"Generated {len(data)} records and saved to {args.output}")
     print("To import into Elasticsearch use:")
     os.system(f"curl -X POST 'localhost:9200/sample-data/_bulk' -H 'Content-Type: application/json' --data-binary @{args.output}")

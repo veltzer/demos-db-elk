@@ -171,7 +171,7 @@ Write KQL queries for the following:
 
 1. **System Monitoring:**
 
-   ```
+   ```text
    data_type: "system_metrics" AND cpu_usage_percent > 80
    data_type: "system_metrics"
      AND memory_usage_percent > 70 AND cpu_usage_percent > 70
@@ -180,7 +180,7 @@ Write KQL queries for the following:
 
 1. **Application Logs:**
 
-   ```
+   ```text
    data_type: "application_log" AND level: "ERROR"
    service: "payment-service" AND duration_ms > 500
    level: ("ERROR" OR "FATAL") AND service: "auth-service"

@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+"""
+Model the same blog data denormalized, as a comparison point for parent-child
+"""
 from elasticsearch import Elasticsearch
 
 es = Elasticsearch(["http://localhost:9200"])

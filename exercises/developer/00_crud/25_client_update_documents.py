@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+"""
+Update documents in the products index using the Elasticsearch client
+"""
 from datetime import datetime
 
 from elasticsearch import Elasticsearch
@@ -25,7 +28,7 @@ def update_document_full(doc_id: str):
         "in_stock": True,
         "last_updated": datetime.now()
     }
-    
+
     response = es.index(index=INDEX_NAME, id=doc_id, document=updated_doc)
     print(f"Full update result: {response['result']}")
     return response
@@ -39,7 +42,7 @@ def update_document_partial(doc_id: str):
             "last_updated": datetime.now()
         }
     }
-    
+
     response = es.update(index=INDEX_NAME, id=doc_id, body=update_body)
     print(f"Partial update result: {response['result']}")
     return response
@@ -63,7 +66,7 @@ def update_with_script(doc_id: str):
             }
         }
     }
-    
+
     response = es.update(index=INDEX_NAME, id=doc_id, body=script_body)
     print(f"Script update result: {response['result']}")
     return response
@@ -88,7 +91,7 @@ def update_by_query():
             "term": {"category": "Electronics"}
         }
     }
-    
+
     # Refresh so update_by_query sees the latest document versions
     es.indices.refresh(index=INDEX_NAME)
     response = es.update_by_query(index=INDEX_NAME, body=update_query)
@@ -116,7 +119,7 @@ def upsert_document():
             "in_stock": True
         }
     }
-    
+
     response = es.update(index=INDEX_NAME, id=doc_id, body=upsert_body)
     print(f"Upsert result: {response['result']} (version: {response['_version']})")
     return response

@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+"""
+Boost products near a target price point with a decay function
+"""
 from elasticsearch import Elasticsearch
 
 es = Elasticsearch(["http://localhost:9200"])
@@ -30,9 +33,9 @@ def search_with_price_preference(query_text, target_price, price_flexibility):
         },
         "size": 10
     }
-    
+
     result = es.search(index="products", body=query)
-    
+
     print(f"\nPrice-optimized search (target: ${target_price} ± ${price_flexibility})")
     print("-" * 60)
     for hit in result["hits"]["hits"]:

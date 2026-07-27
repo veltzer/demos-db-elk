@@ -1,15 +1,18 @@
 #!/usr/bin/env python
-from elasticsearch import Elasticsearch
+"""
+Benchmark the cost of parent-child queries against simple queries
+"""
 import time
+from elasticsearch import Elasticsearch
 
 es = Elasticsearch(["http://localhost:9200"])
 
 def measure_parent_child_performance():
     """Measure query performance for parent-child relationships"""
-    
+
     # Warm up
     es.search(index="blog_system", body={"query": {"match_all": {}}})
-    
+
     queries = [
         {
             "name": "Simple parent query",
@@ -31,17 +34,17 @@ def measure_parent_child_performance():
             }
         }
     ]
-    
+
     print("\nParent-Child Query Performance:")
     print("-" * 50)
-    
+
     for query in queries:
         times = []
         for _ in range(10):
             start = time.perf_counter()
             es.search(index="blog_system", body=query["body"])
             times.append((time.perf_counter() - start) * 1000)
-        
+
         avg_time = sum(times) / len(times)
         print(f"{query["name"]}: {avg_time:.2f}ms")
 

@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+"""
+Model products and their reviews as a parent-child relation in an e-commerce index
+"""
 from typing import Any
 
 from elasticsearch import Elasticsearch

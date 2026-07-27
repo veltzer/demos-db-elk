@@ -47,7 +47,7 @@ and encryption that SSH already provides.
 
 The command you will use everywhere is built from this template:
 
-```
+```text
 ssh -L <local_port>:<target_host>:<target_port> <user>@<ssh_server>
 ```
 
@@ -66,7 +66,7 @@ address, the target is `localhost:5601` — meaning "localhost as seen by the
 server," i.e. the server talking to itself. So the full command is almost
 always:
 
-```
+```text
 ssh -L 5601:localhost:5601 user@server
 ```
 
@@ -86,7 +86,7 @@ A few useful variations on the target:
 And a note on the local port: it does **not** have to match. If something on
 your laptop already uses `5601`, use a different local port:
 
-```
+```text
 ssh -L 15601:localhost:5601 user@server
 ```
 
@@ -114,7 +114,7 @@ terminal open.
 
 With the tunnel up, open a browser on your laptop and go to:
 
-```
+```text
 http://localhost:5601
 ```
 

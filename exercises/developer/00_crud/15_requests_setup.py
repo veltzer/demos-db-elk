@@ -3,10 +3,10 @@
 Elasticsearch CRUD operations using requests library
 """
 
-import requests
 import json
-from datetime import datetime  # noqa: F401  (used by sibling snippets)
-from typing import Dict, Optional  # noqa: F401  (used by sibling snippets)
+from datetime import datetime  # noqa: F401  pylint: disable=unused-import  (used by sibling snippets)
+from typing import Dict, Optional  # noqa: F401  pylint: disable=unused-import  (used by sibling snippets)
+import requests
 
 # Configuration
 ES_HOST = "localhost"

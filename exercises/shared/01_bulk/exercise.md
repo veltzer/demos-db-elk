@@ -51,7 +51,7 @@ libraries into every run, and those can be older or newer than what the
 Elasticsearch client expects. The usual symptom is a warning at startup
 that has nothing to do with your code:
 
-```
+```text
 /usr/lib/python3/dist-packages/requests/__init__.py:87: RequestsDependencyWarning:
 urllib3 (2.7.0) or chardet (4.0.0) doesn't match a supported version!
 ```
@@ -155,7 +155,7 @@ Typical performance improvements:
 
 After running tests, you'll find:
 
-```
+```text
 ./data/
   ├── products.ndjson       # Generated product data
   ├── customers.ndjson      # Generated customer data

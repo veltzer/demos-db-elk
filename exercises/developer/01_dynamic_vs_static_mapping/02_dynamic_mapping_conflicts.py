@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+"""
+Demonstrate the errors a dynamically inferred mapping causes on conflicting field types
+"""
 
 from elasticsearch import Elasticsearch
 

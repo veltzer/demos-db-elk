@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+"""
+Create the products index with explicit mappings using the Elasticsearch client
+"""
 from elasticsearch import Elasticsearch
 
 # Initialize client
@@ -30,12 +33,12 @@ def create_index():
             "number_of_replicas": 0
         }
     }
-    
+
     # Delete index if exists
     if es.indices.exists(index=INDEX_NAME):
         es.indices.delete(index=INDEX_NAME)
         print(f"Deleted existing index: {INDEX_NAME}")
-    
+
     # Create index
     response = es.indices.create(index=INDEX_NAME, body=mappings)
     print(f"Index created: {response}")

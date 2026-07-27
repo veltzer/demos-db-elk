@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+"""
+Pass runtime parameters into a Painless script_score for per-user scoring
+"""
 from elasticsearch import Elasticsearch
 
 es = Elasticsearch(["http://localhost:9200"])
@@ -19,21 +22,21 @@ def search_with_params(query_text, user_preferences):
                             "script": {
                                 "source": """
                                     double score = _score;
-                                    
+
                                     // Apply user preference weights
                                     score *= Math.pow(doc["rating"].value / 5.0, params.rating_weight);
                                     score *= Math.pow(Math.log(2 + doc["review_count"].value) / 10, params.popularity_weight);
-                                    
+
                                     // Price sensitivity
                                     if (params.max_price > 0 && doc["price"].value > params.max_price) {
                                         score *= 0.5;  // Penalize over-budget items
                                     }
-                                    
+
                                     // Brand preference
                                     if (params.preferred_brands.contains(doc["brand"].value)) {
                                         score *= params.brand_boost;
                                     }
-                                    
+
                                     return score;
                                 """,
                                 "params": user_preferences
@@ -46,9 +49,9 @@ def search_with_params(query_text, user_preferences):
         },
         "size": 5
     }
-    
+
     result = es.search(index="products", body=query)
-    
+
     print("\nPersonalized search with user preferences")
     print(f"Preferences: {user_preferences}")
     print("-" * 60)

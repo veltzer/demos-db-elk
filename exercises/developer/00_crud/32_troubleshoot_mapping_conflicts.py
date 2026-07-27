@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+"""
+Troubleshoot mapping conflicts by inspecting mappings and reindexing
+"""
 from elasticsearch import Elasticsearch
 
 # Initialize client

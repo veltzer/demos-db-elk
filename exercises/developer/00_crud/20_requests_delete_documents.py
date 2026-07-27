@@ -3,8 +3,8 @@
 Elasticsearch CRUD operations using requests library
 """
 
-import requests
 import json
+import requests
 
 # Configuration
 ES_HOST = "localhost"
@@ -39,12 +39,12 @@ def delete_by_query():
             "term": {"in_stock": False}
         }
     }
-    
+
     response = session.post(
         f"{ES_URL}/{INDEX_NAME}/_delete_by_query",
         data=json.dumps(delete_query)
     )
-    
+
     print(f"Delete by query status: {response.status_code}")
     pretty_print(response)
     return response

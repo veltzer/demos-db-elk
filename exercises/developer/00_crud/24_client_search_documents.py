@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+"""
+Retrieve and search documents in the products index using the Elasticsearch client
+"""
 import json
 
 from elasticsearch import Elasticsearch
@@ -31,12 +34,12 @@ def search_all_documents():
             "size": 100
         }
     )
-    
+
     print(f"Total hits: {response['hits']['total']['value']}")
     for hit in response['hits']['hits']:
         print(f"\nID: {hit['_id']}, Score: {hit['_score']}")
         print(f"Product: {hit['_source']['name']} - ${hit['_source']['price']}")
-    
+
     return response
 
 def search_with_query():
@@ -59,14 +62,14 @@ def search_with_query():
         ],
         "size": 5
     }
-    
+
     response = es.search(index=INDEX_NAME, body=query)
-    
+
     print("Electronics under $200 (in stock):")
     for hit in response['hits']['hits']:
         source = hit['_source']
         print(f"- {source['name']}: ${source['price']}")
-    
+
     return response
 
 def search_with_aggregations():
@@ -112,11 +115,11 @@ def search_with_aggregations():
             }
         }
     }
-    
+
     response = es.search(index=INDEX_NAME, body=query)
-    
+
     print("\n=== Aggregation Results ===")
-    
+
     # Category statistics
     print("\nCategory Statistics:")
     for bucket in response['aggregations']['categories']['buckets']:
@@ -124,16 +127,16 @@ def search_with_aggregations():
         print(f"  Count: {bucket['doc_count']}")
         print(f"  Avg Price: ${bucket['avg_price']['value']:.2f}")
         print(f"  Total Stock: {bucket['total_stock']['value']}")
-    
+
     # Price ranges
     print("\nPrice Ranges:")
     for bucket in response['aggregations']['price_ranges']['buckets']:
         print(f"- {bucket['key']}: {bucket['doc_count']} products")
-    
+
     # Stock value
     total_value = response['aggregations']['in_stock_stats']['total_value']['value']
     print(f"\nTotal inventory value (in stock): ${total_value:.2f}")
-    
+
     return response
 
 def search_with_highlighting():
@@ -155,16 +158,16 @@ def search_with_highlighting():
             "post_tags": ["</mark>"]
         }
     }
-    
+
     response = es.search(index=INDEX_NAME, body=query)
-    
+
     print("\nSearch results with highlighting:")
     for hit in response['hits']['hits']:
         print(f"\nProduct: {hit['_source']['name']}")
         if 'highlight' in hit:
             for field, highlights in hit['highlight'].items():
                 print(f"  {field}: {highlights[0]}")
-    
+
     return response
 
 # Execute

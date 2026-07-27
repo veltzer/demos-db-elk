@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+"""
+Boost search results by popularity with field_value_factor
+"""
 from elasticsearch import Elasticsearch
 
 es = Elasticsearch(["http://localhost:9200"])
@@ -24,9 +27,9 @@ def search_with_popularity_boost(query_text):
         },
         "size": 5
     }
-    
+
     result = es.search(index="products", body=query)
-    
+
     print(f"\nSearch: \"{query_text}\" with popularity boost")
     print("-" * 50)
     for hit in result["hits"]["hits"]:

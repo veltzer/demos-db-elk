@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+"""
+Model a company organization hierarchy with a multi-level join field
+"""
 from elasticsearch import Elasticsearch
 
 es = Elasticsearch(["http://localhost:9200"])

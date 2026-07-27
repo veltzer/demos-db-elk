@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+"""
+Index multiple documents into an index with a static mapping
+"""
 
 from elasticsearch import Elasticsearch
 

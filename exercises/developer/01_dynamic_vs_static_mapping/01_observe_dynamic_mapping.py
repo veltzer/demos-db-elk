@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+"""
+Observe the mapping Elasticsearch infers when indexing a document with no mapping defined
+"""
 
 from elasticsearch import Elasticsearch
 

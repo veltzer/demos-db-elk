@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+"""
+Compare query times against indexed and non-indexed fields
+"""
 
 import time
 from elasticsearch import Elasticsearch

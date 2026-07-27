@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+"""
+Contrast searching an analyzed text field with an exact-match keyword field
+"""
 
 from elasticsearch import Elasticsearch
 

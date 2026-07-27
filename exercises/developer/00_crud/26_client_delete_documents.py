@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+"""
+Delete documents from the products index using the Elasticsearch client
+"""
 from elasticsearch import Elasticsearch
 
 # Initialize client
@@ -27,7 +30,7 @@ def delete_by_query():
             "term": {"in_stock": False}
         }
     }
-    
+
     response = es.delete_by_query(index=INDEX_NAME, body=delete_query)
     print(f"Delete by query - Deleted: {response['deleted']}, Failed: {response['failures']}")
     return response

@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+"""
+Query a multi-field mapping through both its text and its keyword sub-field
+"""
 
 from elasticsearch import Elasticsearch
 

@@ -3,8 +3,8 @@
 Elasticsearch CRUD operations using requests library
 """
 
-import requests
 import json
+import requests
 
 # Configuration
 ES_HOST = "localhost"

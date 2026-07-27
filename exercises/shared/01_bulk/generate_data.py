@@ -6,9 +6,9 @@ Generates fake e-commerce data for testing bulk insert performance
 
 import json
 import random
-from faker import Faker
 import argparse
 import os
+from faker import Faker
 
 # Initialize Faker
 fake = Faker()

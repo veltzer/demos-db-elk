@@ -7,9 +7,9 @@ Tests bulk insert performance with indexed vs non-indexed data
 import json
 import time
 import argparse
-from elasticsearch import Elasticsearch, helpers
 import os
 import sys
+from elasticsearch import Elasticsearch, helpers
 
 class BulkInsertTester:
     def __init__(self, es_host='localhost', es_port=9200):

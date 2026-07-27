@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+"""
+Create an index with dynamic mapping disabled (strict) and show unmapped fields being rejected
+"""
 
 from elasticsearch import Elasticsearch
 

@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+"""
+Fetch all children of a specific parent with the parent_id query
+"""
 from elasticsearch import Elasticsearch
 
 es = Elasticsearch(["http://localhost:9200"])

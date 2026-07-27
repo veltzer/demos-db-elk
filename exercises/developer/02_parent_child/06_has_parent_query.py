@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+"""
+Find child comments by the properties of their parent blog posts with has_parent
+"""
 from elasticsearch import Elasticsearch
 
 es = Elasticsearch(["http://localhost:9200"])

@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+"""
+Run aggregations over keyword fields and show why text fields cannot be aggregated
+"""
 
 from elasticsearch import Elasticsearch
 

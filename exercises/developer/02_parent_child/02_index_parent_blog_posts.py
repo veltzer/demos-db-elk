@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+"""
+Index blog posts as the parent documents of the join relation
+"""
 from elasticsearch import Elasticsearch
 
 es = Elasticsearch(["http://localhost:9200"])

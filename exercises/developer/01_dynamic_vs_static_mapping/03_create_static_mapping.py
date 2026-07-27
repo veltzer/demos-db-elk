@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+"""
+Create an index with an explicit (static) mapping
+"""
 
 from elasticsearch import Elasticsearch
 

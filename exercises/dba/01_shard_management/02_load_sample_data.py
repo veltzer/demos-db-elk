@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+"""
+Load sample log documents into the "logs_sharded" index using the bulk helper
+"""
 
 # Load sample log documents into the "logs_sharded" index using the bulk
 # helper. We generate realistic-looking log lines with the faker library so

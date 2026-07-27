@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+"""
+Measure the cost of scrolling through large result sets
+"""
 
 import time
 from elasticsearch import Elasticsearch
@@ -8,9 +11,9 @@ es = Elasticsearch("http://localhost:9200")
 
 def measure_scroll_performance(index_name, query_body, scroll_size=1000):
     """Measure performance of scrolling through large result sets"""
-    
+
     start_time = time.perf_counter()
-    
+
     # Initialize scroll
     result = es.search(
         index=index_name,
@@ -20,25 +23,25 @@ def measure_scroll_performance(index_name, query_body, scroll_size=1000):
         },
         scroll='2m'
     )
-    
+
     scroll_id = result['_scroll_id']
     total_hits = result['hits']['total']['value']
     retrieved = len(result['hits']['hits'])
-    
+
     # Continue scrolling
     while retrieved < total_hits:
         result = es.scroll(scroll_id=scroll_id, scroll='2m')
         retrieved += len(result['hits']['hits'])
-        
+
         if len(result['hits']['hits']) == 0:
             break
-    
+
     # Clear scroll
     es.clear_scroll(scroll_id=scroll_id)
-    
+
     end_time = time.perf_counter()
     total_time = (end_time - start_time) * 1000
-    
+
     return {
         'total_hits': total_hits,
         'total_time_ms': total_time,

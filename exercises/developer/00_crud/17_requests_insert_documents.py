@@ -3,10 +3,10 @@
 Elasticsearch CRUD operations using requests library
 """
 
-import requests
 import json
 from datetime import datetime
 from typing import Optional
+import requests
 
 # Configuration
 ES_HOST = "localhost"
@@ -40,7 +40,7 @@ def insert_single_document(doc_id: Optional[str] = None):
         "created_at": datetime.now().isoformat(),
         "in_stock": True
     }
-    
+
     if doc_id:
         # Insert with specific ID
         url = f"{ES_URL}/{INDEX_NAME}/_doc/{doc_id}"
@@ -49,7 +49,7 @@ def insert_single_document(doc_id: Optional[str] = None):
         # Insert with auto-generated ID
         url = f"{ES_URL}/{INDEX_NAME}/_doc"
         response = session.post(url, data=json.dumps(document))
-    
+
     print(f"Insert status: {response.status_code}")
     pretty_print(response)
     return response
@@ -91,23 +91,23 @@ def bulk_insert_documents():
             "in_stock": True
         }
     ]
-    
+
     # Build bulk request body
     bulk_data = []
     for i, product in enumerate(products, start=2):
         bulk_data.append(json.dumps({"index": {"_id": str(i)}}))
         bulk_data.append(json.dumps(product))
-    
+
     # Join with newlines (NDJSON format)
     bulk_body = '\n'.join(bulk_data) + '\n'
-    
+
     # Send bulk request
     response = session.post(
         f"{ES_URL}/{INDEX_NAME}/_bulk",
         data=bulk_body,
         headers={'Content-Type': 'application/x-ndjson'}
     )
-    
+
     print(f"Bulk insert status: {response.status_code}")
     result = response.json()
     print(f"Errors: {result.get('errors', False)}")

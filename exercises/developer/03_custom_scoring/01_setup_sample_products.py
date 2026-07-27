@@ -1,7 +1,10 @@
 #!/usr/bin/env python
-from elasticsearch import Elasticsearch
-from datetime import datetime, timedelta
+"""
+Create and populate the products index used by the custom scoring exercises
+"""
 import random
+from datetime import datetime, timedelta
+from elasticsearch import Elasticsearch
 
 es = Elasticsearch(["http://localhost:9200"])
 
@@ -48,7 +51,7 @@ for i in range(1, 101):
     price = round(random.uniform(10, 500), 2)
     original_price = price * random.uniform(1.0, 1.5)
     created_days_ago = random.randint(1, 365)
-    
+
     product = {
         "name": f"Product {i} - {random.choice(["Premium", "Standard", "Basic", "Pro", "Plus"])}",
         "description": f"High quality product with excellent features and great value. Model {i}",

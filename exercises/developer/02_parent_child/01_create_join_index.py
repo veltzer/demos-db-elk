@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+"""
+Create the blog_system index with a multi-level join field for parent-child relations
+"""
 from elasticsearch import Elasticsearch
 
 es = Elasticsearch(["http://localhost:9200"])

@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+"""
+Return matching child comments alongside their parent blog posts using inner_hits
+"""
 from elasticsearch import Elasticsearch
 
 es = Elasticsearch(["http://localhost:9200"])
