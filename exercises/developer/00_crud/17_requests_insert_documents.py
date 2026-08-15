@@ -4,8 +4,7 @@ Elasticsearch CRUD operations using requests library
 """
 
 import json
-from datetime import datetime
-from typing import Optional
+from datetime import datetime, timezone
 
 import requests
 
@@ -28,7 +27,7 @@ def pretty_print(response):
         print(response.text)
 
 
-def insert_single_document(doc_id: Optional[str] = None):
+def insert_single_document(doc_id: str | None = None):
     """Insert a single document"""
     document = {
         "product_id": "PROD001",
@@ -38,7 +37,7 @@ def insert_single_document(doc_id: Optional[str] = None):
         "stock_quantity": 150,
         "description": "High-quality wireless headphones with noise cancellation",
         "tags": ["wireless", "bluetooth", "audio"],
-        "created_at": datetime.now().isoformat(),
+        "created_at": datetime.now(timezone.utc).isoformat(),
         "in_stock": True
     }
 
@@ -66,7 +65,7 @@ def bulk_insert_documents():
             "stock_quantity": 75,
             "description": "Advanced fitness tracking",
             "tags": ["smartwatch", "fitness"],
-            "created_at": datetime.now().isoformat(),
+            "created_at": datetime.now(timezone.utc).isoformat(),
             "in_stock": True
         },
         {
@@ -77,7 +76,7 @@ def bulk_insert_documents():
             "stock_quantity": 200,
             "description": "Non-slip exercise mat",
             "tags": ["yoga", "fitness"],
-            "created_at": datetime.now().isoformat(),
+            "created_at": datetime.now(timezone.utc).isoformat(),
             "in_stock": True
         },
         {
@@ -88,7 +87,7 @@ def bulk_insert_documents():
             "stock_quantity": 50,
             "description": "Programmable coffee maker",
             "tags": ["coffee", "kitchen"],
-            "created_at": datetime.now().isoformat(),
+            "created_at": datetime.now(timezone.utc).isoformat(),
             "in_stock": True
         }
     ]

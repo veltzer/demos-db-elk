@@ -12,7 +12,7 @@ Run once for a snapshot, or pass an interval in seconds to refresh:
 
 import sys
 import time
-from datetime import datetime
+from datetime import datetime, timezone
 
 from elasticsearch import Elasticsearch
 
@@ -43,7 +43,7 @@ def render(health, node_stats, pending) -> None:
 
     print("=" * 64)
     print(
-        f"  CLUSTER HEALTH DASHBOARD   {datetime.now():%Y-%m-%d %H:%M:%S}"
+        f"  CLUSTER HEALTH DASHBOARD   {datetime.now(timezone.utc):%Y-%m-%d %H:%M:%S}"
     )
     print("=" * 64)
     print(f"cluster : {health['cluster_name']}")

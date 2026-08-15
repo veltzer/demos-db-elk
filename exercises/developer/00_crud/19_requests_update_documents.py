@@ -4,7 +4,7 @@ Elasticsearch CRUD operations using requests library
 """
 
 import json
-from datetime import datetime
+from datetime import datetime, timezone
 
 import requests
 
@@ -37,7 +37,7 @@ def update_document_full(doc_id: str):
         "stock_quantity": 175,
         "description": "Premium wireless headphones with ANC",
         "tags": ["wireless", "bluetooth", "audio", "premium"],
-        "created_at": datetime.now().isoformat(),
+        "created_at": datetime.now(timezone.utc).isoformat(),
         "in_stock": True
     }
 

@@ -135,8 +135,7 @@ def generate_order(order_id, num_products):
 def save_as_ndjson(data, filename):
     """Save data as newline-delimited JSON (for bulk insert)"""
     with open(filename, 'w') as f:
-        for record in data:
-            f.write(json.dumps(record) + '\n')
+        f.writelines(json.dumps(record) + '\n' for record in data)
 
 def save_as_bulk_format(data, index_name, filename):
     """Save data in Elasticsearch bulk format"""
