@@ -3,10 +3,6 @@
 
 [build]
 
-# ─── analyzers ───────────────────────────────────────────────────────────────
-
-[analyzer.tera]
-
 [analyzer.markdown]
 
 [analyzer.python]
@@ -49,12 +45,6 @@ src_dirs = ["config"]
 
 [processor.taplo]
 src_dirs = ["."]
-
-[processor.eslint]
-src_dirs = ["config"]
-args = ["-c", "config/eslint.config.js"]
-
-# ─── merged from rsconstruct.local.toml ─────────────────────────────────────
 
 # Runtime deps + type stubs so CI installs what the exercises import
 # (mypy/pylint resolve them; without these mypy reports missing stubs).
