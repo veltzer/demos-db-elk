@@ -26,6 +26,15 @@ src_dirs = ["scripts", "config", "exercises"]
 [processor.mypy]
 src_dirs = ["scripts", "config", "exercises"]
 batch = false
+# Serialize mypy. With batch = false rsconstruct runs one mypy process per
+# file, and concurrent processes race on the sqlite metadata store in the
+# shared .mypy_cache:
+#   File "mypy/metastore.py", line 174, in connect_db
+#     db.execute("PRAGMA journal_mode=WAL")
+#   sqlite3.OperationalError: database is locked
+# which mypy reports as a bare "INTERNAL ERROR". Reproduced at 4/4 runs with
+# concurrency and 0/6 with this setting. Everything else still runs parallel.
+max_jobs = 1
 
 [processor.requirements]
 src_dirs = ["scripts", "config"]
