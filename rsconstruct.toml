@@ -36,9 +36,6 @@ batch = false
 # concurrency and 0/6 with this setting. Everything else still runs parallel.
 max_jobs = 1
 
-[processor.requirements]
-src_dirs = ["scripts", "config"]
-
 # ─── shell ───────────────────────────────────────────────────────────────────
 
 [processor.shellcheck]
@@ -57,14 +54,3 @@ src_dirs = ["."]
 
 # Runtime deps + type stubs so CI installs what the exercises import
 # (mypy/pylint resolve them; without these mypy reports missing stubs).
-[dependencies]
-pip = [
-    "elasticsearch",
-    "elastic-transport",
-    "requests",
-    "types-requests",
-    "faker",
-    "flask",
-    "numpy",
-    "matplotlib",
-]
