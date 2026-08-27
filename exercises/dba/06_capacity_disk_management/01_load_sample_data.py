@@ -16,7 +16,7 @@ Load sample documents into the "capacity_demo" index for the disk and capacity s
 
 import random
 import sys
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 
 from elasticsearch import Elasticsearch, helpers
 from faker import Faker
@@ -33,7 +33,7 @@ STATUSES = [200, 201, 301, 400, 401, 404, 500, 503]
 
 def gen_docs(count):
     """Yield bulk-action dicts of fake event documents."""
-    base = datetime.now(timezone.utc) - timedelta(days=30)
+    base = datetime.now(UTC) - timedelta(days=30)
     for _ in range(count):
         ts = base + timedelta(seconds=random.randint(0, 30 * 24 * 3600))
         yield {

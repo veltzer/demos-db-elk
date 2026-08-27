@@ -2,7 +2,7 @@
 """
 Insert documents into the products index, singly and in bulk, using the Elasticsearch client
 """
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 from elasticsearch import Elasticsearch, helpers
 
@@ -24,7 +24,7 @@ def insert_single_document():
         "stock_quantity": 150,
         "description": "High-quality wireless headphones with noise cancellation",
         "tags": ["wireless", "bluetooth", "audio"],
-        "created_at": datetime.now(timezone.utc),
+        "created_at": datetime.now(UTC),
         "in_stock": True
     }
 
@@ -52,7 +52,7 @@ def bulk_insert_documents():
                 "stock_quantity": 75,
                 "description": "Advanced fitness tracking",
                 "tags": ["smartwatch", "fitness"],
-                "created_at": datetime.now(timezone.utc),
+                "created_at": datetime.now(UTC),
                 "in_stock": True
             }
         },
@@ -67,7 +67,7 @@ def bulk_insert_documents():
                 "stock_quantity": 200,
                 "description": "Non-slip exercise mat",
                 "tags": ["yoga", "fitness"],
-                "created_at": datetime.now(timezone.utc),
+                "created_at": datetime.now(UTC),
                 "in_stock": True
             }
         },
@@ -82,7 +82,7 @@ def bulk_insert_documents():
                 "stock_quantity": 50,
                 "description": "Programmable coffee maker",
                 "tags": ["coffee", "kitchen"],
-                "created_at": datetime.now(timezone.utc),
+                "created_at": datetime.now(UTC),
                 "in_stock": True
             }
         },
@@ -97,7 +97,7 @@ def bulk_insert_documents():
                 "stock_quantity": 0,
                 "description": "Professional running shoes",
                 "tags": ["running", "sports"],
-                "created_at": datetime.now(timezone.utc),
+                "created_at": datetime.now(UTC),
                 "in_stock": False
             }
         }
@@ -124,7 +124,7 @@ def bulk_insert_generator():
                     "stock_quantity": i * 10,
                     "description": f"Description for product {i}",
                     "tags": ["general"],
-                    "created_at": datetime.now(timezone.utc),
+                    "created_at": datetime.now(UTC),
                     "in_stock": True
                 }
             }

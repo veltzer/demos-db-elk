@@ -14,7 +14,7 @@ then run this script (repeatedly, or from cron) to accumulate a time series.
     ./05_index_metrics.py
 """
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from importlib import import_module
 
 from elasticsearch import Elasticsearch
@@ -31,7 +31,7 @@ METRICS_ALIAS = "dba-metrics"
 def build_metrics_doc():
     """Collect metrics and add a UTC @timestamp suitable for Kibana."""
     doc = collector.collect_metrics()
-    doc["@timestamp"] = datetime.now(timezone.utc).isoformat()
+    doc["@timestamp"] = datetime.now(UTC).isoformat()
     return doc
 
 

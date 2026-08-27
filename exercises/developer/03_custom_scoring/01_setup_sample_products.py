@@ -3,7 +3,7 @@
 Create and populate the products index used by the custom scoring exercises
 """
 import random
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 
 from elasticsearch import Elasticsearch
 
@@ -67,8 +67,8 @@ for i in range(1, 101):
         "stock_quantity": random.randint(0, 100),
         "is_featured": random.choice([True, False]),
         "is_on_sale": price < original_price,
-        "created_date": (datetime.now(timezone.utc) - timedelta(days=created_days_ago)).isoformat(),
-        "last_restocked": (datetime.now(timezone.utc) - timedelta(days=random.randint(0, 30))).isoformat(),
+        "created_date": (datetime.now(UTC) - timedelta(days=created_days_ago)).isoformat(),
+        "last_restocked": (datetime.now(UTC) - timedelta(days=random.randint(0, 30))).isoformat(),
         "tags": random.sample(["bestseller", "new", "trending", "clearance", "exclusive"], k=random.randint(0, 3)),
         "location": {
             "lat": 40.7128 + random.uniform(-1, 1),

@@ -9,7 +9,7 @@ import json
 import os
 import sys
 import time
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -203,7 +203,7 @@ class PerformanceTestSuite:
             'index_size_mb': index_size / (1024 * 1024),
             'memory_delta_mb': memory_delta / (1024 * 1024),
             'bytes_per_doc': index_size / doc_count if doc_count > 0 else 0,
-            'timestamp': datetime.now(timezone.utc).isoformat()
+            'timestamp': datetime.now(UTC).isoformat()
         }
 
         # Clean up
@@ -342,7 +342,7 @@ class PerformanceTestSuite:
         with open(report_file, 'w') as f:
             f.write("="*70 + "\n")
             f.write("ELASTICSEARCH BULK INSERT PERFORMANCE REPORT\n")
-            f.write(f"Generated: {datetime.now(timezone.utc).isoformat()}\n")
+            f.write(f"Generated: {datetime.now(UTC).isoformat()}\n")
             f.write("="*70 + "\n\n")
 
             for config, data in configs.items():

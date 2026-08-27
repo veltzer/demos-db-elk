@@ -15,7 +15,7 @@ Load sample log documents into the "logs_sharded" index using the bulk helper
 
 import random
 import sys
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 
 from elasticsearch import Elasticsearch, helpers
 from faker import Faker
@@ -32,7 +32,7 @@ STATUSES = [200, 201, 301, 400, 401, 404, 500, 503]
 
 def gen_docs(count):
     """Yield bulk-action dicts of fake log documents."""
-    base = datetime.now(timezone.utc) - timedelta(days=7)
+    base = datetime.now(UTC) - timedelta(days=7)
     for _ in range(count):
         ts = base + timedelta(seconds=random.randint(0, 7 * 24 * 3600))
         yield {

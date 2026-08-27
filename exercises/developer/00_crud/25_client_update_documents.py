@@ -2,7 +2,7 @@
 """
 Update documents in the products index using the Elasticsearch client
 """
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 from elasticsearch import Elasticsearch
 
@@ -24,9 +24,9 @@ def update_document_full(doc_id: str):
         "stock_quantity": 100,
         "description": "Premium wireless headphones with advanced ANC technology",
         "tags": ["wireless", "bluetooth", "audio", "premium", "anc"],
-        "created_at": datetime.now(timezone.utc),
+        "created_at": datetime.now(UTC),
         "in_stock": True,
-        "last_updated": datetime.now(timezone.utc)
+        "last_updated": datetime.now(UTC)
     }
 
     response = es.index(index=INDEX_NAME, id=doc_id, document=updated_doc)
@@ -39,7 +39,7 @@ def update_document_partial(doc_id: str):
         "doc": {
             "price": 109.99,
             "stock_quantity": 85,
-            "last_updated": datetime.now(timezone.utc)
+            "last_updated": datetime.now(UTC)
         }
     }
 
@@ -62,7 +62,7 @@ def update_with_script(doc_id: str):
             """,
             "params": {
                 "quantity": -10,  # Reduce stock by 10
-                "now": datetime.now(timezone.utc).isoformat()
+                "now": datetime.now(UTC).isoformat()
             }
         }
     }
@@ -84,7 +84,7 @@ def update_by_query():
             "params": {
                 "discount": 0.85,
                 "tag": "sale",
-                "now": datetime.now(timezone.utc).isoformat()
+                "now": datetime.now(UTC).isoformat()
             }
         },
         "query": {
@@ -105,7 +105,7 @@ def upsert_document():
         "doc": {
             "price": 159.99,
             "stock_quantity": 25,
-            "last_updated": datetime.now(timezone.utc)
+            "last_updated": datetime.now(UTC)
         },
         "upsert": {
             "product_id": "PROD099",
@@ -115,7 +115,7 @@ def upsert_document():
             "stock_quantity": 25,
             "description": "Created via upsert operation",
             "tags": ["new", "upsert"],
-            "created_at": datetime.now(timezone.utc),
+            "created_at": datetime.now(UTC),
             "in_stock": True
         }
     }

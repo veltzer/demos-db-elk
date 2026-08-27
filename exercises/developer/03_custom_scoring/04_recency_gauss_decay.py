@@ -2,7 +2,7 @@
 """
 Boost recent products with a Gaussian decay function over the creation date
 """
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 from elasticsearch import Elasticsearch
 
@@ -43,7 +43,7 @@ def search_with_recency_boost(query_text):
     print("-" * 50)
     for hit in result["hits"]["hits"]:
         p = hit["_source"]
-        days_old = (datetime.now(timezone.utc) - datetime.fromisoformat(p["created_date"].replace("Z", "+00:00"))).days
+        days_old = (datetime.now(UTC) - datetime.fromisoformat(p["created_date"])).days
         print(f"Score: {hit["_score"]:.2f} | Age: {days_old} days | {p["name"]}")
 
 search_with_recency_boost("product features")
