@@ -1,7 +1,5 @@
 #!/bin/bash -eu
-# the JSON body is sent verbatim, no shell expansion wanted
-# shellcheck disable=SC2016
-curl -X GET "localhost:9200/orders/_search?pretty" -H 'Content-Type: application/json' -d'
+curl -X GET "localhost:9200/orders/_search?pretty" -H 'Content-Type: application/json' --data-binary @- <<'JSON'
 {
   "size": 0,
   "aggs": {
@@ -16,4 +14,5 @@ curl -X GET "localhost:9200/orders/_search?pretty" -H 'Content-Type: application
       }
     }
   }
-}'
+}
+JSON

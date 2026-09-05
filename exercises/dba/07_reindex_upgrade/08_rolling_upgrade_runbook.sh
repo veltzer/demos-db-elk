@@ -1,6 +1,4 @@
 #!/bin/bash -eu
-# these echo commands and paths are for the reader to run, not to expand here
-# shellcheck disable=SC2016
 # Rolling upgrade runbook (one node at a time, cluster stays up).
 #
 # This script is a RUNBOOK, not an automated upgrade. We cannot actually
@@ -29,7 +27,9 @@ curl -s "localhost:9200/_cluster/health?pretty"
 #    a repository.) Conceptually:
 echo
 echo "=== 2. take a snapshot FIRST (example - needs a repo) ==="
-echo 'curl -X PUT "localhost:9200/_snapshot/my_repo/pre_upgrade_$(date +%s)?wait_for_completion=true"'
+cat <<'CMD'
+curl -X PUT "localhost:9200/_snapshot/my_repo/pre_upgrade_$(date +%s)?wait_for_completion=true"
+CMD
 
 # 3. Check for deprecations that will break on the next version. The
 #    Migration Deprecations API lists settings/mappings you must fix first.
@@ -49,12 +49,13 @@ echo "############################################################"
 echo
 echo "=== 4. disable shard allocation (before stopping the node) ==="
 curl -X PUT "localhost:9200/_cluster/settings?pretty" \
-	-H 'Content-Type: application/json' -d'
+	-H 'Content-Type: application/json' --data-binary @- <<'JSON'
 {
 	"persistent": {
 		"cluster.routing.allocation.enable": "primaries"
 	}
-}'
+}
+JSON
 
 # 5. Stop indexing if you can, and flush so recovery after restart is fast.
 echo
@@ -65,9 +66,11 @@ curl -X POST "localhost:9200/_flush?pretty"
 #    so we only print them. Do them on the box being upgraded:
 echo
 echo "=== 6. stop, upgrade binary, restart THIS node (manual) ==="
-echo '  sudo systemctl stop elasticsearch'
-echo '  # install the new package / unpack the new archive over $ES_HOME'
-echo '  sudo systemctl start elasticsearch'
+cat <<'CMD'
+  sudo systemctl stop elasticsearch
+  # install the new package / unpack the new archive over $ES_HOME
+  sudo systemctl start elasticsearch
+CMD
 
 # 7. Wait for the upgraded node to rejoin and the cluster to leave the
 #    "node count dropped" state. Then RE-ENABLE allocation.

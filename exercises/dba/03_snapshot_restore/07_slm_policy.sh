@@ -1,6 +1,4 @@
 #!/bin/bash -eu
-# the JSON body is sent verbatim, no shell expansion wanted
-# shellcheck disable=SC2016
 # Snapshot Lifecycle Management (SLM): let Elasticsearch take and prune
 # snapshots automatically on a schedule, instead of you running cron jobs
 # that call the snapshot API.

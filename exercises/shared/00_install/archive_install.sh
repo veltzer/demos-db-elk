@@ -1,6 +1,4 @@
 #!/bin/bash -eu
-# ps|grep is clearer than pgrep for teaching
-# shellcheck disable=SC2009
 # Elasticsearch & Kibana installation from the direct-download archives.
 #
 # This script bundles every step of the archive method as a function. These
@@ -136,8 +134,8 @@ EOF
 
 verify() {
 	# Check if processes are running (|| true so a no-match grep doesn't abort under -e)
-	ps aux | grep elasticsearch || true
-	ps aux | grep kibana || true
+	pgrep -a elasticsearch || true
+	pgrep -a kibana || true
 
 	# Test Elasticsearch (security disabled: plain HTTP, no credentials)
 	curl -X GET "http://localhost:9200"

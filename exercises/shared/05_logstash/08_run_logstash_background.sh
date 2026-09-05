@@ -1,11 +1,9 @@
 #!/bin/bash -eu
-# ps|grep is clearer than pgrep for teaching
-# shellcheck disable=SC2009
 # Run in background
 nohup /opt/logstash/bin/logstash -f simple-logs.conf > logstash.log 2>&1 &
 
 # Check if it's running (|| true so a no-match grep doesn't abort under -e)
-ps aux | grep logstash || true
+pgrep -a logstash || true
 
 # View logs
 tail -f logstash.log

@@ -1,6 +1,4 @@
 #!/bin/bash -eu
-# the JSON bodies are sent verbatim, no shell expansion wanted
-# shellcheck disable=SC2016
 # Restore data from a snapshot.
 #
 # KEY RULE: you cannot restore over an open index with the same name. You
@@ -33,7 +31,7 @@ curl -s -X GET "localhost:9200/_cat/count/orders?v"
 # inspect a backup without overwriting production.
 echo "=== restore customers as restored_customers ==="
 curl -s -X POST "localhost:9200/_snapshot/${REPO}/snap_customers/_restore?wait_for_completion=true&pretty" \
-	-H 'Content-Type: application/json' -d'
+	-H 'Content-Type: application/json' --data-binary @- <<'JSON'
 {
 	"indices": "customers",
 	"rename_pattern": "(.+)",
@@ -42,7 +40,8 @@ curl -s -X POST "localhost:9200/_snapshot/${REPO}/snap_customers/_restore?wait_f
 	"index_settings": {
 		"index.number_of_replicas": 0
 	}
-}'
+}
+JSON
 
 echo "=== verify restored_customers ==="
 curl -s -X GET "localhost:9200/_cat/count/restored_customers?v"

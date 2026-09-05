@@ -1,6 +1,4 @@
 #!/bin/bash -eu
-# a thin wrapper so the rest of the script can say docker
-# shellcheck disable=SC2032,SC2033
 # Elasticsearch & Kibana installation via Docker Compose.
 #
 # This script bundles every step of the Docker method as a function. These
@@ -20,7 +18,7 @@ PROJECT_DIR=~/elastic-docker
 # non-interactive script it replaces the shell with one that reads the empty
 # stdin and exits, silently skipping every command that follows it.)
 docker() {
-	sudo docker "$@"
+	sudo /usr/bin/docker "$@"
 }
 
 uninstall_previous_docker() {
