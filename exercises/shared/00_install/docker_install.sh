@@ -1,4 +1,6 @@
 #!/bin/bash -eu
+# a thin wrapper so the rest of the script can say docker
+# shellcheck disable=SC2032,SC2033
 # Elasticsearch & Kibana installation via Docker Compose.
 #
 # This script bundles every step of the Docker method as a function. These
@@ -33,7 +35,7 @@ uninstall_previous_docker() {
 	# Drop the Docker CE apt repository and key so docker.io is used instead.
 	sudo rm -f /etc/apt/sources.list.d/docker.list /etc/apt/keyrings/docker.asc \
 		/etc/apt/keyrings/docker.gpg /usr/share/keyrings/docker-archive-keyring.gpg
-	rm -rf "$HOME/.docker/desktop"
+	rm -rf "${HOME}/.docker/desktop"
 }
 
 install_docker() {
@@ -46,7 +48,7 @@ install_docker() {
 
 	# Add user to docker group for convenience after next login. Within this run
 	# we still go through sudo (see the docker wrapper above).
-	sudo usermod -aG docker "$USER"
+	sudo usermod -aG docker "${USER}"
 
 	# Verify Docker Compose is installed
 	docker compose version
@@ -54,7 +56,7 @@ install_docker() {
 
 create_compose_file() {
 	# Create and enter project directory
-	mkdir -p "$PROJECT_DIR" && cd "$PROJECT_DIR"
+	mkdir -p "${PROJECT_DIR}" && cd "${PROJECT_DIR}"
 
 	cat > docker-compose.yml << 'EOF'
 services:
@@ -98,7 +100,7 @@ EOF
 }
 
 compose_up() {
-	cd "$PROJECT_DIR"
+	cd "${PROJECT_DIR}"
 	# Start in detached mode
 	docker compose up -d
 	# Show container status
@@ -106,7 +108,7 @@ compose_up() {
 }
 
 verify() {
-	cd "$PROJECT_DIR"
+	cd "${PROJECT_DIR}"
 	# Test Elasticsearch (security disabled: plain HTTP, no credentials)
 	curl -X GET "http://localhost:9200"
 
@@ -118,7 +120,7 @@ verify() {
 }
 
 uninstall() {
-	cd "$PROJECT_DIR"
+	cd "${PROJECT_DIR}"
 
 	# Stop and remove containers and volumes (WARNING: This deletes all data!)
 	docker compose down -v
@@ -128,7 +130,7 @@ uninstall() {
 	docker rmi docker.elastic.co/kibana/kibana:9.1.3 || true
 
 	# Remove project directory
-	cd ~ && rm -rf "$PROJECT_DIR"
+	cd ~ && rm -rf "${PROJECT_DIR}"
 }
 
 install() {

@@ -24,7 +24,7 @@ install_podman() {
 
 create_compose_file() {
 	# Create and enter project directory
-	mkdir -p "$PROJECT_DIR" && cd "$PROJECT_DIR"
+	mkdir -p "${PROJECT_DIR}" && cd "${PROJECT_DIR}"
 
 	# Same compose file as the Docker method; Podman reads it via its provider.
 	cat > docker-compose.yml << 'EOF'
@@ -69,7 +69,7 @@ EOF
 }
 
 compose_up() {
-	cd "$PROJECT_DIR"
+	cd "${PROJECT_DIR}"
 	# Start in detached mode
 	podman compose up -d
 	# Show container status
@@ -77,7 +77,7 @@ compose_up() {
 }
 
 verify() {
-	cd "$PROJECT_DIR"
+	cd "${PROJECT_DIR}"
 	# Test Elasticsearch (security disabled: plain HTTP, no credentials)
 	curl -X GET "http://localhost:9200"
 
@@ -89,7 +89,7 @@ verify() {
 }
 
 uninstall() {
-	cd "$PROJECT_DIR"
+	cd "${PROJECT_DIR}"
 
 	# Stop and remove containers and volumes (WARNING: This deletes all data!)
 	podman compose down -v
@@ -99,7 +99,7 @@ uninstall() {
 	podman rmi docker.elastic.co/kibana/kibana:9.1.3 || true
 
 	# Remove project directory
-	cd ~ && rm -rf "$PROJECT_DIR"
+	cd ~ && rm -rf "${PROJECT_DIR}"
 }
 
 install() {

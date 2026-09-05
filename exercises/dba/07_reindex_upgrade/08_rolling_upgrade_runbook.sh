@@ -1,4 +1,6 @@
 #!/bin/bash -eu
+# these echo commands and paths are for the reader to run, not to expand here
+# shellcheck disable=SC2016
 # Rolling upgrade runbook (one node at a time, cluster stays up).
 #
 # This script is a RUNBOOK, not an automated upgrade. We cannot actually

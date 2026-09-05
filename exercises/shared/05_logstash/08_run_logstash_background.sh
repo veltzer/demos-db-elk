@@ -1,4 +1,6 @@
 #!/bin/bash -eu
+# ps|grep is clearer than pgrep for teaching
+# shellcheck disable=SC2009
 # Run in background
 nohup /opt/logstash/bin/logstash -f simple-logs.conf > logstash.log 2>&1 &
 

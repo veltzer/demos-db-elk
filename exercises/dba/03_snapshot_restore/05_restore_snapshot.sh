@@ -1,4 +1,6 @@
 #!/bin/bash -eu
+# the JSON bodies are sent verbatim, no shell expansion wanted
+# shellcheck disable=SC2016
 # Restore data from a snapshot.
 #
 # KEY RULE: you cannot restore over an open index with the same name. You

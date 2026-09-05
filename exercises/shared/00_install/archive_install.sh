@@ -1,4 +1,6 @@
 #!/bin/bash -eu
+# ps|grep is clearer than pgrep for teaching
+# shellcheck disable=SC2009
 # Elasticsearch & Kibana installation from the direct-download archives.
 #
 # This script bundles every step of the archive method as a function. These
@@ -22,8 +24,8 @@ install_java() {
 
 download_elasticsearch() {
 	# Create directory for the Elastic stack
-	sudo mkdir -p "$INSTALL_DIR"
-	cd "$INSTALL_DIR"
+	sudo mkdir -p "${INSTALL_DIR}"
+	cd "${INSTALL_DIR}"
 
 	# Download and extract Elasticsearch
 	sudo wget "https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${ES_VERSION}-linux-x86_64.tar.gz"
@@ -31,12 +33,12 @@ download_elasticsearch() {
 
 	# Symbolic link for easier access, plus ownership
 	sudo ln -sfn "elasticsearch-${ES_VERSION}" elasticsearch
-	sudo chown -R "$USER:$USER" "$INSTALL_DIR/elasticsearch-${ES_VERSION}"
+	sudo chown -R "${USER}:${USER}" "${INSTALL_DIR}/elasticsearch-${ES_VERSION}"
 }
 
 configure_elasticsearch() {
 	# Append exercise configuration (security is DISABLED for these exercises).
-	tee -a "$INSTALL_DIR/elasticsearch/config/elasticsearch.yml" > /dev/null << 'EOF'
+	tee -a "${INSTALL_DIR}/elasticsearch/config/elasticsearch.yml" > /dev/null << 'EOF'
 network.host: 0.0.0.0
 http.port: 9200
 discovery.type: single-node
@@ -51,11 +53,11 @@ EOF
 start_elasticsearch() {
 	# Start Elasticsearch in the background. With security disabled, no password
 	# is generated and no credentials are needed to connect.
-	"$INSTALL_DIR/elasticsearch/bin/elasticsearch" -d -p /tmp/elasticsearch.pid
+	"${INSTALL_DIR}/elasticsearch/bin/elasticsearch" -d -p /tmp/elasticsearch.pid
 }
 
 download_kibana() {
-	cd "$INSTALL_DIR"
+	cd "${INSTALL_DIR}"
 
 	# Download and extract Kibana
 	sudo wget "https://artifacts.elastic.co/downloads/kibana/kibana-${ES_VERSION}-linux-x86_64.tar.gz"
@@ -63,12 +65,12 @@ download_kibana() {
 
 	# Symbolic link plus ownership
 	sudo ln -sfn "kibana-${ES_VERSION}" kibana
-	sudo chown -R "$USER:$USER" "$INSTALL_DIR/kibana-${ES_VERSION}"
+	sudo chown -R "${USER}:${USER}" "${INSTALL_DIR}/kibana-${ES_VERSION}"
 }
 
 configure_kibana() {
 	# With Elasticsearch security disabled, no enrollment token is required.
-	tee -a "$INSTALL_DIR/kibana/config/kibana.yml" > /dev/null << 'EOF'
+	tee -a "${INSTALL_DIR}/kibana/config/kibana.yml" > /dev/null << 'EOF'
 server.host: "0.0.0.0"
 elasticsearch.hosts: ["http://localhost:9200"]
 EOF
@@ -76,7 +78,7 @@ EOF
 
 start_kibana() {
 	# Start Kibana in the background and save its PID
-	nohup "$INSTALL_DIR/kibana/bin/kibana" > /tmp/kibana.log 2>&1 &
+	nohup "${INSTALL_DIR}/kibana/bin/kibana" > /tmp/kibana.log 2>&1 &
 	echo $! > /tmp/kibana.pid
 }
 
@@ -92,9 +94,9 @@ After=network-online.target
 
 [Service]
 Type=simple
-User=$USER
-Group=$USER
-ExecStart=$INSTALL_DIR/elasticsearch/bin/elasticsearch
+User=${USER}
+Group=${USER}
+ExecStart=${INSTALL_DIR}/elasticsearch/bin/elasticsearch
 ExecStop=/bin/kill -TERM \$MAINPID
 Restart=on-failure
 RestartSec=5
@@ -114,9 +116,9 @@ After=network-online.target elasticsearch-archive.service
 
 [Service]
 Type=simple
-User=$USER
-Group=$USER
-ExecStart=$INSTALL_DIR/kibana/bin/kibana
+User=${USER}
+Group=${USER}
+ExecStart=${INSTALL_DIR}/kibana/bin/kibana
 ExecStop=/bin/kill -TERM \$MAINPID
 Restart=on-failure
 RestartSec=5
@@ -162,7 +164,7 @@ uninstall() {
 	sudo rm -f /etc/systemd/system/kibana-archive.service
 
 	# Remove installation directory (WARNING: This deletes all data!)
-	sudo rm -rf "$INSTALL_DIR"
+	sudo rm -rf "${INSTALL_DIR}"
 
 	# Remove PID files
 	rm -f /tmp/elasticsearch.pid /tmp/kibana.pid

@@ -20,18 +20,18 @@ RESPONSE=$(curl -s -X POST \
 	"source": { "index": "products_v1" },
 	"dest":   { "index": "products_v1_async" }
 }')
-echo "$RESPONSE"
+echo "${RESPONSE}"
 
 # Extract the task id from the JSON response (no jq dependency: grep+cut).
-TASK_ID=$(echo "$RESPONSE" | grep -o '"task"[^,}]*' | cut -d'"' -f4)
+TASK_ID=$(echo "${RESPONSE}" | grep -o '"task"[^,}]*' | cut -d'"' -f4)
 echo
-echo "task id: $TASK_ID"
+echo "task id: ${TASK_ID}"
 
 # Poll the task. GET /_tasks/<id> returns "completed": true/false plus a
 # "status" block with created/total/batches counters. On a tiny index this
 # is already done, but on a real one you would loop until completed is true.
 echo
-echo "=== GET /_tasks/$TASK_ID ==="
+echo "=== GET /_tasks/${TASK_ID} ==="
 curl -s "localhost:9200/_tasks/${TASK_ID}?pretty"
 
 # You can also list every running reindex task across the cluster. This is

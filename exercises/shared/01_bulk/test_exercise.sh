@@ -15,8 +15,7 @@ RED='\033[0;31m'
 NC='\033[0m' # No Color
 
 echo -e "\n${YELLOW}Step 1: Checking Elasticsearch connection...${NC}"
-curl -s -X GET "http://${ES_HOST}:${ES_PORT}" > /dev/null 2>&1
-if [ $? -eq 0 ]; then
+if curl -s -X GET "http://${ES_HOST}:${ES_PORT}" > /dev/null 2>&1; then
     echo -e "${GREEN}✓ Elasticsearch is running${NC}"
 else
     echo -e "${RED}✗ Cannot connect to Elasticsearch${NC}"
@@ -25,8 +24,7 @@ else
 fi
 
 echo -e "\n${YELLOW}Step 2: Generating test data...${NC}"
-python generate_data.py --products 1000 --customers 500 --orders 2000 --format ndjson
-if [ $? -eq 0 ]; then
+if python generate_data.py --products 1000 --customers 500 --orders 2000 --format ndjson; then
     echo -e "${GREEN}✓ Test data generated successfully${NC}"
 else
     echo -e "${RED}✗ Failed to generate test data${NC}"
@@ -39,8 +37,9 @@ python bulk_insert.py \
     --port ${ES_PORT} \
     --data-file ./data/products.ndjson \
     --test-type compare
+rc=$?
 
-if [ $? -eq 0 ]; then
+if [ "${rc}" -eq 0 ]; then
     echo -e "${GREEN}✓ Bulk insert test completed${NC}"
 else
     echo -e "${RED}✗ Bulk insert test failed${NC}"
@@ -54,8 +53,9 @@ python run_performance_test.py \
     --data-file ./data/products.ndjson \
     --test-sizes 500 1000 \
     --output-dir ./results
+rc=$?
 
-if [ $? -eq 0 ]; then
+if [ "${rc}" -eq 0 ]; then
     echo -e "${GREEN}✓ Performance test completed${NC}"
 else
     echo -e "${RED}✗ Performance test failed${NC}"

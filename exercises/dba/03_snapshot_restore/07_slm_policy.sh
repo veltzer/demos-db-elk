@@ -1,4 +1,6 @@
 #!/bin/bash -eu
+# the JSON body is sent verbatim, no shell expansion wanted
+# shellcheck disable=SC2016
 # Snapshot Lifecycle Management (SLM): let Elasticsearch take and prune
 # snapshots automatically on a schedule, instead of you running cron jobs
 # that call the snapshot API.
@@ -17,7 +19,7 @@ POLICY="daily-snapshots"
 #               expire_after  - delete snapshots older than this age
 #               min_count     - always keep at least this many
 #               max_count     - never keep more than this many
-echo "=== create SLM policy ${POLICY} ==="
+echo "=== create SLM policy ${POLICY} in repository ${REPO} ==="
 curl -s -X PUT "localhost:9200/_slm/policy/${POLICY}?pretty" \
 	-H 'Content-Type: application/json' -d'
 {

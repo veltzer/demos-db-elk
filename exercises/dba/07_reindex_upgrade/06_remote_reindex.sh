@@ -30,7 +30,7 @@
 REMOTE_HOST="http://oldcluster.example.com:9200"
 
 echo "=== remote reindex template (will fail without a real remote) ==="
-echo "remote host: $REMOTE_HOST"
+echo "remote host: ${REMOTE_HOST}"
 echo "ensure reindex.remote.whitelist includes it on every dest node!"
 echo
 
