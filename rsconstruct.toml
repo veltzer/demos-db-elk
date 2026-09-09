@@ -18,13 +18,13 @@ src_dirs = ["exercises"]
 # ─── python ──────────────────────────────────────────────────────────────────
 
 [processor.ruff]
-src_dirs = ["scripts", "config", "exercises"]
+src_dirs = ["scripts", "exercises"]
 
 [processor.pylint]
-src_dirs = ["scripts", "config", "exercises"]
+src_dirs = ["scripts", "exercises"]
 
 [processor.mypy]
-src_dirs = ["scripts", "config", "exercises"]
+src_dirs = ["scripts", "exercises"]
 batch = false
 # Serialize mypy. With batch = false rsconstruct runs one mypy process per
 # file, and concurrent processes race on the sqlite metadata store in the
@@ -39,12 +39,7 @@ max_jobs = 1
 # ─── shell ───────────────────────────────────────────────────────────────────
 
 [processor.shellcheck]
-src_dirs = ["scripts", "exercises", "config"]
-
-# ─── lua ─────────────────────────────────────────────────────────────────────
-
-[processor.luacheck]
-src_dirs = ["config"]
+src_dirs = ["scripts", "exercises"]
 
 # ─── toml / yaml / json ──────────────────────────────────────────────────────
 
