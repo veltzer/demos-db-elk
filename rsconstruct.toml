@@ -1,6 +1,8 @@
 # rsconstruct build configuration for this repository.
 
 [build]
+# src_dirs entries name directories; "." (the whole tree) is a config error
+reject_dot_src_dirs = true
 
 [analyzer.markdown]
 
@@ -44,7 +46,7 @@ src_dirs = ["scripts", "exercises"]
 # ─── toml / yaml / json ──────────────────────────────────────────────────────
 
 [processor.taplo]
-src_dirs = ["."]
+src_files = [".rumdl.toml", "pyproject.toml", "rsconstruct.toml"]
 
 # Runtime deps + type stubs so CI installs what the exercises import
 # (mypy/pylint resolve them; without these mypy reports missing stubs).
