@@ -10,20 +10,20 @@ reject_dot_src_dirs = true
 
 # ─── markdown ────────────────────────────────────────────────────────────────
 
-[processor.rumdl]
+[processor.checker.rumdl]
 src_dirs = ["exercises"]
 src_files = ["README.md"]
 
-[processor.zspell]
+[processor.checker.zspell]
 src_dirs = ["exercises"]
 
 # ─── python ──────────────────────────────────────────────────────────────────
 
-[processor.ruff]
+[processor.checker.ruff]
 src_dirs = ["scripts", "exercises"]
 
 
-[processor.mypy]
+[processor.checker.mypy]
 src_dirs = ["scripts", "exercises"]
 batch = false
 # Serialize mypy. With batch = false rsconstruct runs one mypy process per
@@ -38,27 +38,27 @@ max_jobs = 1
 
 # ─── shell ───────────────────────────────────────────────────────────────────
 
-[processor.shellcheck]
+[processor.checker.shellcheck]
 src_dirs = ["scripts", "exercises"]
 
 # ─── toml / yaml / json ──────────────────────────────────────────────────────
 
-[processor.taplo]
+[processor.checker.taplo]
 src_files = [".rumdl.toml", "pyproject.toml", "rsconstruct.toml"]
 
 # Runtime deps + type stubs so CI installs what the exercises import
 # (mypy/pylint resolve them; without these mypy reports missing stubs).
 
 # lint the GitHub Actions workflow files with actionlint
-[processor.actionlint]
+[processor.checker.actionlint]
 src_dirs = [".github/workflows"]
 
 # ─── yaml ────────────────────────────────────────────────────────────────────
 
-[processor.yamllint]
+[processor.checker.yamllint]
 src_dirs = ["exercises"]
 
 # ─── json ────────────────────────────────────────────────────────────────────
 
-[processor.ijsonlint]
+[processor.checker.ijsonlint]
 src_dirs = ["exercises/developer/00_crud"]
