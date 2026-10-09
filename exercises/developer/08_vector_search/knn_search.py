@@ -27,7 +27,7 @@ def knn_search(query_text: str, category: str | None = None, k: int = 3) -> None
     more candidates explored per shard -> better recall, slightly slower.
     An optional category `filter` restricts which documents kNN may return.
     """
-    knn = {
+    knn: dict[str, object] = {
         "field": "embedding",
         "query_vector": embed(query_text),
         "k": k,
