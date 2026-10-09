@@ -50,7 +50,7 @@ src_files = [".rumdl.toml", "pyproject.toml", "rsconstruct.toml"]
 # (mypy/pylint resolve them; without these mypy reports missing stubs).
 
 # lint the GitHub Actions workflow files with actionlint
-[processor.checker.actionlint]
+[processor.checker.iactionlint]
 src_dirs = [".github/workflows"]
 
 # ─── yaml ────────────────────────────────────────────────────────────────────
