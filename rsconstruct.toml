@@ -37,7 +37,7 @@ src_dirs = ["scripts", "exercises"]
 src_files = [".rumdl.toml", "pyproject.toml", "rsconstruct.toml"]
 
 # Runtime deps + type stubs so CI installs what the exercises import
-# (mypy/pylint resolve them; without these mypy reports missing stubs).
+# (pyrefly resolves them; without these it reports missing imports).
 
 # lint the GitHub Actions workflow files with actionlint
 [processor.checker.iactionlint]
