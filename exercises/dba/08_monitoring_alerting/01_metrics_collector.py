@@ -19,7 +19,9 @@ Run directly to print the collected metrics as JSON:
 Security is disabled (plain HTTP, no auth), as in the rest of the course.
 """
 
+import contextlib
 import json
+from typing import Any, cast
 
 from elasticsearch import Elasticsearch
 
@@ -118,16 +120,14 @@ def collect_metrics():
 
     # ---- Index count and total store size --------------------------------
     # _cat/indices with bytes=b gives machine-readable byte counts.
-    indices = es.cat.indices(format="json", bytes="b", h="index,store.size")
+    indices = cast("list[dict[str, Any]]", es.cat.indices(format="json", bytes="b", h="index,store.size").body)
     total_store_bytes = 0
     index_count = 0
     for row in indices:
         index_count += 1
         size = row.get("store.size") or "0"
-        try:
+        with contextlib.suppress(TypeError, ValueError):
             total_store_bytes += int(size)
-        except (TypeError, ValueError):
-            pass
     metrics["index_count"] = index_count
     metrics["total_store_bytes"] = total_store_bytes
     metrics["total_store_gb"] = round(total_store_bytes / 1024 ** 3, 3)

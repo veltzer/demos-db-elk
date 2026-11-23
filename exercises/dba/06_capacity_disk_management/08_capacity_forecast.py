@@ -24,6 +24,7 @@ Example:
 """
 
 import sys
+from typing import Any, cast
 
 from elasticsearch import Elasticsearch
 
@@ -42,11 +43,14 @@ def human(num_bytes):
 
 def index_stats(index):
     """Return (store_bytes, doc_count) for an index via _cat/indices."""
-    rows = es.cat.indices(
-        index=index,
-        format="json",
-        bytes="b",
-        h="index,docs.count,store.size",
+    rows = cast(
+        "list[dict[str, Any]]",
+        es.cat.indices(
+            index=index,
+            format="json",
+            bytes="b",
+            h="index,docs.count,store.size",
+        ).body,
     )
     if not rows:
         print(f"Error: index '{index}' not found")
@@ -61,8 +65,11 @@ def min_free_disk():
     A cluster fills up at the rate of its FULLEST node, so the most
     conservative forecast uses the node with the least free disk.
     """
-    rows = es.cat.allocation(
-        format="json", bytes="b", h="node,disk.avail,disk.total,disk.percent"
+    rows = cast(
+        "list[dict[str, Any]]",
+        es.cat.allocation(
+            format="json", bytes="b", h="node,disk.avail,disk.total,disk.percent"
+        ).body,
     )
     frees = []
     for row in rows:

@@ -130,7 +130,7 @@ class PerformanceTestSuite:
     def load_test_data(self, filename, limit=None):
         """Load test data from file"""
         data = []
-        with open(filename, 'r') as f:
+        with open(filename) as f:
             for i, line in enumerate(f):
                 if limit and i >= limit:
                     break
@@ -306,7 +306,7 @@ class PerformanceTestSuite:
         ax2.grid(True, axis='y')
 
         # Add value labels on bars
-        for rect, avg_time in zip(bars, avg_times):
+        for rect, avg_time in zip(bars, avg_times, strict=True):
             height = rect.get_height()
             ax2.text(rect.get_x() + rect.get_width()/2., height,
                     f'{avg_time:.1f}s', ha='center', va='bottom')
@@ -322,7 +322,7 @@ class PerformanceTestSuite:
         # Chart 4: Efficiency (docs/s per MB)
         ax4 = axes[1, 1]
         efficiencies = []
-        for config, data in configs.items():
+        for data in configs.values():
             efficiency = np.mean([d['docs_per_second'] / d['index_size_mb']
                                  if d['index_size_mb'] > 0 else 0 for d in data])
             efficiencies.append(efficiency)

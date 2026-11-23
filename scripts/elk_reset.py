@@ -141,8 +141,8 @@ def reset_cluster_settings(es) -> bool:
     if not persistent and not transient:
         return False
     body = {
-        "persistent": {key: None for key in persistent},
-        "transient": {key: None for key in transient},
+        "persistent": dict.fromkeys(persistent),
+        "transient": dict.fromkeys(transient),
     }
     es.cluster.put_settings(body=body)
     log(

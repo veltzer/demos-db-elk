@@ -7,12 +7,13 @@ import argparse
 import json
 import os
 import random
+from typing import Any
 
 from faker import Faker
 
 fake = Faker()
 
-def generate_web_log_entry():
+def generate_web_log_entry() -> dict[str, Any]:
     """Generate a realistic web server log entry"""
     methods = ['GET', 'POST', 'PUT', 'DELETE', 'PATCH']
     status_codes = [200, 201, 204, 301, 302, 400, 401, 403, 404, 500, 502, 503]
@@ -38,7 +39,7 @@ def generate_web_log_entry():
         'city': fake.city()
     }
 
-def generate_ecommerce_transaction():
+def generate_ecommerce_transaction() -> dict[str, Any]:
     """Generate an e-commerce transaction"""
     categories = ['Electronics', 'Clothing', 'Books', 'Home', 'Sports', 'Beauty']
     payment_methods = ['credit_card', 'debit_card', 'paypal', 'apple_pay', 'google_pay']
@@ -62,7 +63,7 @@ def generate_ecommerce_transaction():
         'promotion_code': fake.word() if random.random() > 0.7 else None
     }
 
-def generate_system_metrics():
+def generate_system_metrics() -> dict[str, Any]:
     """Generate system performance metrics"""
     return {
         'timestamp': fake.date_time_between(start_date='-30d', end_date='now').isoformat(),
@@ -77,7 +78,7 @@ def generate_system_metrics():
         'uptime_hours': random.randint(1, 8760)
     }
 
-def generate_application_logs():
+def generate_application_logs() -> dict[str, Any]:
     """Generate application log entries"""
     log_levels = ['DEBUG', 'INFO', 'WARN', 'ERROR', 'FATAL']
     services = ['auth-service', 'user-service', 'payment-service', 'notification-service', 'api-gateway']
@@ -105,17 +106,15 @@ def main():
 
     args = parser.parse_args()
 
-    data = []
+    data: list[dict[str, Any]] = []
 
-    if args.type == 'all':
-        types_to_generate = ['web_logs', 'ecommerce', 'metrics', 'app_logs']
-    else:
-        types_to_generate = [args.type]
+    types_to_generate = ['web_logs', 'ecommerce', 'metrics', 'app_logs'] if args.type == 'all' else [args.type]
 
     for data_type in types_to_generate:
         print(f"Generating {args.count} {data_type} records...")
 
         for _ in range(args.count):
+            record: dict[str, Any]
             if data_type == 'web_logs':
                 record = generate_web_log_entry()
                 record['data_type'] = 'web_log'
@@ -129,6 +128,8 @@ def main():
             elif data_type == 'app_logs':
                 record = generate_application_logs()
                 record['data_type'] = 'application_log'
+            else:
+                raise ValueError(f"unknown data type: {data_type}")
 
             data.append(record)
 

@@ -60,7 +60,8 @@ def main():
     success, errors = helpers.bulk(
         es.options(request_timeout=120), gen_docs(count), chunk_size=2000
     )
-    print(f"Indexed {success} documents, {len(errors)} errors")
+    error_count = errors if isinstance(errors, int) else len(errors)
+    print(f"Indexed {success} documents, {error_count} errors")
 
     # Refresh so the new documents are immediately visible to _cat/_count.
     es.indices.refresh(index=INDEX)

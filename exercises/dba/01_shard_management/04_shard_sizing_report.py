@@ -20,6 +20,7 @@ Report shard count vs data size per index and flag suspicious shard sizing
 # do not double-count replicas) and summarise per index.
 
 from collections import defaultdict
+from typing import Any, cast
 
 from elasticsearch import Elasticsearch
 
@@ -49,8 +50,11 @@ def main():
         return
 
     # Pull per-shard primary stats. format=json gives us clean dicts.
-    shards = es.cat.shards(
-        h="index,shard,prirep,docs,store", format="json", bytes="b"
+    shards = cast(
+        "list[dict[str, Any]]",
+        es.cat.shards(
+            h="index,shard,prirep,docs,store", format="json", bytes="b"
+        ).body,
     )
 
     # Aggregate primaries per index.

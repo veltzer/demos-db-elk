@@ -9,6 +9,7 @@ import json
 import os
 import sys
 import time
+from typing import Any
 
 from elasticsearch import Elasticsearch, helpers
 
@@ -106,12 +107,8 @@ class BulkInsertTester:
 
     def load_data_from_file(self, filename):
         """Load data from NDJSON file"""
-        data = []
-        with open(filename, 'r') as f:
-            for line in f:
-                if line.strip():
-                    data.append(json.loads(line))
-        return data
+        with open(filename, encoding="utf-8") as f:
+            return [json.loads(line) for line in f if line.strip()]
 
     def bulk_insert_with_helpers(self, index_name, data, chunk_size=500):
         """Perform bulk insert using Elasticsearch helpers"""
@@ -150,8 +147,8 @@ class BulkInsertTester:
         """Perform bulk insert using raw bulk API"""
 
         # Read bulk formatted file
-        with open(bulk_file, 'r') as f:
-            bulk_data = f.read()
+        with open(bulk_file, encoding="utf-8") as f:
+            bulk_data = [json.loads(line) for line in f if line.strip()]
 
         start_time = time.time()
 
@@ -204,7 +201,7 @@ class BulkInsertTester:
             self.create_index_with_mappings(index_name, enable_indexing)
 
             # Perform bulk insert
-            result = self.bulk_insert_with_helpers(index_name, data, chunk_size)
+            result: dict[str, Any] = self.bulk_insert_with_helpers(index_name, data, chunk_size)
 
             # Re-enable indexing settings after bulk load
             if not enable_indexing:

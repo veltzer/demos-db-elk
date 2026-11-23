@@ -3,6 +3,7 @@
 Compare the query cost of the different scoring strategies
 """
 import time
+from typing import Any
 
 from elasticsearch import Elasticsearch
 
@@ -11,7 +12,7 @@ es = Elasticsearch(["http://localhost:9200"])
 def compare_scoring_performance():
     """Compare performance of different scoring strategies"""
 
-    queries = [
+    queries: list[dict[str, Any]] = [
         {
             "name": "Basic match",
             "body": {

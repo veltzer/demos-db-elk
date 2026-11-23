@@ -148,7 +148,7 @@ def bulk_index_documents(index_name, num_docs, batch_size=500):
 
     print(f"Indexed {success} documents in {elapsed:.2f} seconds")
     if failed:
-        print(f"Failed to index {len(failed)} documents")
+        print(f"Failed to index {failed if isinstance(failed, int) else len(failed)} documents")
 
     # Refresh the index to make documents searchable immediately
     es.indices.refresh(index=index_name)

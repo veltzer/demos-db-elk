@@ -20,7 +20,7 @@ def ctr_optimized_search(query_text):
     for update in ctr_updates:
         es.update(
             index="products",
-            id=update["id"],
+            id=str(update["id"]),
             body={
                 "doc": {
                     "clicks": update["clicks"],

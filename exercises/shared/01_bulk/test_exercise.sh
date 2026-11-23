@@ -33,8 +33,8 @@ fi
 
 echo -e "\n${YELLOW}Step 3: Running bulk insert comparison test...${NC}"
 python bulk_insert.py \
-    --host ${ES_HOST} \
-    --port ${ES_PORT} \
+    --host "${ES_HOST}" \
+    --port "${ES_PORT}" \
     --data-file ./data/products.ndjson \
     --test-type compare
 rc=$?
@@ -48,8 +48,8 @@ fi
 
 echo -e "\n${YELLOW}Step 4: Running comprehensive performance test...${NC}"
 python run_performance_test.py \
-    --host ${ES_HOST} \
-    --port ${ES_PORT} \
+    --host "${ES_HOST}" \
+    --port "${ES_PORT}" \
     --data-file ./data/products.ndjson \
     --test-sizes 500 1000 \
     --output-dir ./results

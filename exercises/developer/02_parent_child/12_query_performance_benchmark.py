@@ -3,6 +3,7 @@
 Benchmark the cost of parent-child queries against simple queries
 """
 import time
+from typing import Any
 
 from elasticsearch import Elasticsearch
 
@@ -14,7 +15,7 @@ def measure_parent_child_performance():
     # Warm up
     es.search(index="blog_system", body={"query": {"match_all": {}}})
 
-    queries = [
+    queries: list[dict[str, Any]] = [
         {
             "name": "Simple parent query",
             "body": {"query": {"term": {"join_field": "blog_post"}}}
