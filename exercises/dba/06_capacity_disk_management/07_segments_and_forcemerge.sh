@@ -13,8 +13,8 @@
 #   committed - whether it has been fsynced
 # Lots of rows with high docs.deleted means a forcemerge would reclaim space.
 echo "=== segments for capacity_demo ==="
-curl -s -X GET \
-	"localhost:9200/capacity_demo/_segments?pretty" | head -60
+{ curl -s -X GET \
+	"localhost:9200/capacity_demo/_segments?pretty" || true; } | head -60
 
 echo
 echo "=== compact segment view (_cat/segments) ==="
@@ -24,8 +24,8 @@ curl -s -X GET \
 # Count segments per shard - the number you want to shrink with forcemerge.
 echo
 echo "=== segment count per shard ==="
-curl -s -X GET "localhost:9200/_cat/segments/capacity_demo?h=shard,prirep" \
-	| sort | uniq -c
+{ curl -s -X GET "localhost:9200/_cat/segments/capacity_demo?h=shard,prirep" \
+	| sort || true; } | uniq -c
 
 # forcemerge down to a single segment per shard. ONLY do this on indices that
 # are no longer being written to: merging a hot index wastes I/O because new
@@ -39,5 +39,5 @@ curl -s -X POST \
 # Re-check the segment count; you should now see 1 segment per shard.
 echo
 echo "=== segment count after forcemerge ==="
-curl -s -X GET "localhost:9200/_cat/segments/capacity_demo?h=shard,prirep" \
-	| sort | uniq -c
+{ curl -s -X GET "localhost:9200/_cat/segments/capacity_demo?h=shard,prirep" \
+	| sort || true; } | uniq -c

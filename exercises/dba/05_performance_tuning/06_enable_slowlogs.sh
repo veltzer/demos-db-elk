@@ -113,8 +113,8 @@ sleep 1
 echo "=== recent search slow-log lines (from 'docker logs ${CONTAINER}') ==="
 if command -v docker >/dev/null 2>&1 && \
    docker inspect "${CONTAINER}" >/dev/null 2>&1; then
-	docker logs "${CONTAINER}" 2>&1 \
-		| grep "elasticsearch.index_search_slowlog" \
+	{ docker logs "${CONTAINER}" 2>&1 \
+		| grep "elasticsearch.index_search_slowlog" || true; } \
 		| tail -n 5 \
 		|| echo "(no slow-log lines found yet -- try re-running)"
 else

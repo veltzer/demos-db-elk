@@ -17,10 +17,10 @@ curl -s -X GET "http://localhost:9200/_cat/shards?v&h=index,shard,prirep,state,d
 # Filter to only the problem shards. UNASSIGNED shards are the ones a DBA
 # must explain and fix; they are why a cluster is yellow or red.
 echo "=== UNASSIGNED shards only ==="
-curl -s -X GET "http://localhost:9200/_cat/shards?v&h=index,shard,prirep,state,unassigned.reason,unassigned.at" \
+{ curl -s -X GET "http://localhost:9200/_cat/shards?v&h=index,shard,prirep,state,unassigned.reason,unassigned.at" || true; } \
 	| grep -E "UNASSIGNED|^index" || echo "no unassigned shards (cluster is healthy)"
 
 # RELOCATING/INITIALIZING shards indicate the cluster is rebalancing.
 echo "=== shards in transition (INITIALIZING / RELOCATING) ==="
-curl -s -X GET "http://localhost:9200/_cat/shards?v&h=index,shard,prirep,state,node" \
+{ curl -s -X GET "http://localhost:9200/_cat/shards?v&h=index,shard,prirep,state,node" || true; } \
 	| grep -E "INITIALIZING|RELOCATING|^index" || echo "no shards in transition"

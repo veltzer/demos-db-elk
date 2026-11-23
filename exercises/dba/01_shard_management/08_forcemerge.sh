@@ -17,7 +17,7 @@
 IDX="logs_shrunk"
 
 # If the shrink step has not been run, fall back to the main index.
-if ! curl -s -o /dev/null -w "%{http_code}" "localhost:9200/${IDX}" \
+if ! { curl -s -o /dev/null -w "%{http_code}" "localhost:9200/${IDX}" || true; } \
 	| grep -q 200; then
 	IDX="logs_sharded"
 fi

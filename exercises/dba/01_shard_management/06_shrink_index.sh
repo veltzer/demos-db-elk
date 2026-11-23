@@ -21,7 +21,7 @@ curl -s -X DELETE "localhost:9200/${DST}" >/dev/null 2>&1 || true
 
 # Pick a target node name to gather all shards onto. We just grab the first
 # node from _cat/nodes. On a single-node cluster this is that one node.
-NODE=$(curl -s "localhost:9200/_cat/nodes?h=name" | head -n1 | tr -d '[:space:]')
+NODE=$({ curl -s "localhost:9200/_cat/nodes?h=name" | head -n1 || true; } | tr -d '[:space:]')
 echo "Gathering all '${SRC}' shards onto node: ${NODE}"
 
 # Step 1: relocate every primary onto one node AND set the index read-only.

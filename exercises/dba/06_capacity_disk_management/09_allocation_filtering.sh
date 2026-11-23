@@ -57,8 +57,8 @@ curl -s -X PUT "localhost:9200/_cluster/settings?pretty" \
 # Show that it took effect.
 echo
 echo "=== current awareness setting ==="
-curl -s -X GET \
-	"localhost:9200/_cluster/settings?flat_settings=true&pretty" \
+{ curl -s -X GET \
+	"localhost:9200/_cluster/settings?flat_settings=true&pretty" || true; } \
 	| grep awareness || echo "(no awareness attributes set)"
 
 # Revert so we leave the cluster in its original state.

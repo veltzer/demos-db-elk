@@ -38,9 +38,9 @@ fi
 echo "This will DELETE your indices and the config YOU created on:"
 echo "    ${ES_URL}"
 echo "(Elasticsearch/Kibana managed defaults are preserved.)"
-if [ "${FORCE}" != "1" ]; then
+if [[ "${FORCE}" != "1" ]]; then
 	read -r -p "Type 'yes' to continue: " answer
-	if [ "${answer}" != "yes" ]; then
+	if [[ "${answer}" != "yes" ]]; then
 		echo "aborted."
 		exit 1
 	fi
@@ -59,7 +59,7 @@ del "/*,-.*?expand_wildcards=open,closed"
 
 # 2) Composable index templates -- skip any with _meta.managed == true.
 echo "=== deleting user index templates ==="
-for name in $(curl -s "${ES_URL}/_index_template" \
+for name in $({ curl -s "${ES_URL}/_index_template" || true; } \
 	| jq -r '.index_templates[]
 		| select((.index_template._meta.managed // false) != true)
 		| .name'); do
@@ -68,7 +68,7 @@ done
 
 # 3) Component templates -- same managed filter.
 echo "=== deleting user component templates ==="
-for name in $(curl -s "${ES_URL}/_component_template" \
+for name in $({ curl -s "${ES_URL}/_component_template" || true; } \
 	| jq -r '.component_templates[]
 		| select((.component_template._meta.managed // false) != true)
 		| .name'); do
@@ -78,7 +78,7 @@ done
 # 4) Legacy templates (_template). These are keyed by name; skip dot-prefixed
 #    internal ones and any flagged managed.
 echo "=== deleting user legacy templates ==="
-for name in $(curl -s "${ES_URL}/_template" \
+for name in $({ curl -s "${ES_URL}/_template" || true; } \
 	| jq -r 'to_entries[]
 		| select((.value._meta.managed // false) != true)
 		| select(.key | startswith(".") | not)
@@ -88,7 +88,7 @@ done
 
 # 5) ILM policies -- the built-ins carry _meta.managed == true.
 echo "=== deleting user ILM policies ==="
-for name in $(curl -s "${ES_URL}/_ilm/policy" \
+for name in $({ curl -s "${ES_URL}/_ilm/policy" || true; } \
 	| jq -r 'to_entries[]
 		| select((.value.policy._meta.managed // false) != true)
 		| .key'); do
@@ -97,7 +97,7 @@ done
 
 # 6) Ingest pipelines -- managed pipelines (Fleet/APM/etc.) set _meta.managed.
 echo "=== deleting user ingest pipelines ==="
-for name in $(curl -s "${ES_URL}/_ingest/pipeline" \
+for name in $({ curl -s "${ES_URL}/_ingest/pipeline" || true; } \
 	| jq -r 'to_entries[]
 		| select((.value._meta.managed // false) != true)
 		| .key'); do
@@ -107,7 +107,7 @@ done
 # 7) Snapshot repositories. These are all user-registered (ES ships none),
 #    so every repo here is something you added.
 echo "=== deleting snapshot repositories ==="
-for name in $(curl -s "${ES_URL}/_snapshot" | jq -r 'keys[]'); do
+for name in $({ curl -s "${ES_URL}/_snapshot" || true; } | jq -r 'keys[]'); do
 	del "/_snapshot/${name}"
 done
 

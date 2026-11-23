@@ -124,8 +124,8 @@ uninstall() {
 	docker compose down -v
 
 	# Remove images (optional)
-	docker rmi docker.elastic.co/elasticsearch/elasticsearch:9.1.3 || true
-	docker rmi docker.elastic.co/kibana/kibana:9.1.3 || true
+	sudo /usr/bin/docker rmi docker.elastic.co/elasticsearch/elasticsearch:9.1.3 || true
+	sudo /usr/bin/docker rmi docker.elastic.co/kibana/kibana:9.1.3 || true
 
 	# Remove project directory
 	cd ~ && rm -rf "${PROJECT_DIR}"

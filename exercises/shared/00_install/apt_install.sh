@@ -17,7 +17,7 @@ install_dependencies() {
 
 add_elasticsearch_repo() {
 	# Import the Elasticsearch GPG key
-	wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | \
+	{ wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch || true; } | \
 		sudo gpg --dearmor -o /usr/share/keyrings/elasticsearch-keyring.gpg
 
 	# Add the repository

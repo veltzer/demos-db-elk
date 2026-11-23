@@ -39,7 +39,7 @@ python bulk_insert.py \
     --test-type compare
 rc=$?
 
-if [ "${rc}" -eq 0 ]; then
+if [[ "${rc}" -eq 0 ]]; then
     echo -e "${GREEN}✓ Bulk insert test completed${NC}"
 else
     echo -e "${RED}✗ Bulk insert test failed${NC}"
@@ -55,7 +55,7 @@ python run_performance_test.py \
     --output-dir ./results
 rc=$?
 
-if [ "${rc}" -eq 0 ]; then
+if [[ "${rc}" -eq 0 ]]; then
     echo -e "${GREEN}✓ Performance test completed${NC}"
 else
     echo -e "${RED}✗ Performance test failed${NC}"
@@ -63,7 +63,7 @@ else
 fi
 
 echo -e "\n${YELLOW}Step 5: Displaying results...${NC}"
-if [ -f ./results/performance_report.txt ]; then
+if [[ -f ./results/performance_report.txt ]]; then
     echo -e "${GREEN}Performance Report Summary:${NC}"
     tail -n 20 ./results/performance_report.txt
 else

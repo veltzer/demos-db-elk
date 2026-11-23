@@ -11,8 +11,8 @@ set +e
 delete_indices() {
 	local pattern="$1"
 	local names
-	names=$(curl -s "localhost:9200/_cat/indices/${pattern}?h=index" | tr -d ' ')
-	if [ -z "${names}" ]; then
+	names=$({ curl -s "localhost:9200/_cat/indices/${pattern}?h=index" || true; } | tr -d ' ')
+	if [[ -z "${names}" ]]; then
 		echo "(no indices matching '${pattern}')"
 		return
 	fi

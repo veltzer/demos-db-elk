@@ -22,7 +22,7 @@ curl -s -X GET "${ES_URL}/_cat/nodes?v&h=name,node.role,heap.percent,ram.percent
 
 # Any shards that are not assigned, with the reason. Empty output is good.
 echo "=== unassigned shards (empty is healthy) ==="
-curl -s -X GET "${ES_URL}/_cat/shards?v&h=index,shard,prirep,state,unassigned.reason" | grep -E "UNASSIGNED|INITIALIZING" || echo "(none)"
+{ curl -s -X GET "${ES_URL}/_cat/shards?v&h=index,shard,prirep,state,unassigned.reason" || true; } | grep -E "UNASSIGNED|INITIALIZING" || echo "(none)"
 
 # Per-index summary: health, doc count, store size.
 echo "=== indices ==="

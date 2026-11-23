@@ -20,9 +20,9 @@
 # to dotted keys and grep-filtered down to just the watermark settings. Without
 # include_defaults you only see values you have explicitly overridden.
 echo "=== current watermark settings (incl. defaults) ==="
-curl -s -X GET \
+{ curl -s -X GET \
 	"localhost:9200/_cluster/settings?include_defaults=true&flat_settings=true" \
-	| tr ',' '\n' | grep -E "disk.watermark|disk.threshold_enabled" \
+	| tr ',' '\n' || true; } | grep -E "disk.watermark|disk.threshold_enabled" \
 	|| echo "(no watermark keys matched - check the raw output below)"
 
 # Now SET more conservative watermarks as a transient override. transient

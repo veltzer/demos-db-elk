@@ -146,10 +146,10 @@ verify() {
 
 uninstall() {
 	# Stop background processes if present
-	if [ -f /tmp/elasticsearch.pid ]; then
+	if [[ -f /tmp/elasticsearch.pid ]]; then
 		kill "$(cat /tmp/elasticsearch.pid)" || true
 	fi
-	if [ -f /tmp/kibana.pid ]; then
+	if [[ -f /tmp/kibana.pid ]]; then
 		kill "$(cat /tmp/kibana.pid)" || true
 	fi
 

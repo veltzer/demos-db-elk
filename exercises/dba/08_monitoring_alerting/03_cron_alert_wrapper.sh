@@ -36,7 +36,7 @@ RC=$?
 set -e
 
 # RC: 0 = OK, 1 = WARN, 2 = CRITICAL. Stay quiet when everything is OK.
-if [ "${RC}" -eq 0 ]; then
+if [[ "${RC}" -eq 0 ]]; then
 	exit 0
 fi
 
@@ -54,7 +54,7 @@ if command -v mail >/dev/null 2>&1; then
 fi
 
 # --- Alert via webhook (Slack-style JSON payload) --------------------------
-if [ -n "${ALERT_WEBHOOK}" ]; then
+if [[ -n "${ALERT_WEBHOOK}" ]]; then
 	# Escape newlines for JSON; keep the payload minimal and portable.
 	PAYLOAD=$(printf '%s' "${OUTPUT}" | sed ':a;N;$!ba;s/\n/\\n/g')
 	curl -s -X POST -H 'Content-Type: application/json' \

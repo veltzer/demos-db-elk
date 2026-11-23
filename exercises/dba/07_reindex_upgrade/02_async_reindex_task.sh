@@ -23,7 +23,7 @@ RESPONSE=$(curl -s -X POST \
 echo "${RESPONSE}"
 
 # Extract the task id from the JSON response (no jq dependency: grep+cut).
-TASK_ID=$(echo "${RESPONSE}" | grep -o '"task"[^,}]*' | cut -d'"' -f4)
+TASK_ID=$({ echo "${RESPONSE}" | grep -o '"task"[^,}]*' || true; } | cut -d'"' -f4)
 echo
 echo "task id: ${TASK_ID}"
 

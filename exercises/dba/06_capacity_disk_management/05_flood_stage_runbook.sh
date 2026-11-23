@@ -20,7 +20,7 @@ curl -s -X GET \
 # A cluster-wide sweep for every blocked index (handy when many are affected):
 echo
 echo "=== blocked indices across the cluster ==="
-curl -s -X GET "localhost:9200/_all/_settings/index.blocks*?pretty" \
+{ curl -s -X GET "localhost:9200/_all/_settings/index.blocks*?pretty" || true; } \
 	| grep -B2 "read_only" || echo "(none blocked)"
 
 # STEP 2: FREE DISK FIRST. In a real incident this is the actual fix, e.g.
