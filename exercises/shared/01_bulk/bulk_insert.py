@@ -29,7 +29,7 @@ class BulkInsertTester:
 
         print(f"Connected to Elasticsearch at {es_host}:{es_port}")
 
-    def create_index_with_mappings(self, index_name, enable_indexing=True):
+    def create_index_with_mappings(self, index_name, *, enable_indexing=True):
         """Create index with specified mapping settings"""
 
         # Delete index if it exists
@@ -175,7 +175,7 @@ class BulkInsertTester:
             "docs_per_second": success / elapsed_time if elapsed_time > 0 else 0
         }
 
-    def test_bulk_performance(self, data_file, test_name, enable_indexing=True, chunk_sizes=None):
+    def test_bulk_performance(self, data_file, test_name, *, enable_indexing=True, chunk_sizes=None):
         """Test bulk insert performance with different chunk sizes"""
         if chunk_sizes is None:
             chunk_sizes = [100, 500, 1000, 5000]
@@ -198,7 +198,7 @@ class BulkInsertTester:
             print(f"\nTesting chunk size: {chunk_size}")
 
             # Create index
-            self.create_index_with_mappings(index_name, enable_indexing)
+            self.create_index_with_mappings(index_name, enable_indexing=enable_indexing)
 
             # Perform bulk insert
             result: dict[str, Any] = self.bulk_insert_with_helpers(index_name, data, chunk_size)

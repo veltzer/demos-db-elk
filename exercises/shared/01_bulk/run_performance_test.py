@@ -294,7 +294,7 @@ class PerformanceTestSuite:
         ax1.set_ylabel('Documents/Second')
         ax1.set_title('Throughput by Configuration')
         ax1.legend()
-        ax1.grid(True)
+        ax1.grid(visible=True)
 
         # Chart 2: Time comparison
         ax2 = axes[0, 1]
@@ -303,7 +303,7 @@ class PerformanceTestSuite:
         bars = ax2.bar(config_names, avg_times)
         ax2.set_ylabel('Average Time (seconds)')
         ax2.set_title('Average Insert Time by Configuration')
-        ax2.grid(True, axis='y')
+        ax2.grid(visible=True, axis='y')
 
         # Add value labels on bars
         for rect, avg_time in zip(bars, avg_times, strict=True):
@@ -317,7 +317,7 @@ class PerformanceTestSuite:
         bars = ax3.bar(config_names, avg_sizes)
         ax3.set_ylabel('Index Size (MB)')
         ax3.set_title('Average Index Size by Configuration')
-        ax3.grid(True, axis='y')
+        ax3.grid(visible=True, axis='y')
 
         # Chart 4: Efficiency (docs/s per MB)
         ax4 = axes[1, 1]
@@ -329,7 +329,7 @@ class PerformanceTestSuite:
         bars = ax4.bar(config_names, efficiencies)
         ax4.set_ylabel('Docs/s per MB')
         ax4.set_title('Storage Efficiency by Configuration')
-        ax4.grid(True, axis='y')
+        ax4.grid(visible=True, axis='y')
 
         plt.tight_layout()
         plt.savefig(f'{output_dir}/performance_analysis.png', dpi=100)
