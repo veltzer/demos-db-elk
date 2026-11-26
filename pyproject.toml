@@ -39,11 +39,6 @@ search-path = [
 ]
 # Loose scripts import their siblings: search each importing file's folder.
 enable-fallback-search-path = true
-# Third-party libraries without type information.
-ignore-missing-imports = [
-    "elasticsearch.*",
-    "matplotlib.*",
-]
 
 [tool.pyrefly.errors]
 no-any-return = "error"
