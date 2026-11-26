@@ -62,3 +62,7 @@ src_dirs = [".github", "exercises"]
 
 [processor.checker.ijsonlint]
 src_dirs = ["exercises/developer/00_crud"]
+
+# lint the Lua configuration with luacheck (policy: .luacheckrc)
+[processor.checker.iluacheck]
+src_dirs = ["config"]
