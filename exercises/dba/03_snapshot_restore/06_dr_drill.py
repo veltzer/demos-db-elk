@@ -76,7 +76,7 @@ def load_known_data() -> int:
         operations.append({"value": i, "label": f"row-{i}"})
     es.bulk(operations=operations, refresh=True)
 
-    count = es.count(index=INDEX)["count"]
+    count: int = es.count(index=INDEX)["count"]
     print(f"    loaded count = {count}")
     return count
 
@@ -122,7 +122,7 @@ def restore() -> None:
 def verify(expected: int) -> bool:
     """Compare the restored count to the expected count."""
     print("[6] verifying restored document count ...")
-    actual = es.count(index=INDEX)["count"]
+    actual: int = es.count(index=INDEX)["count"]
     print(f"    expected = {expected}, restored = {actual}")
     return actual == expected
 

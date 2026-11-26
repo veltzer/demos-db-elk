@@ -85,7 +85,8 @@ def seed_data() -> None:
 def count(alias: str) -> int:
     """Return the document count visible through an alias or index name."""
     es.indices.refresh(index=alias)
-    return es.count(index=alias)["count"]
+    total: int = es.count(index=alias)["count"]
+    return total
 
 
 def create_v2() -> None:

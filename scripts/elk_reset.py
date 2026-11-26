@@ -59,7 +59,8 @@ def load_baseline() -> dict:
     """Read the captured baseline, or exit with a clear message if missing."""
     try:
         with open(BASELINE, encoding="utf-8") as handle:
-            return json.load(handle)
+            baseline: dict = json.load(handle)
+            return baseline
     except FileNotFoundError:
         sys.exit(
             f"error: baseline file not found at {BASELINE}.\n"

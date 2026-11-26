@@ -44,3 +44,6 @@ ignore-missing-imports = [
     "elasticsearch.*",
     "matplotlib.*",
 ]
+
+[tool.pyrefly.errors]
+no-any-return = "error"

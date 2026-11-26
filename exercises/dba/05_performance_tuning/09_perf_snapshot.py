@@ -32,7 +32,7 @@ def tag(level: str, msg: str) -> str:
     return f"[{level:<5}] {msg}"
 
 
-def hit_ratio(cache: dict) -> float:
+def hit_ratio(cache: dict[str, int]) -> float:
     """Return a cache hit ratio in percent, or -1.0 when cold."""
     total = cache["hit_count"] + cache["miss_count"]
     if total == 0:

@@ -52,8 +52,8 @@ SEARCH_PAGE = """
 @app.route("/")
 def home() -> str:
     es.indices.refresh(index=INDEX)
-    result = es.count(index=INDEX)
-    return HOME_PAGE.format(count=result["count"])
+    count: int = es.count(index=INDEX)["count"]
+    return HOME_PAGE.format(count=count)
 
 
 @app.route("/search")
