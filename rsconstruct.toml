@@ -55,7 +55,8 @@ args = ["--offline", "--no-progress", "--persona=pedantic"]
 # ─── yaml ────────────────────────────────────────────────────────────────────
 
 [processor.checker.iyamllint]
-src_dirs = ["exercises"]
+src_files = [".yamllint.yaml"]
+src_dirs = [".github", "exercises"]
 
 # ─── json ────────────────────────────────────────────────────────────────────
 
