@@ -34,7 +34,7 @@ src_dirs = ["scripts", "exercises"]
 # ─── toml / yaml / json ──────────────────────────────────────────────────────
 
 [processor.checker.taplo]
-src_files = [".rumdl.toml", "pyproject.toml", "rsconstruct.toml"]
+src_files = [".ruff.toml", ".rumdl.toml", "pyproject.toml", "rsconstruct.toml"]
 
 # Runtime deps + type stubs so CI installs what the exercises import
 # (pyrefly resolves them; without these it reports missing imports).
