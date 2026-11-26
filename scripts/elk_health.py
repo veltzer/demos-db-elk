@@ -74,7 +74,7 @@ def main() -> None:
     # mypy cannot narrow that on format="json", which always yields the JSON
     # (list-of-dicts) variant, so state the runtime shape explicitly.
     shards = cast(
-        list[dict[str, Any]],
+        "list[dict[str, Any]]",
         es.cat.shards(h="index,shard,prirep,state,unassigned.reason", format="json"),
     )
     unassigned = [s for s in shards if s["state"] != "STARTED"]
