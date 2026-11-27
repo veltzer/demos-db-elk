@@ -18,10 +18,11 @@ def delete_document(doc_id: str):
     try:
         response = es.delete(index=INDEX_NAME, id=doc_id)
         print(f"Deleted document {doc_id}: {response['result']}")
-        return response
     except (ApiError, TransportError) as e:
         print(f"Error deleting document: {e}")
         return None
+    else:
+        return response
 
 def delete_by_query():
     """Delete documents by query"""

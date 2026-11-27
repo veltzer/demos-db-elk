@@ -76,9 +76,10 @@ def safe_delete(action, name: str) -> bool:
     """
     try:
         action(name)
-        return True
     except NotFoundError:
         return False
+    else:
+        return True
 
 
 def reset_category(label, current, baseline, deleter) -> int:

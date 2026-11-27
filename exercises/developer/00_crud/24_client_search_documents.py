@@ -21,10 +21,11 @@ def get_document(doc_id: str):
         response = es.get(index=INDEX_NAME, id=doc_id)
         print(f"Document ID {doc_id}:")
         print(json.dumps(response['_source'], indent=2))
-        return response
     except (ApiError, TransportError) as e:
         print(f"Error getting document: {e}")
         return None
+    else:
+        return response
 
 def search_all_documents():
     """Search all documents"""
