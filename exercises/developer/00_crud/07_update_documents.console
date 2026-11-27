@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 // Full update (replaces entire document)
 PUT /products/_doc/1
 {

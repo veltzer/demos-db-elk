@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 // Get specific document
 GET /products/_doc/1
 

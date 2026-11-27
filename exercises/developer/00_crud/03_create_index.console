@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 // In Kibana Dev Tools Console
 PUT /products
 {

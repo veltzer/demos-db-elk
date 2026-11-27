@@ -72,7 +72,7 @@ the other methods.
 
 ### 1.1 Create an Index
 
-See [`03_create_index.js`](./03_create_index.js)
+See [`03_create_index.console`](./03_create_index.console)
 
 An index is the rough equivalent of a table: it is a named collection of
 documents. The `mappings` section defines the type of each field, and this
@@ -92,7 +92,7 @@ date being treated as a plain string.
 
 ### 1.2 Insert Single Document
 
-See [`04_insert_document.js`](./04_insert_document.js)
+See [`04_insert_document.console`](./04_insert_document.console)
 
 This step shows the two ways to create a document. `POST /products/_doc`
 lets Elasticsearch generate a random unique ID for you, which is ideal for
@@ -105,7 +105,7 @@ creating new ones.
 
 ### 1.3 Bulk Insert Documents
 
-See [`05_bulk_insert.js`](./05_bulk_insert.js)
+See [`05_bulk_insert.console`](./05_bulk_insert.console)
 
 The `_bulk` API packs many operations into a single request. Each operation
 is two lines: an action line saying what to do (here `index` with an `_id`)
@@ -117,7 +117,7 @@ loading is the standard way to ingest data at scale.
 
 ### 1.4 Search/Read Documents
 
-See [`06_search_documents.js`](./06_search_documents.js)
+See [`06_search_documents.console`](./06_search_documents.console)
 
 Reading comes in two flavors. Fetching by ID with `GET /products/_doc/1` is
 a direct lookup and always returns the current document. The `_search`
@@ -130,7 +130,7 @@ which makes dashboards and summaries efficient.
 
 ### 1.5 Update Documents
 
-See [`07_update_documents.js`](./07_update_documents.js)
+See [`07_update_documents.console`](./07_update_documents.console)
 
 Updates reveal an important truth: Elasticsearch documents are immutable
 under the hood. There is no in-place edit. A full `PUT` to an existing ID
@@ -145,7 +145,7 @@ touch a large number of documents in a single call.
 
 ### 1.6 Delete Documents
 
-See [`08_delete_documents.js`](./08_delete_documents.js)
+See [`08_delete_documents.console`](./08_delete_documents.console)
 
 Deletion mirrors the read operations. `DELETE /products/_doc/1` removes one
 document by ID, `_delete_by_query` removes everything matching a condition,
