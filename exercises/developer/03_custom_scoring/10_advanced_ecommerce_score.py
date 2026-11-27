@@ -6,7 +6,7 @@ from elasticsearch import Elasticsearch
 
 es = Elasticsearch(["http://localhost:9200"])
 
-def advanced_ecommerce_scoring(query_text, user_context):
+def advanced_ecommerce_scoring(query_text: str, user_context: dict[str, float | list[str]] | dict[str, int | list[str]]) -> None:
     """
     Complex scoring for e-commerce with:
     - Business goals (profit, inventory)

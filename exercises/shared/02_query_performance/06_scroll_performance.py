@@ -10,7 +10,7 @@ from elasticsearch import Elasticsearch
 es = Elasticsearch("http://localhost:9200")
 
 
-def measure_scroll_performance(index_name, query_body, scroll_size=1000):
+def measure_scroll_performance(index_name: str, query_body: dict[str, dict[str, dict[str, dict[str, int]]]], scroll_size: int = 1000):
     """Measure performance of scrolling through large result sets"""
 
     start_time = time.perf_counter()

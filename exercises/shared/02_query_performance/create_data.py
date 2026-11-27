@@ -14,7 +14,7 @@ from faker import Faker
 fake = Faker()
 es = Elasticsearch("http://localhost:9200")
 
-def create_indexed_mapping():
+def create_indexed_mapping() -> dict[str, dict[str, dict[str, dict[str, dict[str, dict[str, str]]] | dict[str, str] | dict[str, str | dict[str, dict[str, str]]]]]]:
     """Create mapping with all fields indexed (default behavior)"""
     return {
         "mappings": {
@@ -52,7 +52,7 @@ def create_indexed_mapping():
         }
     }
 
-def create_non_indexed_mapping():
+def create_non_indexed_mapping() -> dict[str, dict[str, dict[str, dict[str, dict[str, dict[str, str] | dict[str, bool | str]]] | dict[str, str] | dict[str, str | dict[str, dict[str, str]]] | dict[str, bool | str]]]]:
     """Create mapping with some fields not indexed for comparison"""
     return {
         "mappings": {
@@ -90,7 +90,7 @@ def create_non_indexed_mapping():
         }
     }
 
-def generate_user_document():
+def generate_user_document() -> dict[str, bool | float | int | list[str] | str | dict[str, float | str]]:
     """Generate a single user document with fake data"""
     departments = ["Engineering", "Marketing", "Sales", "HR", "Finance", "Operations", "Support"]
     tags = ["python", "java", "javascript", "react", "docker", "kubernetes", "aws", "azure", "ml", "data"]
@@ -123,7 +123,7 @@ def generate_user_document():
         "metadata": fake.text(max_nb_chars=500)
     }
 
-def bulk_index_documents(index_name, num_docs, batch_size=500):
+def bulk_index_documents(index_name: str, num_docs: int, batch_size: int = 500) -> int:
     """Bulk index documents to Elasticsearch"""
     print(f"Generating and indexing {num_docs} documents to [{index_name}]...")
 
@@ -155,7 +155,7 @@ def bulk_index_documents(index_name, num_docs, batch_size=500):
 
     return success
 
-def create_index_with_mapping(index_name, mapping):
+def create_index_with_mapping(index_name: str, mapping: dict[str, dict[str, dict[str, dict[str, dict[str, dict[str, str]]] | dict[str, str] | dict[str, str | dict[str, dict[str, str]]]]]] | dict[str, dict[str, dict[str, dict[str, dict[str, dict[str, str] | dict[str, bool | str]]] | dict[str, str] | dict[str, str | dict[str, dict[str, str]]] | dict[str, bool | str]]]]) -> None:
     """Create an index with the specified mapping"""
     if es.indices.exists(index=index_name):
         print(f"Deleting existing index \"{index_name}\"...")
@@ -169,7 +169,7 @@ def create_index_with_mapping(index_name, mapping):
     field_count = len(created_mapping[index_name]["mappings"]["properties"])
     print(f"Index created with {field_count} mapped fields")
 
-def main():
+def main() -> None:
     parser = argparse.ArgumentParser(description="Create test data for Elasticsearch query performance testing")
     parser.add_argument("--docs", type=int, default=10000, help="Number of documents to create (default: 10000)")
     parser.add_argument("--batch-size", type=int, default=500, help="Batch size for bulk indexing (default: 500)")

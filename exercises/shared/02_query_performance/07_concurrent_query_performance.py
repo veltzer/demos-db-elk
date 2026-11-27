@@ -12,10 +12,10 @@ from elasticsearch import Elasticsearch
 es = Elasticsearch("http://localhost:9200")
 
 
-def run_concurrent_queries(index_name, query_body, num_threads=10, queries_per_thread=10):
+def run_concurrent_queries(index_name: str, query_body: dict[str, dict[str, dict[str, str]]], num_threads: int = 10, queries_per_thread: int = 10) -> dict[str, float | int]:
     """Test query performance under concurrent load"""
 
-    def run_queries():
+    def run_queries() -> list[float]:
         times = []
         for _ in range(queries_per_thread):
             start = time.perf_counter()

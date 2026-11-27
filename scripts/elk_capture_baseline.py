@@ -51,12 +51,12 @@ BASELINE = os.environ.get(
 )
 
 
-def _names(items, key):
+def _names(items: Any, key: str):
     """Sorted list of the `key` field from a list of dicts (deterministic)."""
     return sorted(item[key] for item in items)
 
 
-def capture(es) -> dict[str, Any]:
+def capture(es: Elasticsearch) -> dict[str, Any]:
     """Query every relevant API and return the baseline as a plain dict."""
     # Indices: include system (dot-prefixed) and closed ones, since those are
     # part of the post-install state and must be preserved by the reset.

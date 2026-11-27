@@ -35,7 +35,7 @@ TARGET_MAX = 50 * GB
 TINY_SHARD = 1 * GB  # below this a primary shard is "too small"
 
 
-def human(n):
+def human(n: float) -> str:
     """Render a byte count as a short human string."""
     if n >= GB:
         return f"{n / GB:.2f}GB"
@@ -44,7 +44,7 @@ def human(n):
     return f"{n / 1024:.2f}KB"
 
 
-def main():
+def main() -> None:
     if not es.ping():
         print("Error: could not connect to Elasticsearch")
         return

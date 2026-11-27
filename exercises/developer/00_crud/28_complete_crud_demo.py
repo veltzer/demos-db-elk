@@ -13,7 +13,7 @@ es = Elasticsearch(
 
 INDEX_NAME = "products_demo"
 
-def run_complete_demo():
+def run_complete_demo() -> None:
     """Run complete CRUD demonstration"""
 
     print("=" * 50)

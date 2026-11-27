@@ -31,7 +31,7 @@ SERVICES = ["auth", "billing", "search", "cart", "shipping", "gateway"]
 STATUSES = [200, 201, 301, 400, 401, 404, 500, 503]
 
 
-def gen_docs(count):
+def gen_docs(count: int):
     """Yield bulk-action dicts of fake event documents."""
     base = datetime.now(UTC) - timedelta(days=30)
     for _ in range(count):
@@ -54,7 +54,7 @@ def gen_docs(count):
         }
 
 
-def main():
+def main() -> None:
     count = int(sys.argv[1]) if len(sys.argv) > 1 else 100000
 
     if not es.ping():

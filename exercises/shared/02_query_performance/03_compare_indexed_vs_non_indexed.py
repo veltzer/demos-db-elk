@@ -4,6 +4,7 @@ Compare query times against indexed and non-indexed fields
 """
 
 import time
+from typing import Any
 
 from elastic_transport import TransportError
 from elasticsearch import ApiError, Elasticsearch
@@ -11,7 +12,7 @@ from elasticsearch import ApiError, Elasticsearch
 es = Elasticsearch("http://localhost:9200")
 
 
-def measure_query_time(index_name, query_body, runs=5):
+def measure_query_time(index_name: str, query_body: dict[str, Any], runs: int = 5) -> dict[str, float | list[float]]:
     """Measure query execution time over multiple runs"""
     times = []
 
@@ -38,7 +39,7 @@ def measure_query_time(index_name, query_body, runs=5):
     }
 
 
-def compare_field_performance(field_name, search_value, query_type="term"):
+def compare_field_performance(field_name: str, search_value: str | dict[str, int], query_type: str = "term"):
     """Compare query performance between indexed and non-indexed versions"""
 
     query = {

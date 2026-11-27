@@ -7,7 +7,7 @@ from elasticsearch import Elasticsearch
 es = Elasticsearch(["http://localhost:9200"])
 
 # Boost products based on proximity to user location
-def search_by_proximity(query_text, user_location):
+def search_by_proximity(query_text: str, user_location: dict[str, float]) -> None:
     query = {
         "query": {
             "function_score": {

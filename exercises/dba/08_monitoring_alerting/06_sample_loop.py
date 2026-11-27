@@ -24,7 +24,7 @@ from importlib import import_module
 index_metrics = import_module("05_index_metrics")
 
 
-def run_sampler(interval_s, duration_s):
+def run_sampler(interval_s: int, duration_s: int) -> None:
     """Index a metrics doc every interval_s for duration_s seconds."""
     start = time.monotonic()
     deadline = start + duration_s
@@ -59,7 +59,7 @@ def run_sampler(interval_s, duration_s):
     )
 
 
-def main():
+def main() -> None:
     """Parse optional args and run the sampling loop."""
     interval_s = int(sys.argv[1]) if len(sys.argv) > 1 else 10
     duration_s = int(sys.argv[2]) if len(sys.argv) > 2 else 120

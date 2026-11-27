@@ -7,7 +7,7 @@ from elasticsearch import Elasticsearch
 es = Elasticsearch(["http://localhost:9200"])
 
 # Scoring based on historical click-through rates
-def ctr_optimized_search(query_text):
+def ctr_optimized_search(query_text: str) -> None:
     # First, update some products with CTR data
     ctr_updates = [
         {"id": 1, "clicks": 150, "impressions": 1000},

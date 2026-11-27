@@ -104,9 +104,10 @@ def reset_category(label: str, current: Iterable[str], baseline: Iterable[str], 
     return removed
 
 
-def current_state(es) -> dict[str, Any]:
+def current_state(es: Elasticsearch) -> dict[str, Any]:
     """Return the names currently present, mirroring the baseline structure."""
-    indices = es.cat.indices(h="index", format="json", expand_wildcards="all")
+    # format="json" answers with rows; the client types a cat call as text or object
+    indices: Any = es.cat.indices(h="index", format="json", expand_wildcards="all")
     data_streams = es.indices.get_data_stream(name="*").get(
         "data_streams", []
     )
@@ -133,7 +134,7 @@ def current_state(es) -> dict[str, Any]:
     }
 
 
-def reset_cluster_settings(es) -> bool:
+def reset_cluster_settings(es: Elasticsearch) -> bool:
     """Clear every persistent and transient cluster setting to its default.
 
     Setting a key to null removes the override; doing it across the board

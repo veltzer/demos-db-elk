@@ -7,7 +7,7 @@ from elasticsearch import Elasticsearch
 es = Elasticsearch(["http://localhost:9200"])
 
 # Boost by popularity (view_count)
-def search_with_popularity_boost(query_text):
+def search_with_popularity_boost(query_text: str) -> None:
     query = {
         "query": {
             "function_score": {

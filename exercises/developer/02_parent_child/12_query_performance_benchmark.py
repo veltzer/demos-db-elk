@@ -9,7 +9,7 @@ from elasticsearch import Elasticsearch
 
 es = Elasticsearch(["http://localhost:9200"])
 
-def measure_parent_child_performance():
+def measure_parent_child_performance() -> None:
     """Measure query performance for parent-child relationships"""
 
     # Warm up

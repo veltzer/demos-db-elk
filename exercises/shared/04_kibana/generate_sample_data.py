@@ -97,7 +97,7 @@ def generate_application_logs() -> dict[str, Any]:
         'method_name': fake.word()
     }
 
-def main():
+def main() -> None:
     parser = argparse.ArgumentParser(description='Generate sample data for Kibana exercises')
     parser.add_argument('--type', choices=['web_logs', 'ecommerce', 'metrics', 'app_logs', 'all'],
                        default='all', help='Type of data to generate')

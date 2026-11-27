@@ -9,7 +9,7 @@ from elasticsearch import Elasticsearch
 
 es = Elasticsearch("http://localhost:9200")
 
-def measure_query_time(index_name, query_body, runs=5):
+def measure_query_time(index_name: str, query_body: dict[str, dict[str, dict[str, str]]], runs: int = 5) -> dict[str, float | list[float]]:
     """Measure query execution time over multiple runs"""
     times = []
 

@@ -26,15 +26,17 @@ Usage:
 
 import os
 import sys
+from typing import Any
 
 from elasticsearch import Elasticsearch
 
 ES_URL = os.environ.get("ES_URL", "http://localhost:9200")
 
 
-def unassigned_shards(es):
+def unassigned_shards(es: Elasticsearch):
     """Return the list of currently unassigned shards via _cat/shards."""
-    shards = es.cat.shards(
+    # format="json" answers with rows; the client types a cat call as text or object
+    shards: Any = es.cat.shards(
         h="index,shard,prirep,state,unassigned.reason", format="json"
     )
     return [s for s in shards if s.get("state") == "UNASSIGNED"]
@@ -125,9 +127,10 @@ def main() -> None:
     )
 
 
-def _any_node(es):
+def _any_node(es: Elasticsearch):
     """Pick an arbitrary node name to host a force-allocated empty primary."""
-    nodes = es.cat.nodes(h="name", format="json")
+    # format="json" answers with rows; the client types a cat call as text or object
+    nodes: Any = es.cat.nodes(h="name", format="json")
     return nodes[0]["name"]
 
 

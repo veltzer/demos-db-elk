@@ -9,7 +9,7 @@ from elasticsearch import Elasticsearch
 es = Elasticsearch(["http://localhost:9200"])
 
 # Boost recent products using Gaussian decay
-def search_with_recency_boost(query_text):
+def search_with_recency_boost(query_text: str) -> None:
     query = {
         "query": {
             "function_score": {

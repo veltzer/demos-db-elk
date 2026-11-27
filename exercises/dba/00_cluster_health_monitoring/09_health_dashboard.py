@@ -13,6 +13,7 @@ Run once for a snapshot, or pass an interval in seconds to refresh:
 import sys
 import time
 from datetime import UTC, datetime
+from typing import Any
 
 from elasticsearch import Elasticsearch
 
@@ -32,7 +33,7 @@ def collect():
     return health, node_stats, pending
 
 
-def render(health, node_stats, pending) -> None:
+def render(health: Any, node_stats: Any, pending: Any) -> None:
     """Print the dashboard to stdout."""
     status = health["status"].upper()
     banner = {

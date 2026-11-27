@@ -4,9 +4,12 @@ Elasticsearch CRUD operations using requests library
 """
 
 import json
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 import requests
+
+if TYPE_CHECKING:
+    from requests.models import Response
 
 # Configuration
 ES_HOST = "localhost"
@@ -19,7 +22,7 @@ session = requests.Session()
 session.headers.update({'Content-Type': 'application/json'})
 
 
-def pretty_print(response):
+def pretty_print(response: Response) -> None:
     """Pretty print JSON response"""
     try:
         print(json.dumps(response.json(), indent=2))
@@ -27,14 +30,14 @@ def pretty_print(response):
         print(response.text)
 
 
-def get_document(doc_id: str):
+def get_document(doc_id: str) -> Response:
     """Get a specific document by ID"""
     response = session.get(f"{ES_URL}/{INDEX_NAME}/_doc/{doc_id}")
     print(f"Get document status: {response.status_code}")
     pretty_print(response)
     return response
 
-def search_documents(query: dict[str, Any] | None = None):
+def search_documents(query: dict[str, Any] | None = None) -> Response:
     """Search documents with optional query"""
     if query is None:
         query = {"query": {"match_all": {}}}
@@ -58,7 +61,7 @@ def search_documents(query: dict[str, Any] | None = None):
 
     return response
 
-def search_with_criteria():
+def search_with_criteria() -> Response:
     """Search with specific criteria"""
     query = {
         "query": {

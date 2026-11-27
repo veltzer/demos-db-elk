@@ -42,7 +42,7 @@ def count_documents():
 
     return total, electronics_count
 
-def scroll_through_results():
+def scroll_through_results() -> None:
     """Use scroll API for large result sets"""
     # Initial search with scroll
     response = es.search(

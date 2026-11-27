@@ -7,7 +7,7 @@ from elasticsearch import Elasticsearch
 es = Elasticsearch(["http://localhost:9200"])
 
 # Combine multiple scoring factors
-def multi_factor_search(query_text):
+def multi_factor_search(query_text: str) -> None:
     query = {
         "query": {
             "function_score": {

@@ -7,7 +7,7 @@ from elasticsearch import Elasticsearch
 es = Elasticsearch(["http://localhost:9200"])
 
 # Boost products near a target price point
-def search_with_price_preference(query_text, target_price, price_flexibility):
+def search_with_price_preference(query_text: str, target_price: float, price_flexibility: float) -> None:
     query = {
         "query": {
             "function_score": {

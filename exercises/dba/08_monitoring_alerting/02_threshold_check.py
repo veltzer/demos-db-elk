@@ -21,6 +21,7 @@ Tune the THRESHOLDS dict below for your environment.
 
 import sys
 from importlib import import_module
+from typing import Any
 
 # 01_metrics_collector starts with a digit, so we cannot "import" it with
 # normal syntax. import_module handles the numeric module name.
@@ -39,7 +40,7 @@ THRESHOLDS = {
 }
 
 
-def check_status(metrics):
+def check_status(metrics: dict[str, Any]) -> tuple[int, str]:
     """Cluster status: green=OK, yellow=WARN, red=CRITICAL."""
     status = metrics["status"]
     if status == "green":
@@ -49,7 +50,7 @@ def check_status(metrics):
     return CRITICAL, "cluster status is RED (primary shards missing)"
 
 
-def check_unassigned_shards(metrics):
+def check_unassigned_shards(metrics: dict[str, Any]) -> tuple[int, str]:
     """Any unassigned shard is at least a warning."""
     n = metrics["unassigned_shards"]
     if n == 0:
@@ -60,7 +61,7 @@ def check_unassigned_shards(metrics):
     return level, f"{n} unassigned shard(s)"
 
 
-def check_thread_pool_rejections(metrics):
+def check_thread_pool_rejections(metrics: dict[str, Any]) -> tuple[int, str]:
     """Thread-pool rejections mean the cluster dropped work."""
     n = metrics["thread_pool_rejections_total"]
     if n == 0:
@@ -68,7 +69,7 @@ def check_thread_pool_rejections(metrics):
     return WARN, f"{n} thread-pool rejection(s) (queues filling up)"
 
 
-def check_pending_tasks(metrics):
+def check_pending_tasks(metrics: dict[str, Any]) -> tuple[int, str]:
     """A growing pending-task queue signals a struggling master."""
     n = metrics["pending_tasks"]
     if n == 0:
@@ -78,7 +79,7 @@ def check_pending_tasks(metrics):
     return CRITICAL, f"{n} pending cluster task(s) (master overloaded?)"
 
 
-def check_numeric(metrics, key, label):
+def check_numeric(metrics: dict[str, Any], key: str, label: str) -> tuple[int, str]:
     """Generic warn/crit check for a percentage-style metric."""
     value = metrics[key]
     limits = THRESHOLDS[key]

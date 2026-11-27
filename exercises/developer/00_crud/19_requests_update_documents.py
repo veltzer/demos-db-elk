@@ -5,8 +5,12 @@ Elasticsearch CRUD operations using requests library
 
 import json
 from datetime import UTC, datetime
+from typing import TYPE_CHECKING
 
 import requests
+
+if TYPE_CHECKING:
+    from requests.models import Response
 
 # Configuration
 ES_HOST = "localhost"
@@ -19,7 +23,7 @@ session = requests.Session()
 session.headers.update({'Content-Type': 'application/json'})
 
 
-def pretty_print(response):
+def pretty_print(response: Response) -> None:
     """Pretty print JSON response"""
     try:
         print(json.dumps(response.json(), indent=2))
@@ -27,7 +31,7 @@ def pretty_print(response):
         print(response.text)
 
 
-def update_document_full(doc_id: str):
+def update_document_full(doc_id: str) -> Response:
     """Full document update (replace)"""
     updated_doc = {
         "product_id": "PROD001",
@@ -50,7 +54,7 @@ def update_document_full(doc_id: str):
     pretty_print(response)
     return response
 
-def update_document_partial(doc_id: str):
+def update_document_partial(doc_id: str) -> Response:
     """Partial document update"""
     update_data = {
         "doc": {
@@ -69,7 +73,7 @@ def update_document_partial(doc_id: str):
     pretty_print(response)
     return response
 
-def update_by_query():
+def update_by_query() -> Response:
     """Update multiple documents by query"""
     update_query = {
         "query": {

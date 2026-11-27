@@ -34,14 +34,14 @@ NEW = "orders_v2"
 ALIAS = "orders_alias"
 
 
-def cleanup():
+def cleanup() -> None:
     """Remove anything left over from a previous run so we are idempotent."""
     for idx in (OLD, NEW):
         if es.indices.exists(index=idx):
             es.indices.delete(index=idx)
 
 
-def step_create_old():
+def step_create_old() -> None:
     """Create the old index with a deliberately wrong mapping and load data.
 
     The flaws we will fix:
@@ -82,7 +82,7 @@ def step_create_old():
     print(f"[1] created {OLD} with {len(docs)} docs, alias '{ALIAS}' -> {OLD}")
 
 
-def step_create_new():
+def step_create_new() -> None:
     """Create the new index with the corrected mapping (including 'total')."""
     es.indices.create(
         index=NEW,
@@ -153,7 +153,7 @@ def step_verify():
     return True, "counts match and sample doc is correct"
 
 
-def step_swap_alias():
+def step_swap_alias() -> bool:
     """Atomically move the alias from the old index to the new one.
 
     Doing both actions in one _aliases call means readers never see a moment
@@ -172,7 +172,7 @@ def step_swap_alias():
     return target == [NEW]
 
 
-def main():
+def main() -> None:
     cleanup()
     step_create_old()
     step_create_new()

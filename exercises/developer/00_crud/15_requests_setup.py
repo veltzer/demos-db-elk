@@ -18,7 +18,7 @@ session = requests.Session()
 session.headers.update({'Content-Type': 'application/json'})
 
 
-def pretty_print(response):
+def pretty_print(response: requests.Response) -> None:
     """Pretty print JSON response"""
     try:
         print(json.dumps(response.json(), indent=2))

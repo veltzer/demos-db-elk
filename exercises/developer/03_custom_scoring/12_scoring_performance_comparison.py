@@ -9,7 +9,7 @@ from elasticsearch import Elasticsearch
 
 es = Elasticsearch(["http://localhost:9200"])
 
-def compare_scoring_performance():
+def compare_scoring_performance() -> None:
     """Compare performance of different scoring strategies"""
 
     queries: list[dict[str, Any]] = [

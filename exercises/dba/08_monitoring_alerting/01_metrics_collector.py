@@ -28,7 +28,7 @@ from elasticsearch import Elasticsearch
 es = Elasticsearch("http://localhost:9200")
 
 
-def _sum_thread_pool_rejections(node_stats):
+def _sum_thread_pool_rejections(node_stats: dict[str, Any]):
     """Sum thread-pool rejections across all pools on one node.
 
     Rejections mean the node refused work because a queue was full. Any
@@ -41,7 +41,7 @@ def _sum_thread_pool_rejections(node_stats):
     return total
 
 
-def _disk_usage_percent(node_stats):
+def _disk_usage_percent(node_stats: dict[str, Any]):
     """Return the highest disk-usage percentage across the node's data paths.
 
     We report the worst (fullest) filesystem because that is the one that
@@ -135,7 +135,7 @@ def collect_metrics():
     return metrics
 
 
-def main():
+def main() -> None:
     """Collect once and print the metrics as pretty JSON."""
     metrics = collect_metrics()
     print(json.dumps(metrics, indent=2, sort_keys=True))

@@ -2,7 +2,7 @@
 """
 Recommend which fields are worth indexing and which are not
 """
-def analyze_field_usage():
+def analyze_field_usage() -> None:
     """Analyze which fields might benefit from having indexing disabled"""
 
     print("\n" + "=" * 60)

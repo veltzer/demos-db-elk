@@ -7,7 +7,7 @@ from elasticsearch import Elasticsearch
 es = Elasticsearch(["http://localhost:9200"])
 
 # Random scoring for result variation
-def search_with_randomization(query_text, user_id):
+def search_with_randomization(query_text: str, user_id: int) -> None:
     query = {
         "query": {
             "function_score": {

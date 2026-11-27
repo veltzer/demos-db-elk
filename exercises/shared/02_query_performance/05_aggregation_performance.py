@@ -11,7 +11,7 @@ from elasticsearch import ApiError, Elasticsearch
 es = Elasticsearch("http://localhost:9200")
 
 
-def measure_aggregation_performance(index_name, agg_body):
+def measure_aggregation_performance(index_name: str, agg_body: dict[str, int | dict[str, dict[str, dict[str, int | str]]]]):
     """Measure aggregation query performance"""
 
     start = time.perf_counter()

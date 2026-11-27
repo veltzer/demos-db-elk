@@ -5,8 +5,12 @@ Elasticsearch CRUD operations using requests library
 
 import json
 from datetime import UTC, datetime
+from typing import TYPE_CHECKING
 
 import requests
+
+if TYPE_CHECKING:
+    from requests.models import Response
 
 # Configuration
 ES_HOST = "localhost"
@@ -19,7 +23,7 @@ session = requests.Session()
 session.headers.update({'Content-Type': 'application/json'})
 
 
-def pretty_print(response):
+def pretty_print(response: Response) -> None:
     """Pretty print JSON response"""
     try:
         print(json.dumps(response.json(), indent=2))
@@ -27,7 +31,7 @@ def pretty_print(response):
         print(response.text)
 
 
-def insert_single_document(doc_id: str | None = None):
+def insert_single_document(doc_id: str | None = None) -> Response:
     """Insert a single document"""
     document = {
         "product_id": "PROD001",
@@ -54,7 +58,7 @@ def insert_single_document(doc_id: str | None = None):
     pretty_print(response)
     return response
 
-def bulk_insert_documents():
+def bulk_insert_documents() -> Response:
     """Bulk insert multiple documents"""
     products = [
         {

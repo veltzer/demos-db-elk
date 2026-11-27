@@ -19,7 +19,7 @@ from elasticsearch import ApiError, Elasticsearch, helpers
 
 
 class PerformanceTestSuite:
-    def __init__(self, es_host='localhost', es_port=9200):
+    def __init__(self, es_host: str = 'localhost', es_port: int = 9200) -> None:
         """Initialize test suite (security disabled: no credentials)"""
         self.es = Elasticsearch(
             [{'host': es_host, 'port': es_port, 'scheme': 'http'}],
@@ -33,7 +33,7 @@ class PerformanceTestSuite:
         print(f"✓ Connected to Elasticsearch at {es_host}:{es_port}")
         self.results = []
 
-    def create_optimized_index(self, index_name, config_type='standard'):
+    def create_optimized_index(self, index_name: str, config_type: str = 'standard') -> None:
         """Create index with different optimization configurations"""
 
         if self.es.indices.exists(index=index_name):
@@ -79,7 +79,7 @@ class PerformanceTestSuite:
         config = configs.get(config_type, configs['standard'])
         self.es.indices.create(index=index_name, body=config)
 
-    def _get_standard_mappings(self):
+    def _get_standard_mappings(self) -> dict[str, dict[str, dict[str, str] | dict[str, str | dict[str, dict[str, str]]]]]:
         """Standard mapping with full indexing"""
         return {
             "properties": {
@@ -99,7 +99,7 @@ class PerformanceTestSuite:
             }
         }
 
-    def _get_minimal_mappings(self):
+    def _get_minimal_mappings(self) -> dict[str, str | dict[str, dict[str, str]]]:
         """Minimal mapping with selective indexing"""
         return {
             "properties": {
@@ -112,7 +112,7 @@ class PerformanceTestSuite:
             "dynamic": "false"
         }
 
-    def _get_no_index_mappings(self):
+    def _get_no_index_mappings(self) -> dict[str, str | dict[str, dict[str, str] | dict[str, bool | str]]]:
         """Mapping with indexing disabled for most fields"""
         return {
             "properties": {
@@ -128,7 +128,7 @@ class PerformanceTestSuite:
             "dynamic": "false"
         }
 
-    def load_test_data(self, filename, limit=None):
+    def load_test_data(self, filename: str, limit: int | None = None):
         """Load test data from file"""
         data = []
         with open(filename) as f:
@@ -139,7 +139,7 @@ class PerformanceTestSuite:
                     data.append(json.loads(line))
         return data
 
-    def measure_bulk_insert(self, index_name, data, chunk_size=1000, config_type='standard'):
+    def measure_bulk_insert(self, index_name: str, data: list[dict[str, Any]], chunk_size: int = 1000, config_type: str = 'standard'):
         """Measure bulk insert performance"""
 
         # Create index with specified configuration
@@ -212,7 +212,7 @@ class PerformanceTestSuite:
 
         return result
 
-    def _get_index_memory(self, index_name):
+    def _get_index_memory(self, index_name: str):
         """Get current index memory usage"""
         try:
             stats = self.es.indices.stats(index=index_name)
@@ -220,7 +220,7 @@ class PerformanceTestSuite:
         except (ApiError, TransportError):
             return 0
 
-    def run_comprehensive_test(self, data_file, test_sizes=None):
+    def run_comprehensive_test(self, data_file: str, test_sizes: list[int] | None = None):
         """Run comprehensive performance tests"""
         if test_sizes is None:
             test_sizes = [1000, 5000, 10000]
@@ -257,7 +257,7 @@ class PerformanceTestSuite:
 
         return all_results
 
-    def generate_report(self, results, output_dir='./results'):
+    def generate_report(self, results: list[dict[str, Any]], output_dir: str = './results') -> str:
         """Generate performance report with visualizations"""
 
         os.makedirs(output_dir, exist_ok=True)
@@ -278,7 +278,7 @@ class PerformanceTestSuite:
 
         return report_file
 
-    def _plot_comparison_charts(self, configs, output_dir):
+    def _plot_comparison_charts(self, configs: dict[str, list[dict[str, Any]]], output_dir: str) -> None:
         """Draw the four comparison charts into performance_analysis.png"""
 
         # Create performance comparison chart
@@ -336,7 +336,7 @@ class PerformanceTestSuite:
         plt.savefig(f'{output_dir}/performance_analysis.png', dpi=100)
         plt.close()
 
-    def _write_text_report(self, configs, output_dir):
+    def _write_text_report(self, configs: dict[str, list[dict[str, Any]]], output_dir: str) -> str:
         """Write the plain-text performance report and return its path"""
 
         report_file = f'{output_dir}/performance_report.txt'
@@ -395,7 +395,7 @@ class PerformanceTestSuite:
 
         return report_file
 
-def main():
+def main() -> None:
     parser = argparse.ArgumentParser(description='Run comprehensive Elasticsearch bulk insert performance tests')
     parser.add_argument('--host', default='localhost', help='Elasticsearch host')
     parser.add_argument('--port', type=int, default=9200, help='Elasticsearch port')

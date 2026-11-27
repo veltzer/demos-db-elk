@@ -9,12 +9,14 @@ the request body below.
 This is the single best tool for answering "why is my cluster yellow/red?"
 """
 
+from typing import Any
+
 from elasticsearch import ApiError, Elasticsearch
 
 es = Elasticsearch("http://localhost:9200")
 
 
-def explain(body=None) -> None:
+def explain(body: dict[str, Any] | None = None) -> None:
     """Run an allocation explain request and summarize the result."""
     try:
         # With no body, ES chooses an arbitrary unassigned shard. If

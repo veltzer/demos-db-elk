@@ -15,7 +15,7 @@ from elasticsearch import Elasticsearch, helpers
 
 
 class BulkInsertTester:
-    def __init__(self, es_host='localhost', es_port=9200):
+    def __init__(self, es_host: str = 'localhost', es_port: int = 9200) -> None:
         """Initialize Elasticsearch connection (security disabled: no credentials)"""
         self.es = Elasticsearch(
             [{'host': es_host, 'port': es_port, 'scheme': 'http'}],
@@ -29,7 +29,7 @@ class BulkInsertTester:
 
         print(f"Connected to Elasticsearch at {es_host}:{es_port}")
 
-    def create_index_with_mappings(self, index_name, *, enable_indexing=True):
+    def create_index_with_mappings(self, index_name: str, *, enable_indexing: bool = True) -> None:
         """Create index with specified mapping settings"""
 
         # Delete index if it exists
@@ -105,12 +105,12 @@ class BulkInsertTester:
         )
         print(f"Created index: {index_name} (indexing={'enabled' if enable_indexing else 'disabled'})")
 
-    def load_data_from_file(self, filename):
+    def load_data_from_file(self, filename: str):
         """Load data from NDJSON file"""
         with open(filename, encoding="utf-8") as f:
             return [json.loads(line) for line in f if line.strip()]
 
-    def bulk_insert_with_helpers(self, index_name, data, chunk_size=500):
+    def bulk_insert_with_helpers(self, index_name: str, data: list[dict[str, Any]], chunk_size: int = 500) -> dict[str, float | int]:
         """Perform bulk insert using Elasticsearch helpers"""
 
         # Prepare documents for bulk insert
@@ -143,7 +143,7 @@ class BulkInsertTester:
             "docs_per_second": success / elapsed_time if elapsed_time > 0 else 0
         }
 
-    def bulk_insert_raw(self, index_name, bulk_file):
+    def bulk_insert_raw(self, index_name: str, bulk_file: str) -> dict[str, float | int]:
         """Perform bulk insert using raw bulk API"""
 
         # Read bulk formatted file
@@ -175,7 +175,7 @@ class BulkInsertTester:
             "docs_per_second": success / elapsed_time if elapsed_time > 0 else 0
         }
 
-    def test_bulk_performance(self, data_file, test_name, *, enable_indexing=True, chunk_sizes=None):
+    def test_bulk_performance(self, data_file: str, test_name: str, *, enable_indexing: bool = True, chunk_sizes: list[int] | None = None):
         """Test bulk insert performance with different chunk sizes"""
         if chunk_sizes is None:
             chunk_sizes = [100, 500, 1000, 5000]
@@ -236,7 +236,7 @@ class BulkInsertTester:
 
         return results
 
-    def compare_indexing_performance(self, data_file):
+    def compare_indexing_performance(self, data_file: str):
         """Compare performance between indexed and non-indexed data"""
 
         print("\n" + "="*70)
@@ -283,7 +283,7 @@ class BulkInsertTester:
 
         return indexed_results, non_indexed_results
 
-def main():
+def main() -> None:
     parser = argparse.ArgumentParser(description='Test Elasticsearch bulk insert performance')
     parser.add_argument('--host', default='localhost', help='Elasticsearch host')
     parser.add_argument('--port', type=int, default=9200, help='Elasticsearch port')

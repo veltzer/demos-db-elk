@@ -23,7 +23,7 @@ from elasticsearch import Elasticsearch
 es = Elasticsearch("http://localhost:9200")
 
 
-def human(num_bytes):
+def human(num_bytes: float) -> str:
     """Format a byte count as a human-readable string."""
     value = float(num_bytes)
     for unit in ("B", "KB", "MB", "GB", "TB"):
@@ -33,7 +33,7 @@ def human(num_bytes):
     return f"{value:.1f} PB"
 
 
-def main():
+def main() -> None:
     index = sys.argv[1] if len(sys.argv) > 1 else "capacity_demo"
     top_n = int(sys.argv[2]) if len(sys.argv) > 2 else 15
 

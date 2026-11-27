@@ -11,7 +11,7 @@ from elasticsearch import ApiError, Elasticsearch
 es = Elasticsearch("http://localhost:9200")
 
 
-def measure_query_time(index_name, query_body, runs=5):
+def measure_query_time(index_name: str, query_body: dict[str, dict[bool | dict[str, int] | str, dict[bool | dict[str, int] | str, bool | dict[str, int] | str]]], runs: int = 5) -> dict[str, float | list[float]]:
     """Measure query execution time over multiple runs"""
     times = []
 
@@ -38,7 +38,7 @@ def measure_query_time(index_name, query_body, runs=5):
     }
 
 
-def demonstrate_index_impact():
+def demonstrate_index_impact() -> None:
     """Complete demonstration of indexing impact on query performance"""
 
     print("\n" + "=" * 70)

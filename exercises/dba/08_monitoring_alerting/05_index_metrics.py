@@ -16,6 +16,7 @@ then run this script (repeatedly, or from cron) to accumulate a time series.
 
 from datetime import UTC, datetime
 from importlib import import_module
+from typing import Any
 
 from elasticsearch import Elasticsearch
 from elasticsearch.helpers import bulk
@@ -35,7 +36,7 @@ def build_metrics_doc():
     return doc
 
 
-def index_metrics_doc(doc):
+def index_metrics_doc(doc: dict[str, Any]):
     """Bulk-index a single metrics document into the dba-metrics alias.
 
     We use the bulk helper even for one document so the same code path
@@ -46,7 +47,7 @@ def index_metrics_doc(doc):
     return success, errors
 
 
-def main():
+def main() -> None:
     """Collect once and store the metrics document."""
     doc = build_metrics_doc()
     _, errors = index_metrics_doc(doc)

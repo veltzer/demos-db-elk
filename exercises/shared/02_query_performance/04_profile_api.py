@@ -8,7 +8,7 @@ from elasticsearch import Elasticsearch
 es = Elasticsearch("http://localhost:9200")
 
 
-def profile_query(index_name, query_body):
+def profile_query(index_name: str, query_body: dict[str, dict[str, dict[str, int | list[dict[str, dict[str, dict[str, int]]] | dict[str, dict[str, bool]]] | list[dict[str, dict[str, str]] | dict[str, dict[str, list[str]]]]]]]) -> None:
     """Use Elasticsearch's Profile API to get detailed timing"""
 
     profiled_body = {

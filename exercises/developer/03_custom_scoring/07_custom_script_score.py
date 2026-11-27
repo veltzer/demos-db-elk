@@ -7,7 +7,7 @@ from elasticsearch import Elasticsearch
 es = Elasticsearch(["http://localhost:9200"])
 
 # Use Painless script for complex scoring logic
-def search_with_script_score(query_text):
+def search_with_script_score(query_text: str) -> None:
     query = {
         "query": {
             "function_score": {

@@ -4,8 +4,12 @@ Elasticsearch CRUD operations using requests library
 """
 
 import json
+from typing import TYPE_CHECKING
 
 import requests
+
+if TYPE_CHECKING:
+    from requests.models import Response
 
 # Configuration
 ES_HOST = "localhost"
@@ -18,7 +22,7 @@ session = requests.Session()
 session.headers.update({'Content-Type': 'application/json'})
 
 
-def pretty_print(response):
+def pretty_print(response: Response) -> None:
     """Pretty print JSON response"""
     try:
         print(json.dumps(response.json(), indent=2))
@@ -26,14 +30,14 @@ def pretty_print(response):
         print(response.text)
 
 
-def delete_document(doc_id: str):
+def delete_document(doc_id: str) -> Response:
     """Delete a single document"""
     response = session.delete(f"{ES_URL}/{INDEX_NAME}/_doc/{doc_id}")
     print(f"Delete document status: {response.status_code}")
     pretty_print(response)
     return response
 
-def delete_by_query():
+def delete_by_query() -> Response:
     """Delete documents by query"""
     delete_query = {
         "query": {
@@ -50,7 +54,7 @@ def delete_by_query():
     pretty_print(response)
     return response
 
-def delete_index():
+def delete_index() -> Response:
     """Delete entire index"""
     response = session.delete(f"{ES_URL}/{INDEX_NAME}")
     print(f"Delete index status: {response.status_code}")

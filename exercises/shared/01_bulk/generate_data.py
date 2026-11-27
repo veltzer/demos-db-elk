@@ -16,7 +16,7 @@ fake = Faker()
 Faker.seed(42)
 random.seed(42)
 
-def generate_product(product_id):
+def generate_product(product_id: int) -> dict[str, bool | float | int | list[str] | str]:
     """Generate a single product document"""
     categories = ["Electronics", "Clothing", "Home & Garden", "Sports", "Books", "Toys", "Food", "Beauty"]
     brands = ["TechCorp", "StyleCo", "HomePlus", "SportMax", "BookWorld", "FunToys", "GourmetLife", "BeautyPro"]
@@ -50,7 +50,7 @@ def generate_product(product_id):
         "discount_percentage": random.choice([0, 0, 0, 5, 10, 15, 20, 25])
     }
 
-def generate_customer(customer_id):
+def generate_customer(customer_id: int) -> dict[str, bool | float | int | str | dict[str, float | str]]:
     """Generate a single customer document"""
     segments = ["premium", "regular", "occasional", "new"]
     countries = ["United States", "Canada", "United Kingdom", "Germany", "France", "Australia", "Japan"]
@@ -81,7 +81,7 @@ def generate_customer(customer_id):
         "loyalty_points": random.randint(0, 5000)
     }
 
-def generate_order(order_id, num_products):
+def generate_order(order_id: int, num_products: int) -> dict[str, float | int | list[dict[str, float | int | str]] | str | dict[str, str]]:
     """Generate a single order document"""
     statuses = ["pending", "processing", "shipped", "delivered", "cancelled", "returned"]
     payment_methods = ["credit_card", "debit_card", "paypal", "bank_transfer"]
@@ -132,12 +132,12 @@ def generate_order(order_id, num_products):
         }
     }
 
-def save_as_ndjson(data, filename):
+def save_as_ndjson(data: list[dict[str, bool | float | int | str | dict[str, float | str]]] | list[dict[str, float | int | list[dict[str, float | int | str]] | str | dict[str, str]]] | list[dict[str, bool | float | int | list[str] | str]], filename: str) -> None:
     """Save data as newline-delimited JSON (for bulk insert)"""
     with open(filename, 'w') as f:
         f.writelines(json.dumps(record) + '\n' for record in data)
 
-def save_as_bulk_format(data, index_name, filename):
+def save_as_bulk_format(data: list[dict[str, bool | float | int | str | dict[str, float | str]]] | list[dict[str, float | int | list[dict[str, float | int | str]] | str | dict[str, str]]] | list[dict[str, bool | float | int | list[str] | str]], index_name: str, filename: str) -> None:
     """Save data in Elasticsearch bulk format"""
     with open(filename, 'w') as f:
         for record in data:
@@ -147,7 +147,7 @@ def save_as_bulk_format(data, index_name, filename):
             # Write the document line
             f.write(json.dumps(record) + '\n')
 
-def main():
+def main() -> None:
     parser = argparse.ArgumentParser(description='Generate fake e-commerce data for Elasticsearch')
     parser.add_argument('--products', type=int, default=10000, help='Number of products to generate')
     parser.add_argument('--customers', type=int, default=5000, help='Number of customers to generate')

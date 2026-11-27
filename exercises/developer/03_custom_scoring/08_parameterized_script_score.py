@@ -7,7 +7,7 @@ from elasticsearch import Elasticsearch
 es = Elasticsearch(["http://localhost:9200"])
 
 # Parameterized script for flexible scoring
-def search_with_params(query_text, user_preferences):
+def search_with_params(query_text: str, user_preferences: dict[str, float | int | list[str]]) -> None:
     query = {
         "query": {
             "function_score": {
