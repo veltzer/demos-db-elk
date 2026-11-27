@@ -222,7 +222,7 @@ flexibility with the memory of global ordinals and a slower, join-based
 query path.
 
 | Aspect | Nested | Parent-Child |
-|--------|---------|-------------|
+| -------- | --------- | ------------- |
 | **Storage** | All data in one document | Separate documents |
 | **Document Count** | 1 per blog post | 1 per post + 1 per comment |
 | **Updates** | Must reindex whole document | Update individual children |
