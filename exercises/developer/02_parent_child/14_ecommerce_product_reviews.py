@@ -87,7 +87,7 @@ for i, review in enumerate(reviews, 1):
 es.indices.refresh(index="ecommerce")
 
 # Query: Find products with average rating above 4
-avg_rating_query = {
+avg_rating_query: dict[str, Any] = {
     "query": {
         "has_child": {
             "type": "review",

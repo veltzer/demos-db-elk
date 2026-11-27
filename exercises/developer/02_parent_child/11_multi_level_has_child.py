@@ -2,12 +2,14 @@
 """
 Query across two levels of the join relation with nested has_child queries
 """
+from typing import Any
+
 from elasticsearch import Elasticsearch
 
 es = Elasticsearch(["http://localhost:9200"])
 
 # Find blog posts that have comments with replies
-multi_level_query = {
+multi_level_query: dict[str, Any] = {
     "query": {
         "has_child": {
             "type": "comment",

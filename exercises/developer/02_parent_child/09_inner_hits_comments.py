@@ -2,12 +2,14 @@
 """
 Return matching child comments alongside their parent blog posts using inner_hits
 """
+from typing import Any
+
 from elasticsearch import Elasticsearch
 
 es = Elasticsearch(["http://localhost:9200"])
 
 # Get blog posts with their comments included
-inner_hits_query = {
+inner_hits_query: dict[str, Any] = {
     "query": {
         "has_child": {
             "type": "comment",

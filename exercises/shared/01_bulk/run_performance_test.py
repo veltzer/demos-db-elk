@@ -10,6 +10,7 @@ import os
 import sys
 import time
 from datetime import UTC, datetime
+from typing import Any
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -262,7 +263,7 @@ class PerformanceTestSuite:
         os.makedirs(output_dir, exist_ok=True)
 
         # Group results by configuration
-        configs = {}
+        configs: dict[str, list[dict[str, Any]]] = {}
         for r in results:
             config = r['config_type']
             if config not in configs:

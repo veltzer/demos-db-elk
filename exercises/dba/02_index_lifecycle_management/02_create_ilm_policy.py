@@ -6,12 +6,14 @@ client is handy when the policy is generated from configuration (for example a
 retention value that differs per environment) rather than hand-written JSON.
 """
 
+from typing import Any
+
 from elasticsearch import Elasticsearch
 
 es = Elasticsearch("http://localhost:9200")
 POLICY_NAME = "logs-policy"
 
-POLICY = {
+POLICY: dict[str, Any] = {
     "phases": {
         "hot": {
             "min_age": "0ms",

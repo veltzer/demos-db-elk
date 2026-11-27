@@ -17,6 +17,7 @@ cold -> delete. Stop early with Ctrl-C.
 """
 
 import time
+from typing import Any
 
 from elastic_transport import TransportError
 from elasticsearch import ApiError, Elasticsearch
@@ -29,7 +30,7 @@ FIRST_INDEX = "fastlogs-000001"
 TEMPLATE = "fast-ilm-template"
 
 # A policy with tiny min_age values so we can watch transitions live.
-FAST_POLICY = {
+FAST_POLICY: dict[str, Any] = {
     "phases": {
         "hot": {
             "min_age": "0ms",

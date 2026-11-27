@@ -2,12 +2,14 @@
 """
 Score parent blog posts by the activity of their child comments with has_child function_score
 """
+from typing import Any
+
 from elasticsearch import Elasticsearch
 
 es = Elasticsearch(["http://localhost:9200"])
 
 # Score blog posts based on comment activity
-scoring_query = {
+scoring_query: dict[str, Any] = {
     "query": {
         "has_child": {
             "type": "comment",

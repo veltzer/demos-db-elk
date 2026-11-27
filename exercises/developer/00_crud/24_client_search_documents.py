@@ -3,6 +3,7 @@
 Retrieve and search documents in the products index using the Elasticsearch client
 """
 import json
+from typing import Any
 
 from elastic_transport import TransportError
 from elasticsearch import ApiError, Elasticsearch
@@ -143,7 +144,7 @@ def search_with_aggregations():
 
 def search_with_highlighting():
     """Search with text highlighting"""
-    query = {
+    query: dict[str, Any] = {
         "query": {
             "multi_match": {
                 "query": "wireless headphones",
