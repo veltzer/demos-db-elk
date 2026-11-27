@@ -32,9 +32,12 @@ Usage:
 import json
 import os
 import sys
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from elasticsearch import Elasticsearch, NotFoundError
+
+if TYPE_CHECKING:
+    from collections.abc import Callable, Iterable
 
 ES_URL = os.environ.get("ES_URL", "http://localhost:9200")
 BASELINE = os.environ.get(
@@ -69,7 +72,7 @@ def load_baseline() -> dict[str, Any]:
         )
 
 
-def safe_delete(action, name: str) -> bool:
+def safe_delete(action: Callable[[str], object], name: str) -> bool:
     """Call a delete function for `name`, treating 'already gone' as success.
 
     Returns True if the object was actually deleted, False if it was already
@@ -83,7 +86,7 @@ def safe_delete(action, name: str) -> bool:
         return True
 
 
-def reset_category(label, current, baseline, deleter) -> int:
+def reset_category(label: str, current: Iterable[str], baseline: Iterable[str], deleter: Callable[[str], object]) -> int:
     """Delete every current object whose name is not in the baseline.
 
     `current` is the set of names present now, `baseline` the set to keep,
