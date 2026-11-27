@@ -53,5 +53,5 @@ def delete_index():
 # Execute
 delete_document("99")
 delete_by_query()
-# delete_with_refresh()  # Uncomment to test
-# delete_index()  # Uncomment to delete entire index
+# delete_with_refresh()  # Uncomment to test  # noqa: ERA001  teaching: kept in the comment for the reader
+# delete_index()  # Uncomment to delete entire index  # noqa: ERA001  teaching: kept in the comment for the reader
