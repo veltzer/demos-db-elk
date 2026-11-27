@@ -4,6 +4,7 @@ Elasticsearch CRUD operations using requests library
 """
 
 import json
+from typing import Any
 
 import requests
 
@@ -33,7 +34,7 @@ def get_document(doc_id: str):
     pretty_print(response)
     return response
 
-def search_documents(query: dict | None = None):
+def search_documents(query: dict[str, Any] | None = None):
     """Search documents with optional query"""
     if query is None:
         query = {"query": {"match_all": {}}}

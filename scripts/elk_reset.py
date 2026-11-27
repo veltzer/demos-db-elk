@@ -32,6 +32,7 @@ Usage:
 import json
 import os
 import sys
+from typing import Any
 
 from elasticsearch import Elasticsearch, NotFoundError
 
@@ -55,11 +56,11 @@ def is_local(url: str) -> bool:
     return "localhost" in url or "127.0.0.1" in url
 
 
-def load_baseline() -> dict:
+def load_baseline() -> dict[str, Any]:
     """Read the captured baseline, or exit with a clear message if missing."""
     try:
         with open(BASELINE, encoding="utf-8") as handle:
-            baseline: dict = json.load(handle)
+            baseline: dict[str, Any] = json.load(handle)
             return baseline
     except FileNotFoundError:
         sys.exit(
@@ -100,7 +101,7 @@ def reset_category(label, current, baseline, deleter) -> int:
     return removed
 
 
-def current_state(es) -> dict:
+def current_state(es) -> dict[str, Any]:
     """Return the names currently present, mirroring the baseline structure."""
     indices = es.cat.indices(h="index", format="json", expand_wildcards="all")
     data_streams = es.indices.get_data_stream(name="*").get(

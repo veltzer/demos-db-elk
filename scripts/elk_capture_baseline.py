@@ -41,6 +41,7 @@ Usage:
 
 import json
 import os
+from typing import Any
 
 from elasticsearch import Elasticsearch
 
@@ -55,7 +56,7 @@ def _names(items, key):
     return sorted(item[key] for item in items)
 
 
-def capture(es) -> dict:
+def capture(es) -> dict[str, Any]:
     """Query every relevant API and return the baseline as a plain dict."""
     # Indices: include system (dot-prefixed) and closed ones, since those are
     # part of the post-install state and must be preserved by the reset.
